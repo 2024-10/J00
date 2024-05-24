@@ -1,4 +1,4 @@
-// models/User.js
+// 사용자 정보
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

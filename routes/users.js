@@ -1,3 +1,5 @@
+// 회원가입 및 로그인 로직
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
