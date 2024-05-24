@@ -1,13 +1,11 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/Users');
 
-// Register new user
-router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+router.post('/join', async (req, res) => {
+  const { name, email, password, birth, nickname } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -15,7 +13,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    user = new User({ name, email, password });
+    user = new User({ name, email, password, birth, nickname });
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
