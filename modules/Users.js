@@ -1,5 +1,5 @@
 // 사용자 정보
-const mongoose = require('mongoose');
+const db = new Map()
 const Schema = mongoose.Schema;
 
 // Create Schema
@@ -32,4 +32,4 @@ const UserSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('users', UserSchema);
+module.exports = db.model('users', UserSchema); // db에 저장
