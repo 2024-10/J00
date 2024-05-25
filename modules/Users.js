@@ -1,3 +1,4 @@
+/*
 // 사용자 정보
 const db = new Map()
 const Schema = mongoose.Schema;
@@ -33,3 +34,4 @@ const UserSchema = new Schema({
 });
 
 module.exports = db.model('users', UserSchema); // db에 저장
+*/
