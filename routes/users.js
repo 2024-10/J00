@@ -1,43 +1,48 @@
-// 회원가입 및 로그인 로직
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-//const User = require('./models/Users'); // 수정된 부분
-
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const app = express();
+const fs = require('fs').promises;
+
 const USER_COOKIE_KEY = 'USER';
+const USERS_JSON_FILENAME = 'user.json';
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const fs = require('fs').promises;
-const USERS_JSON_FILENAME = 'user.json';
-
 async function fetchAllUsers() {
-    const data = await fs.readFile(USERS_JSON_FILENAME);
-    const users = JSON.parse(data.toString());
-    return users;
+    try {
+        const data = await fs.readFile(USERS_JSON_FILENAME, 'utf-8');
+        return JSON.parse(data);
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            // 파일이 없으면 빈 배열 반환
+            return [];
+        } else {
+            throw err;
+        }
+    }
 }
 
 async function fetchUser(username) {
     const users = await fetchAllUsers();
-    const user = users.find((user) => user.name === username); // 수정된 부분
-    return user;
+    return users.find(user => user.name === username);
 }
 
 async function createUser(newUser) {
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     const users = await fetchAllUsers();
-    users.push({
+    const userWithHashedPassword = {
         ...newUser,
         password: hashedPassword,
-    });
-    await fs.writeFile(USERS_JSON_FILENAME, JSON.stringify(users));
+    };
+    users.push(userWithHashedPassword);
+    await fs.writeFile(USERS_JSON_FILENAME, JSON.stringify(users, null, 2));
+    console.log('New user saved:', userWithHashedPassword); // 디버깅 로그 추가
 }
 
 router.post('/join', async (req, res) => {
@@ -49,22 +54,13 @@ router.post('/join', async (req, res) => {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-        user = { name, email, password, birth, nickname }; // 수정된 부분
+        const newUser = { name, email, password, birth, nickname };
+        await createUser(newUser);
 
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-
-        await createUser(user);
-
-        const payload = {
-            user: {
-                id: user.id
-            }
-        };
-
+        const payload = { user: { name: newUser.name } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
-            res.cookie(USER_COOKIE_KEY, JSON.stringify(user));
+            res.cookie(USER_COOKIE_KEY, JSON.stringify(payload.user));
             res.json({ token });
         });
     } catch (err) {
@@ -73,7 +69,6 @@ router.post('/join', async (req, res) => {
     }
 });
 
-// Authenticate user and get token
 router.post('/login', async (req, res) => {
     const { name, password } = req.body;
 
@@ -83,21 +78,20 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
+        console.log('User found:', user);
+        console.log('Comparing password:', password, 'with hash:', user.password);
+
         const isMatch = await bcrypt.compare(password, user.password);
+        console.log('Password match result:', isMatch); // 디버깅 로그 추가
         if (!isMatch) {
+            console.log('Password does not match');
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        res.cookie(USER_COOKIE_KEY, JSON.stringify(user));
-
-        const payload = {
-            user: {
-                id: user.id
-            }
-        };
-
+        const payload = { user: { name: user.name } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
+            res.cookie(USER_COOKIE_KEY, JSON.stringify(payload.user));
             res.json({ token });
         });
     } catch (err) {
@@ -108,14 +102,14 @@ router.post('/login', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const userCookie = req.cookies[USER_COOKIE_KEY];
-  
+
     if (userCookie) {
         const userData = JSON.parse(userCookie);
         const user = await fetchUser(userData.name);
         if (user) {
             res.status(200).send(`
                 <a href="/logout">Log Out</a>
-                <h1>id: ${userData.name}, email: ${userData.email}, birth: ${userData.birth}, nickname: ${userData.nickname}</h1>
+                <h1>id: ${user.name}, email: ${user.email}, birth: ${user.birth}, nickname: ${user.nickname}</h1>
             `);
             return;
         }
@@ -128,8 +122,8 @@ router.get('/', async (req, res) => {
     `);
 });
 
-app.listen(3000, () => {
-    console.log('server is running at 3000');
+app.listen(5003, () => {
+    console.log('Server running on port 5003');
 });
 
 module.exports = router;
