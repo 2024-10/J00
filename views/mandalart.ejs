@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mandalart</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- 경로 확인 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('#tedulist-form');
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const target = form.tedulist.dataset.target;
+                const value = form.tedulist.value.trim();
+                if (!target) {
+                    alert("셀을 선택해 주세요.");
+                    return;
+                }
+                if (value) {
+                    const cell = document.querySelector(`.cell[data-position="${target}"]`);
+                    cell.innerText = value;
+                }
+            });
+
+            const generateMandalartForm = document.querySelector('#generate-mandalart-form');
+            generateMandalartForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const centerGoal = event.target.centerGoal.value.trim();
+                const numCells = parseInt(event.target.numCells.value.trim(), 10);
+                const container = document.querySelector('.mandalart');
+                container.innerHTML = ''; // Clear existing cells
+                container.className = 'mandalart'; // Reset class
+                container.classList.add(`grid-${numCells}`); // Add new class
+                generateMandalart(container, centerGoal, numCells);
+
+                const cells = document.querySelectorAll('.mandalart .cell');
+                cells.forEach(cell => {
+                    if (!cell.classList.contains('center')) { // 중심 목표 셀 제외하고 선택하기
+                        cell.addEventListener('click', (event) => {
+                            cells.forEach(c => c.classList.remove('active'));
+                            event.target.classList.add('active');
+                            const input = document.querySelector('#tedulist');
+                            input.value = event.target.innerText.trim();
+                            input.dataset.target = event.target.dataset.position;
+                            // 체크리스트 생성 폼 보여주기
+                            document.querySelector('#checklist-container').dataset.subgoalId = cell.dataset.subgoalId;
+                            document.querySelector('#checklist-container').style.display = 'block';
+                        });
+                    }
+                });
+            });
+        });
+
+        function generateMandalart(container, centerGoal, numCells) {
+            const positions = getPositions(numCells);
+            // 테두리스트 셀 추가
+            positions.forEach((pos) => {
+                const cell = document.createElement('div');
+                cell.classList.add('cell', pos);
+                cell.dataset.position = pos;
+                container.appendChild(cell);
+            });
+
+            // 중심 목표 셀 추가
+            const centerCell = document.createElement('div');
+            centerCell.classList.add('cell', 'center');
+            centerCell.dataset.position = 'center';
+            centerCell.innerText = centerGoal;
+            container.appendChild(centerCell);
+        }
+
+        function getPositions(numCells) {
+            switch (numCells) {
+                case 2:
+                    return ["left", "right"];
+                case 3:
+                    return ["left", "right", "down"];
+                case 4:
+                    return ["up", "left", "right", "down"];
+                case 5:
+                    return ["up", "left", "right", "down-left", "down-right"];
+                case 6:
+                    return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
+                case 7:
+                    return ["up-left", "up-right", "left", "right", "down", "down-left", "down-right"];
+                case 8:
+                    return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
+                default:
+                    return [];
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="mandalart grid-8"> <!-- grid-8 클래스 추가 -->
+            <% if (mandalart) { %>
+                <div class="cell center">
+                    <h3><%= mandalart[4][4] %></h3>
+                </div>
+                <% mandalart.forEach((row, rowIndex) => { %>
+                    <% row.forEach((cell, colIndex) => { %>
+                        <% if (!(rowIndex === 4 && colIndex === 4)) { %>
+                            <div class="cell" data-position="<%= rowIndex %>,<%= colIndex %>">
+                                <h4><%= cell %></h4>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
+            <% } %>
+        </div>
+        <div class="settings">
+            <form id="generate-mandalart-form">
+                <label for="centerGoal">목표 :</label>
+                <input type="text" id="centerGoal" name="centerGoal" required>
+                <br><br>
+                <label for="numCells">칸 개수 :</label>
+                <input type="number" id="numCells" name="numCells" min="2" max="8" required>
+                <button type="submit">완료</button>
+                <br>
+            </form>
+            <form id="tedulist-form">
+                <label for="tedulist">테두리스트 :</label>
+                <input type="text" id="tedulist" name="tedulist" data-target="">
+                <button type="submit">저장</button>
+            </form>
+            <div id="checklist-container" style="display: none;">
+                <form id="add-checklist-form" action="/addTask" method="POST">
+                    <input type="hidden" id="subgoalId" name="subgoal_id">
+                    <label for="checklistContent">체크리스트 :</label>
+                    <input type="text" id="checklistContent" name="content" required>
+                    <button type="submit">추가</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('#add-checklist-form');
+            form.addEventListener('submit', (event) => {
+                const subgoalId = document.querySelector('#checklist-container').dataset.subgoalId;
+                document.querySelector('#subgoalId').value = subgoalId;
+            });
+        });
+    </script>
+</body>
+</html>

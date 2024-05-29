@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "express": "^4.19.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "mysql": "^2.18.1"
+  }
+}

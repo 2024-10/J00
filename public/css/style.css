@@ -1,0 +1,320 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f8f8;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.mandalart {
+    position: relative;
+    width: 648px;
+    height: 648px;
+    background: white;
+}
+
+.cell {
+    position: absolute;
+    background: white;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center {
+    background: #D1E4BE;
+}
+
+.active {
+    background: #F4FFE8;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings input, .settings button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.settings label {
+    font-weight: bold;
+}
+
+/* 각 칸 개수에 따른 레이아웃 정의 */
+/* .grid-2 .cell {
+    position: absolute;
+} */
+
+.grid-2 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-2 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-2 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-3 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-3 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-3 .cell.down {
+    width: 648px;
+    height: 217px;
+    left: 0;
+    top: 431px;
+}
+.grid-3 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-4 .cell.up {
+    width: 430px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-4 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0;
+    top: 0;
+}
+.grid-4 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 215px;
+}
+.grid-4 .cell.down {
+    width: 430px;
+    height: 215px;
+    left: 0;
+    top: 430px;
+}
+.grid-4 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-5 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-5 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0px;
+    top: 0px;
+}
+.grid-5 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 0px;
+}
+.grid-5 .cell.down-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-5 .cell.down-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 430px;
+}
+.grid-5 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-6 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-6 .cell.up-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0;
+    top: 0;
+}
+.grid-6 .cell.up-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 0;
+}
+.grid-6 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-6 .cell.down-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 322.5px;
+}
+.grid-6 .cell.down-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0px;
+    top: 322.5px;
+}
+.grid-6 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-7 .cell.up-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-7 .cell.up-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 0px;
+}
+.grid-7 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 215px;
+}
+.grid-7 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-7 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-7 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-7 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-7 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-8 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-8 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0;
+    top: 215px;
+}
+.grid-8 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-8 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-8 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-8 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-8 .cell.up-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-8 .cell.up-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 0px;
+}
+
+.grid-8 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
