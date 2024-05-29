@@ -4,60 +4,53 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const app = express();
-const fs = require('fs').promises;
+const client = require('../db'); // MySQL 클라이언트 사용
 
 const USER_COOKIE_KEY = 'USER';
-const USERS_JSON_FILENAME = 'user.json';
+
+const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-async function fetchAllUsers() {
-    try {
-        const data = await fs.readFile(USERS_JSON_FILENAME, 'utf-8');
-        return JSON.parse(data);
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            // 파일이 없으면 빈 배열 반환
-            return [];
-        } else {
-            throw err;
-        }
-    }
-}
-
-async function fetchUser(username) {
-    const users = await fetchAllUsers();
-    return users.find(user => user.name === username);
+async function fetchUser(user_id) {
+    return new Promise((resolve, reject) => {
+        client.query('SELECT * FROM user WHERE user_id = ?', [user_id], (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results[0]);
+        });
+    });
 }
 
 async function createUser(newUser) {
-    const hashedPassword = await bcrypt.hash(newUser.password, 10);
-    const users = await fetchAllUsers();
-    const userWithHashedPassword = {
-        ...newUser,
-        password: hashedPassword,
-    };
-    users.push(userWithHashedPassword);
-    await fs.writeFile(USERS_JSON_FILENAME, JSON.stringify(users, null, 2));
-    console.log('New user saved:', userWithHashedPassword); // 디버깅 로그 추가
+    const hashedPassword = await bcrypt.hash(newUser.user_pw, 10);
+    newUser.user_pw = hashedPassword;
+    return new Promise((resolve, reject) => {
+        client.query('INSERT INTO user SET ?', newUser, (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results);
+        });
+    });
 }
 
 router.post('/join', async (req, res) => {
-    const { name, email, password, birth, nickname } = req.body;
+    const { user_id, user_email, user_pw, user_birthday, user_nickname } = req.body;
 
     try {
-        let user = await fetchUser(name);
+        let user = await fetchUser(user_id);
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-        const newUser = { name, email, password, birth, nickname };
+        const newUser = { user_id, user_email, user_pw, user_birthday, user_nickname };
         await createUser(newUser);
 
-        const payload = { user: { name: newUser.name } };
+        const payload = { user: { user_id: newUser.user_id } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
             res.cookie(USER_COOKIE_KEY, JSON.stringify(payload.user));
@@ -70,29 +63,29 @@ router.post('/join', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { name, password } = req.body;
+    const { user_id, user_pw } = req.body;
 
     try {
-        let user = await fetchUser(name);
+        let user = await fetchUser(user_id);
         if (!user) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
         console.log('User found:', user);
-        console.log('Comparing password:', password, 'with hash:', user.password);
+        console.log('Comparing password:', user_pw, 'with hash:', user.user_pw);
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(user_pw, user.user_pw);
         console.log('Password match result:', isMatch); // 디버깅 로그 추가
         if (!isMatch) {
             console.log('Password does not match');
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        const payload = { user: { name: user.name } };
+        const payload = { user: { user_id: user.user_id } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
             res.cookie(USER_COOKIE_KEY, JSON.stringify(payload.user));
-            res.json({ token });
+            res.redirect('/'); // 로그인 성공 시 홈 페이지로 리디렉션
         });
     } catch (err) {
         console.error(err.message);
@@ -105,11 +98,11 @@ router.get('/', async (req, res) => {
 
     if (userCookie) {
         const userData = JSON.parse(userCookie);
-        const user = await fetchUser(userData.name);
+        const user = await fetchUser(userData.user_id);
         if (user) {
             res.status(200).send(`
                 <a href="/logout">Log Out</a>
-                <h1>id: ${user.name}, email: ${user.email}, birth: ${user.birth}, nickname: ${user.nickname}</h1>
+                <h1>id: ${user.user_id}, email: ${user.user_email}, birth: ${user.user_birthday}, nickname: ${user.user_nickname}</h1>
             `);
             return;
         }
@@ -120,10 +113,6 @@ router.get('/', async (req, res) => {
         <a href="/signup.html">Sign Up</a>
         <h1>Not Logged In</h1>
     `);
-});
-
-app.listen(5003, () => {
-    console.log('Server running on port 5003');
 });
 
 module.exports = router;
