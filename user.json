@@ -33,5 +33,33 @@
     "password": "$2b$10$Dq0N9phZCYamkGC4FFHlFe3BlsAP.43xDUP4vKdG9de5XbqmO0xYu",
     "birth": "1990-01-01",
     "nickname": "test4nick"
+  },
+  {
+    "name": "kangdain",
+    "email": "kangdain1476@naver.com",
+    "password": "$2b$10$fOL08Y6afU2BuPOMB6sz..Bj76IdWf5WPKzpz.D3KF5CUThXWIwji",
+    "birth": "2001-08-28",
+    "nickname": "htmltest"
+  },
+  {
+    "name": "may",
+    "email": "may@naver.com",
+    "password": "$2b$10$Whqu.srYa0p1XIdaXMqhY.mi5ij.RhRi/xdemDZ7GuLS6tLbQE2gm",
+    "birth": "2020-01-01",
+    "nickname": "maytest"
+  },
+  {
+    "name": "sksk",
+    "email": "sksk@n.c",
+    "password": "$2b$10$JTjxr5Ndob6YodCD9V0KPOEC4eBHGQnHrI5rRIk02gavHiJtJBUq6",
+    "birth": "2024-04-28",
+    "nickname": "sksk"
+  },
+  {
+    "name": "test0828",
+    "email": "test0828@naver.com",
+    "password": "$2b$10$2fIPFOcDWfZQSKDmily5seYC55HCQUdG1MRCLJ9sqBBu8Qxss6ptK",
+    "birth": "2020-08-28",
+    "nickname": "test0828nick"
   }
 ]
