@@ -35,7 +35,7 @@ app.set("view engine", "ejs"); //뷰엔진을 ejs로
 let check = [""];
 
 app.get("/", (req,res) => {
-  client.query("SELECT * FROM checksys", 
+  client.query("SELECT * FROM checklist", 
     (err, result) => {
       if(err) {
         console.log(err);
@@ -52,7 +52,7 @@ app.post("/addTask", (req, res) => {
   //DB연결해서 해볼게유
     const content = req.body.add;
     client.query(
-      "INSERT INTO checksys (content) VALUES (?)",
+      "INSERT INTO checklist (content) VALUES (?)",
       [content],
       (err, result) => {
         if (err) {
@@ -70,7 +70,7 @@ app.post("/addTask", (req, res) => {
 
 app.post("/deleteCheck", (req, res) => {
     const checkid = req.body.del;
-    client.query("delete from checksys where checkid = ?;",
+    client.query("delete from checklist where checkid = ?;",
     [checkid],
     (err, result) => {
       if (err) {

@@ -2,28 +2,28 @@ const { generateMandalart } = require('../mandalart');
 const client = require('../db'); 
 
 exports.getMandalartForm = (req, res) => {
-    client.query("SELECT * FROM subgoals", (err, subgoals) => {
+    client.query("SELECT * FROM tedolist", (err, tedolist) => {
         if (err) {
-            console.error('subgoals 쿼리 오류:', err);
-            return res.status(500).send("DB error: subgoals 쿼리 오류");
+            console.error('tedolist 쿼리 오류:', err);
+            return res.status(500).send("DB error: tedolist 쿼리 오류");
         }
-        client.query("SELECT * FROM checksys", (err, checksys) => {  // checklists 테이블을 checksys로 수정
+        client.query("SELECT * FROM checklist", (err, checklist) => {  // checklists 테이블을 checklist로 수정
             if (err) {
-                console.error('checksys 쿼리 오류:', err);
-                return res.status(500).send("DB error: checksys 쿼리 오류");
+                console.error('checklist 쿼리 오류:', err);
+                return res.status(500).send("DB error: checklist 쿼리 오류");
             }
-            res.render('mandalart', { mandalart: null, subgoals, checklists: checksys });
+            res.render('mandalart', { mandalart: null, tedolist, checklists: checklist });
         });
     });
 };
 
 exports.createMandalart = (req, res) => {
-    const { centerGoal, subGoals } = req.body;
-    const subGoalsArray = subGoals.split(',').map(goal => goal.trim());
+    const { centerGoal, tedolist } = req.body;
+    const tedolistArray = tedolist.split(',').map(goal => goal.trim());
 
     try {
-        const mandalart = generateMandalart(centerGoal, subGoalsArray);
-        res.render('mandalart', { mandalart, subgoals: [], checklists: [] });
+        const mandalart = generateMandalart(centerGoal, tedolistArray);
+        res.render('mandalart', { mandalart, tedolist: [], checklists: [] });
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -32,7 +32,7 @@ exports.createMandalart = (req, res) => {
 exports.addTask = (req, res) => {
     const { subgoal_id, content } = req.body;
     client.query(
-        "INSERT INTO checksys (subgoal_id, content) VALUES (?, ?)",  // checklists 테이블을 checksys로 수정
+        "INSERT INTO checklist (subgoal_id, content) VALUES (?, ?)",  // checklists 테이블을 checklist로 수정
         [subgoal_id, content],
         (err, result) => {
             if (err) {

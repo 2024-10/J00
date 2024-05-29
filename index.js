@@ -1,34 +1,26 @@
 const http = require("http");
 const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
-const cors = require('cors');
+const usersRouter = require('./routes/users');
+
 const app = express();
-const port = 8000;
 
-// MySQL 클라이언트 불러오기
-const client = require('./db');
+// Body parser middleware
+app.use(bodyParser.json());
 
-// 미들웨어 설정
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/auth-db', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
-// 뷰 엔진 설정
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, 'views'));
+// Routes
+app.use('/api/users', require('./routes/users'));
 
-// 라우터 설정
-const mandalartRoutes = require('./routes/mandalart');
-app.use('/mandalart', mandalartRoutes);
-
-app.get("/", (req, res) => {
-  res.redirect('/mandalart');
-});
-
-// 서버 설정 및 시작
-const server = http.createServer(app);
-
-server.listen(port, () => {
-  console.log(`app listening at http://localhost:${port}`);
-});
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
