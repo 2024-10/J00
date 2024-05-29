@@ -19,6 +19,8 @@ sequelize.sync()
     .catch(err => console.error('Error syncing database:', err));
 
 async function fetchAllUsers() {
+    return await User.findAll();
+    /*
     try {
         const data = await fs.readFile(USERS_JSON_FILENAME, 'utf-8');
         return JSON.parse(data);
@@ -30,14 +32,23 @@ async function fetchAllUsers() {
             throw err;
         }
     }
+    */
 }
 
 async function fetchUser(username) {
+    return await User.findOne({ where: { name: username } });
+    /*
     const users = await fetchAllUsers();
     return users.find(user => user.name === username);
+    */
 }
 
 async function createUser(newUser) {
+    const hashedPassword = await bcrypt.hash(newUser.password, 10);
+    newUser.password = hashedPassword;
+    const user = await User.create(newUser);
+    console.log('New user saved:', user); // 디버깅 로그 추가
+    /*
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     const users = await fetchAllUsers();
     const userWithHashedPassword = {
@@ -47,6 +58,7 @@ async function createUser(newUser) {
     users.push(userWithHashedPassword);
     await fs.writeFile(USERS_JSON_FILENAME, JSON.stringify(users, null, 2));
     console.log('New user saved:', userWithHashedPassword); // 디버깅 로그 추가
+    */
 }
 
 router.post('/join', async (req, res) => {
