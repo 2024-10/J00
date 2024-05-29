@@ -5,14 +5,18 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const app = express();
-const fs = require('fs').promises;
+const sequelize = require('../db')
 
 const USER_COOKIE_KEY = 'USER';
-const USERS_JSON_FILENAME = 'user.json';
+//const USERS_JSON_FILENAME = 'user.json';
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+sequelize.sync()
+    .then(() => console.log('Database synced'))
+    .catch(err => console.error('Error syncing database:', err));
 
 async function fetchAllUsers() {
     try {
@@ -122,8 +126,8 @@ router.get('/', async (req, res) => {
     `);
 });
 
-app.listen(5003, () => {
-    console.log('Server running on port 5003');
+app.listen(5004, () => {
+    console.log('Server running on port 5004');
 });
 
 module.exports = router;
