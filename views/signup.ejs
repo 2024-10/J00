@@ -29,7 +29,7 @@
                 </div>
                 <button type="submit" class="btn">가입하기</button>
             </form>
-            <p>이미 계정이 있습니까? <a href="/signin.html" class="signup-link">로그인 하기</a></p>
+            <p>이미 계정이 있습니까? <a href="/signin" class="signup-link">로그인 하기</a></p>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
             });
             if (response.ok) {
                 alert('회원가입에 성공했습니다!');
-                window.location.href = '/signin.html';
+                window.location.href = '/signin';
             } else {
                 alert('회원가입에 실패했습니다. 다시 시도해주세요.');
             }
