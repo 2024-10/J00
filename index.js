@@ -26,6 +26,19 @@ app.use('/api/users', require('./routes/users'));
 const mandalartRoutes = require('./routes/mandalart');
 app.use('/mandalart', mandalartRoutes);
 
+// 뷰 라우트 설정
+app.get('/signup.html', (req, res) => {
+    res.render('signup', { title: 'Sign Up' });
+});
+
+
+app.get('/', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    //res.render('index', { title: 'Home', user });
+    res.render('home', { title: 'Home', user });
+});
+
 // Start the server
 const PORT = process.env.PORT || 8000;
 //const server = http.createServer(app);

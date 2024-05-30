@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/css/signup.css">
+</head>
+<body>
+    <img src="/images/logo.png" alt="Logo" class="logo">
+    <div class="signup-container">
+        <div class="signup-box">
+            <h2>Sign Up</h2>
+            <form id="signupForm" action="/api/users/join" method="POST">
+                <div class="input-group">
+                    <input type="text" name="user_id" placeholder="Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="user_email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="user_pw" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <input type="date" name="user_birthday" placeholder="Birth" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="user_nickname" placeholder="Nickname" required>
+                </div>
+                <button type="submit" class="btn">가입하기</button>
+            </form>
+            <p>이미 계정이 있습니까? <a href="/signin.html" class="signup-link">로그인 하기</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new URLSearchParams(new FormData(form)).toString();
+
+            const response = await fetch(form.action, {
+                method: form.method,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: formData,
+            });
+            if (response.ok) {
+                alert('회원가입에 성공했습니다!');
+                window.location.href = '/signin.html';
+            } else {
+                alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
+    </script>
+
+</body>
+</html>
