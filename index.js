@@ -23,11 +23,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/users', usersRouter);
 
 // 뷰 라우트 설정
-app.get('/signup.html', (req, res) => {
+app.get('/signup', (req, res) => {
     res.render('signup', { title: 'Sign Up' });
 });
 
-app.get('/signin.html', (req, res) => {
+app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
 
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
     res.render('home', { title: 'Home', user });
 });
 
-app.get('/profile.html', (req, res) => {
+app.get('/profile', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
 
@@ -55,7 +55,7 @@ app.get('/profile.html', (req, res) => {
             res.render('profile', { title: 'Profile', user: userProfile });
         });
     } else {
-        res.redirect('/signin.html');
+        res.redirect('/signin');
     }
 });
 
