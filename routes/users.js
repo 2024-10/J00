@@ -38,7 +38,7 @@ async function createUser(newUser) {
     });
 }
 
-router.post('/join', async (req, res) => {
+router.post('/signup', async (req, res) => {
     const { user_id, user_email, user_pw, user_birthday, user_nickname } = req.body;
 
     try {
@@ -62,7 +62,7 @@ router.post('/join', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/signin', async (req, res) => {
     const { user_id, user_pw } = req.body;
 
     try {
@@ -109,7 +109,7 @@ router.get('/', async (req, res) => {
     }
 
     res.status(200).send(`
-        <a href="/login.html">Log In</a>
+        <a href="/signin.html">Sign In</a>
         <a href="/signup.html">Sign Up</a>
         <h1>Not Logged In</h1>
     `);
