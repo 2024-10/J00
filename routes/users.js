@@ -1,7 +1,6 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -63,7 +62,6 @@ router.post('/join', async (req, res) => {
     }
 });
 
-// Authenticate user and get token
 router.post('/login', async (req, res) => {
     const { user_id, user_pw } = req.body;
 

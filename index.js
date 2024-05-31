@@ -1,49 +1,66 @@
-const http = require("http");
 const express = require('express');
-const client = require('./db'); //db.js불러와
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const cors = require('cors');
 const usersRouter = require('./routes/users');
+const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
+const client = require('./db'); // MySQL 클라이언트 사용
+
 const app = express();
 
+// 설정
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Body parser middleware
+// Body parser 미들웨어
 app.use(bodyParser.json());
-// 미들웨어 설정
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// 정적 파일 미들웨어
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 
-// 뷰 엔진 설정
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, 'views'));
-
-// Routes
-app.use('/api/users', require('./routes/users'));
-const mandalartRoutes = require('./routes/mandalart');
-app.use('/mandalart', mandalartRoutes);
+// 라우트 설정
+app.use('/api/users', usersRouter);
+app.use('/mandalart', mandalartRouter); // Use mandalart routes
 
 // 뷰 라우트 설정
-app.get('/signup.html', (req, res) => {
+app.get('/signup', (req, res) => {
     res.render('signup', { title: 'Sign Up' });
 });
 
+app.get('/signin', (req, res) => {
+    res.render('signin', { title: 'Sign In' });
+});
 
 app.get('/', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
-    //res.render('index', { title: 'Home', user });
     res.render('home', { title: 'Home', user });
 });
 
-// Start the server
-const PORT = process.env.PORT || 8000;
-//const server = http.createServer(app);
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get('/profile', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
 
-app.get("/", (req, res) => {
-  res.redirect('/mandalart');
+    if (user) {
+        client.query('SELECT * FROM user WHERE user_id = ?', [user.user_id], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Server error');
+            }
+            const userProfile = results[0];
+            if (userProfile) {
+                const birthday = new Date(userProfile.user_birthday);
+                userProfile.user_birthday = `${birthday.getFullYear()}-${String(birthday.getMonth() + 1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}`;
+            }
+            res.render('profile', { title: 'Profile', user: userProfile });
+        });
+    } else {
+        res.redirect('/signin');
+    }
 });
+
+// 서버 시작
+const PORT = process.env.PORT || 5006;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
