@@ -22,26 +22,36 @@ router.get('/', (req, res) => {
                             res.status(500).send("Server error");
                         } else {
                             const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
-                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
-                                if (err) {
-                                    console.log(err);
-                                    res.status(500).send("Server error");
-                                } else {
-                                    const checklists = checklistResult.reduce((acc, checklist) => {
-                                        if (!acc[checklist.tedolist_number]) {
-                                            acc[checklist.tedolist_number] = [];
-                                        }
-                                        acc[checklist.tedolist_number].push(checklist);
-                                        return acc;
-                                    }, {});
-                                    res.render("mandalart", { 
-                                        title: 'Mandalart', 
-                                        mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
-                                        tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
-                                        checklists // 체크리스트도 넘겨주깅
-                                    });
-                                }
-                            });
+                            if (tedolistIds.length > 0) {
+                                client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
+                                    if (err) {
+                                        console.log(err);
+                                        res.status(500).send("Server error");
+                                    } else {
+                                        const checklists = checklistResult.reduce((acc, checklist) => {
+                                            if (!acc[checklist.tedolist_number]) {
+                                                acc[checklist.tedolist_number] = [];
+                                            }
+                                            acc[checklist.tedolist_number].push(checklist);
+                                            return acc;
+                                        }, {});
+                                        res.render("mandalart", { 
+                                            title: 'Mandalart', 
+                                            mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
+                                            tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
+                                            checklists // 체크리스트도 넘겨주깅
+                                        });
+                                    }
+                                });
+                            } else {
+                                const checklists = {};
+                                res.render("mandalart", { 
+                                    title: 'Mandalart', 
+                                    mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
+                                    tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
+                                    checklists // 빈 체크리스트 객체를 넘겨주기
+                                });
+                            }
                         }
                     });
                 } else {

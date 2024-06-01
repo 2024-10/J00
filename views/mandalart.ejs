@@ -8,10 +8,10 @@
   <h2>Center Goal: <%= mandalart.centerGoal %></h2>
   <div id="mandalart-grid">
     <% if (tedolists.length > 0) { %>
-      <% tedolists.forEach((tedolist, index) => { %> <%# 테두리스트 목록 가져오기 %>
+      <% tedolists.forEach((tedolist, index) => { %>
         <div class="mandalart-cell">
-          <h3>Task <%= index + 1 %>: <%= tedolist.tedolist_detail %></h3> <%# 테두리스트 디테일(내용) 가져오기 %>
-          <% if (checklists[tedolist.tedolist_number]) { %> <%# 체크리스트 목록 가져오기 %>
+          <h3>Task <%= index + 1 %>: <%= tedolist.tedolist_detail %></h3>
+          <% if (checklists[tedolist.tedolist_number]) { %>
             <ul>
               <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
                 <li><%= checklist.checklist_detail %></li>
@@ -30,7 +30,7 @@
     <% } else { %>
       <form action="/mandalart/addTedolist" method="POST">
         <input type="hidden" name="mandalartId" value="<%= mandalart.mandalart_id %>">
-        <label for="tedolistDetails">Enter your tasks (one per line):</label><br> <%# 테두리스트 입력 군데 one per line임ㅎㅎ.. %>
+        <label for="tedolistDetails">Enter your tasks (one per line):</label><br>
         <textarea name="tedolistDetails" id="tedolistDetails" rows="<%= mandalart.tedolist_count %>"></textarea>
         <button type="submit">Add Tasks</button>
       </form>
