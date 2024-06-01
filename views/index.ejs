@@ -113,7 +113,7 @@
                     <h4><%= subgoal.goal %></h4>
                     <ul>
                         <% checklists.forEach(checklist => { %>
-                            <% if (checklist.subgoal_id === subgoal.id) { %>
+                            <% if (checklist.tedolist_number === subgoal.id) { %>
                                 <li>
                                     <%= checklist.content %>
                                     <form action="/mandalart/deleteCheck" method="POST" style="display:inline;">
@@ -144,7 +144,7 @@
             </form>
             <div id="checklist-container" style="display: none;">
                 <form id="add-checklist-form" action="/mandalart/addTask" method="POST">
-                    <input type="hidden" id="subgoalId" name="subgoal_id">
+                    <input type="hidden" id="subgoalId" name="tedolist_number">
                     <label for="checklistContent">체크리스트 :</label>
                     <input type="text" id="checklistContent" name="content" required>
                     <button type="submit">추가</button>
