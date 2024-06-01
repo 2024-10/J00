@@ -1,112 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Mandalart</title>
-    <link rel="stylesheet" href="/css/mandalart.css">
+  <title><%= title %></title>
 </head>
 <body>
-    <div class="container">
-        <div id="mandalart-grid">
-            <!-- <h2>목표 : <%= mandalart.centerGoal %></h2> -->
-            <% if (tedolists.length > 0) { %>
-                <% tedolists.forEach((tedolist, index) => { %>
-                    <div class="mandalart-cell">
-                        <h3>테두리스트 : <%= index + 1 %>: <%= tedolist.tedolist_detail %></h3>
-                        <form action="/mandalart/addChecklist" method="POST">
-                            <input type="hidden" name="tedolistId" value="<%= tedolist.tedolist_number %>">
-                            <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
-                            <label for="checklist">Add Checklist:</label>
-                            <input type="text" name="checklistDetail" id="checklist">
-                            <button type="submit">Add</button>
-                        </form>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <div class="mandalart grid-<%= mandalart.tedolist_count %>">
-                </div>
-                <div class="editContainer">
-                    <form id="tedolist-form" action="/mandalart/addTedolist" method="POST">
-                        <input type="hidden" name="mandalartId" value="<%= mandalart.mandalart_id %>">
-                        <label for="tedolistDetails">Enter your tasks (one per line):</label><br>
-                        <textarea name="tedolistDetails" id="tedolistDetails" rows="<%= mandalart.tedolist_count %>"></textarea>
-                        <button type="submit">Add Tasks</button>
-                    </form>
-                </div>
-            <% } %>
+  <h1>Mandalart</h1>
+  <h2>Center Goal: <%= mandalart.centerGoal %></h2>
+  <div id="mandalart-grid">
+    <% if (tedolists.length > 0) { %>
+      <% tedolists.forEach((tedolist, index) => { %> <%# 테두리스트 목록 가져오기 %>
+        <div class="mandalart-cell">
+          <h3>Task <%= index + 1 %>: <%= tedolist.tedolist_detail %></h3> <%# 테두리스트 디테일(내용) 가져오기 %>
+          <% if (checklists[tedolist.tedolist_number]) { %> <%# 체크리스트 목록 가져오기 %>
+            <ul>
+              <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                <li><%= checklist.checklist_detail %></li>
+              <% }); %>
+            </ul>
+          <% } %>
+          <form action="/mandalart/addChecklist" method="POST">
+            <input type="hidden" name="tedolistNumber" value="<%= tedolist.tedolist_number %>">
+            <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
+            <label for="checklist">Add Checklist:</label>
+            <input type="text" name="checklistDetail" id="checklist">
+            <button type="submit">Add</button>
+          </form>
         </div>
-    </div>
-
-
-    <!-- 만다라트 틀 생성 -->
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const container = document.querySelector('.mandalart');
-          const centerGoal = '<%= mandalart.centerGoal %>';
-          const tedolistCount = <%= mandalart.tedolist_count %>;
-
-          if (container) {
-              generateMandalart(container, centerGoal, tedolistCount);
-              addCellClickHandlers();
-          }
-      });
-
-      function generateMandalart(container, centerGoal, numCells) {
-          const positions = getPositions(numCells);
-
-          positions.forEach((pos) => {
-              const cell = document.createElement('div');
-              cell.classList.add('cell', pos);
-              cell.dataset.position = pos;
-              container.appendChild(cell);
-          });
-
-          const centerCell = document.createElement('div');
-          centerCell.classList.add('cell', 'center');
-          centerCell.dataset.position = 'center';
-          centerCell.innerText = centerGoal;
-          container.appendChild(centerCell);
-      }
-
-      function getPositions(numCells) {
-          switch (numCells) {
-              case 2:
-                  return ["left", "right"];
-              case 3:
-                  return ["left", "right", "down"];
-              case 4:
-                  return ["up", "left", "right", "down"];
-              case 5:
-                  return ["up", "left", "right", "down-left", "down-right"];
-              case 6:
-                  return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
-              case 7:
-                  return ["up-left", "up-right", "left", "right", "down-left", "down", "down-right"];
-              case 8:
-                  return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
-              default:
-                  return [];
-          }
-      }
-
-      function addCellClickHandlers() {
-          const cells = document.querySelectorAll('.mandalart .cell');
-          cells.forEach(cell => {
-              if (!cell.classList.contains('center')) {
-                  cell.addEventListener('click', (event) => {
-                      cells.forEach(c => c.classList.remove('active'));
-                      event.target.classList.add('active');
-                      const input = document.querySelector('#tedolist');
-                      input.value = event.target.innerText.trim();
-                      input.dataset.target = event.target.dataset.position;
-                      document.querySelector('#checklist-container').dataset.subgoalId = cell.dataset.position;
-                      document.querySelector('#checklist-container').style.display = 'block';
-                  });
-              }
-          });
-      }
-
-    </script>
+      <% }); %>
+    <% } else { %>
+      <form action="/mandalart/addTedolist" method="POST">
+        <input type="hidden" name="mandalartId" value="<%= mandalart.mandalart_id %>">
+        <label for="tedolistDetails">Enter your tasks (one per line):</label><br> <%# 테두리스트 입력 군데 one per line임ㅎㅎ.. %>
+        <textarea name="tedolistDetails" id="tedolistDetails" rows="<%= mandalart.tedolist_count %>"></textarea>
+        <button type="submit">Add Tasks</button>
+      </form>
+    <% } %>
+  </div>
 </body>
 </html>

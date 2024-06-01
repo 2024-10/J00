@@ -21,11 +21,26 @@ router.get('/', (req, res) => {
                             console.log(err);
                             res.status(500).send("Server error");
                         } else {
-                            // client.query("SELECT * FROM checklist WHERE checklist_id = ?", [//테두리스트id가져와서, 만다라트도 가져와서 렌더시키기])
-                            res.render("mandalart", { 
-                                title: 'Mandalart', 
-                                mandalart: mandalartResult[0], // Pass only the first result assuming one mandalart per user
-                                tedolists: tedolistResult // Pass the list of tedolists
+                            const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).send("Server error");
+                                } else {
+                                    const checklists = checklistResult.reduce((acc, checklist) => {
+                                        if (!acc[checklist.tedolist_number]) {
+                                            acc[checklist.tedolist_number] = [];
+                                        }
+                                        acc[checklist.tedolist_number].push(checklist);
+                                        return acc;
+                                    }, {});
+                                    res.render("mandalart", { 
+                                        title: 'Mandalart', 
+                                        mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
+                                        tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
+                                        checklists // 체크리스트도 넘겨주깅
+                                    });
+                                }
                             });
                         }
                     });
@@ -45,7 +60,7 @@ router.post('/create', (req, res) => {
 
     if (user) {
         const { centergoal, tedolistCount } = req.body;
-        const mandalartId = uuidv4(); // Generate a new UUID
+        const mandalartId = uuidv4(); 
         client.query("INSERT INTO mandalart (mandalart_id, user_id, centergoal, tedolist_count) VALUES (?, ?, ?, ?)", 
             [mandalartId, user.user_id, centergoal, tedolistCount],
             (err, result) => {
@@ -68,20 +83,27 @@ router.post('/addTedolist', (req, res) => {
 
     if (user) {
         const { mandalartId, tedolistDetails } = req.body;
-        let tedolist_counter = 1;
-        const detailsArray = tedolistDetails.split('\n').map(detail => detail.trim()).filter(detail => detail.length > 0); // Split the details into an array
-        const values = detailsArray.map(detail => [tedolist_counter++, mandalartId, detail]);
-        client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
-            [values],
-            (err, result) => {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send("Server error");
-                } else {
-                    res.redirect(`/mandalart`);
-                }
+        client.query("SELECT COALESCE(MAX(tedolist_number), 0) + 1 AS new_tedolist_number FROM tedolist WHERE mandalart_id = ?", [mandalartId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                let tedolist_number = result[0].new_tedolist_number; //배열로 만들어버리기
+                const detailsArray = tedolistDetails.split('\n').map(detail => detail.trim()).filter(detail => detail.length > 0); //테두리스트 one per line으로 받아서 나눔
+                const values = detailsArray.map(detail => [tedolist_number++, mandalartId, detail]);
+                client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
+                    [values],
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send("Server error");
+                        } else {
+                            res.redirect(`/mandalart`);
+                        }
+                    }
+                );
             }
-        );
+        });
     } else {
         res.redirect('/signin');
     }
@@ -94,19 +116,26 @@ router.post('/addChecklist', (req, res) => {
     const date = today.toISOString().split('T')[0];
 
     if (user) {
-        const { mandalart_id,tedolistId, checklistDetail } = req.body;
-        let checklistId = 1; // Generate a new UUID for the checklist item
-        client.query("INSERT INTO checklist (checklist_id, mandalart_id, tedolist_number, checklist_detail, imogi, date, is_checked) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-            [checklistId++, mandalart_id, tedolistId, checklistDetail, "", date, false],
-            (err, result) => {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send("Server error");
-                } else {
-                    res.redirect(`/mandalart`);
-                }
+        const { mandalart_id, tedolistNumber, checklistDetail } = req.body;
+        client.query("SELECT COALESCE(MAX(checklist_id), 0) + 1 AS new_id FROM checklist WHERE tedolist_number = ?", [tedolistNumber], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                const checklistId = result[0].new_id;
+                client.query("INSERT INTO checklist (checklist_id, mandalart_id, tedolist_number, checklist_detail, imogi, date, is_checked) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+                    [checklistId, mandalart_id, tedolistNumber, checklistDetail, "", date, false],
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send("Server error");
+                        } else {
+                            res.redirect(`/mandalart`);
+                        }
+                    }
+                );
             }
-        );
+        });
     } else {
         res.redirect('/signin');
     }
