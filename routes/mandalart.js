@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
                             console.log(err);
                             res.status(500).send("Server error");
                         } else {
-                            client.query("SELECT * FROM checklist WHERE checklist_id = ?", [//테두리스트id가져와서, 만다라트도 가져와서 렌더시키기])
+                            // client.query("SELECT * FROM checklist WHERE checklist_id = ?", [//테두리스트id가져와서, 만다라트도 가져와서 렌더시키기])
                             res.render("mandalart", { 
                                 title: 'Mandalart', 
                                 mandalart: mandalartResult[0], // Pass only the first result assuming one mandalart per user
