@@ -1,124 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Mandalart</title>
-    <link rel="stylesheet" href="/css/mandalart.css">
+  <title><%= title %></title>
+  <style>
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      background-color: #fff;
+      padding: 10px;
+    }
+    .grid-item {
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+    }
+    .center-goal {
+      background-color: lightgreen;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div id="mandalart-grid">
-            <h2>목표 : <%= mandalart.centerGoal %></h2>
-            <div class="mandalart grid-<%= mandalart.tedolist_count %>">
-            </div>
-            <% if (tedolistDetails && tedolistDetails.length > 0) { %>
-                <% tedolistDetails.forEach((tedolist_detail, index) => { %>
-                    <div class="mandalart-cell cell cell-<%= index %>">
-                        <input type="text" class="tedolist-detail-input" value="<%= tedolist_detail %>" readonly />
-                        <% if (checklists[index + 1]) { %>
-                            <ul>
-                                <% checklists[index + 1].forEach(checklist => { %>
-                                    <li><%= checklist.checklist_detail %></li>
-                                <% }); %>
-                            </ul>
-                        <% } %>
-                        <form action="/mandalart/addChecklist" method="POST">
-                            <input type="hidden" name="tedolistNumber" value="<%= index + 1 %>">
-                            <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
-                            <label for="checklist">Add Checklist:</label>
-                            <input type="text" name="checklistDetail" id="checklist">
-                            <button type="submit">Add</button>
-                        </form>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <div class="editContainer">
-                    <form id="tedolist-form" action="/mandalart/addTedolist" method="POST">
-                        <input type="hidden" name="mandalartId" value="<%= mandalart.mandalart_id %>">
-                        <label for="tedolistDetails">Enter your tasks (one per line):</label><br>
-                        <textarea name="tedolistDetails" id="tedolistDetails" rows="<%= mandalart.tedolist_count %>"></textarea>
-                        <button type="submit">Add Tasks</button>
-                    </form>
-                </div>
+  <h1>Mandalart</h1>
+  <div class="grid-container">
+    <!-- Dynamically generate grid based on tedolistCount -->
+    <% const positions = [0, 1, 2, 3, 5, 6, 7, 8]; %>
+    <% for(let i = 0; i < 9; i++) { %>
+      <div class="grid-item <%= i === 4 ? 'center-goal' : '' %>">
+        <% if(i === 4) { %>
+          <h3><%= mandalart.centerGoal %></h3>
+        <% } else if (positions.includes(i) && tedolists[positions.indexOf(i)]) { %>
+          <h3>Task <%= positions.indexOf(i) + 1 %>: <%= tedolists[positions.indexOf(i)].tedolist_detail %></h3>
+          <ul>
+            <% if (checklists[tedolists[positions.indexOf(i)].tedolist_number]) { %>
+              <% checklists[tedolists[positions.indexOf(i)].tedolist_number].forEach(checklist => { %>
+                <li><%= checklist.checklist_detail %></li>
+              <% }); %>
             <% } %>
-        </div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.mandalart');
-            const centerGoal = '<%= mandalart.centerGoal %>';
-            const tedolistCount = <%= mandalart.tedolist_count %>;
-            const tedolistDetails = <%= JSON.stringify(tedolistDetails) %>;
-
-            if (container) {
-                generateMandalart(container, centerGoal, tedolistCount, tedolistDetails);
-                addCellClickHandlers();
-            }
-        });
-
-        function generateMandalart(container, centerGoal, numCells, tedolistDetails) {
-            const positions = getPositions(numCells);
-
-            positions.forEach((pos, index) => {
-                const cell = document.createElement('div');
-                cell.classList.add('cell', pos);
-                cell.dataset.position = pos;
-                if (tedolistDetails[index]) {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.classList.add('tedolist-detail-input');
-                    input.value = tedolistDetails[index];
-                    input.readOnly = true;
-                    cell.appendChild(input);
-                }
-                container.appendChild(cell);
-            });
-
-            const centerCell = document.createElement('div');
-            centerCell.classList.add('cell', 'center');
-            centerCell.dataset.position = 'center';
-            centerCell.innerText = centerGoal;
-            container.appendChild(centerCell);
-        }
-
-        function getPositions(numCells) {
-            switch (numCells) {
-                case 2:
-                    return ["left", "right"];
-                case 3:
-                    return ["left", "right", "down"];
-                case 4:
-                    return ["up", "left", "right", "down"];
-                case 5:
-                    return ["up", "left", "right", "down-left", "down-right"];
-                case 6:
-                    return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
-                case 7:
-                    return ["up-left", "up-right", "left", "right", "down-left", "down", "down-right"];
-                case 8:
-                    return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
-                default:
-                    return [];
-            }
-        }
-
-        function addCellClickHandlers() {
-            const cells = document.querySelectorAll('.mandalart .cell');
-            cells.forEach(cell => {
-                if (!cell.classList.contains('center')) {
-                    cell.addEventListener('click', (event) => {
-                        cells.forEach(c => c.classList.remove('active'));
-                        event.target.classList.add('active');
-                        const input = document.querySelector('#tedolist');
-                        input.value = event.target.innerText.trim();
-                        input.dataset.target = event.target.dataset.position;
-                        document.querySelector('#checklist-container').dataset.subgoalId = cell.dataset.position;
-                        document.querySelector('#checklist-container').style.display = 'block';
-                    });
-                }
-            });
-        }
-    </script>
+          </ul>
+          <form action="/mandalart/addChecklist" method="POST">
+            <input type="hidden" name="tedolistNumber" value="<%= tedolists[positions.indexOf(i)].tedolist_number %>">
+            <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
+            <label for="checklist">Add Checklist:</label>
+            <input type="text" name="checklistDetail" id="checklist">
+            <button type="submit">Add</button>
+          </form>
+        <% } else if (positions.includes(i) && positions.indexOf(i) < mandalart.tedolist_count) { %>
+          <form action="/mandalart/addTedolist" method="POST">
+            <input type="hidden" name="mandalartId" value="<%= mandalart.mandalart_id %>">
+            <label for="tedolistDetails">Enter your task:</label><br>
+            <textarea name="tedolistDetails" id="tedolistDetails" rows="3"></textarea>
+            <button type="submit">Add Task</button>
+          </form>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
 </body>
 </html>

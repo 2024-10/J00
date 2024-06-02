@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../db'); // Assuming db.js is in the root directory
-const { v4: uuidv4 } = require('uuid'); // Import uuid package
+const client = require('../db');
+const { v4: uuidv4 } = require('uuid');
 
 // Mandalart routes
 router.get('/', (req, res) => {
@@ -37,9 +37,9 @@ router.get('/', (req, res) => {
                                         }, {});
                                         res.render("mandalart", { 
                                             title: 'Mandalart', 
-                                            mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
-                                            tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
-                                            checklists // 체크리스트도 넘겨주깅
+                                            mandalart: mandalartResult[0], 
+                                            tedolists: tedolistResult, 
+                                            checklists 
                                         });
                                     }
                                 });
@@ -47,9 +47,9 @@ router.get('/', (req, res) => {
                                 const checklists = {};
                                 res.render("mandalart", { 
                                     title: 'Mandalart', 
-                                    mandalart: mandalartResult[0], // 만다라트 사용자별로 일단 하나씩 렌더링하게
-                                    tedolists: tedolistResult, // 테두리스트 목록 넘겨주고
-                                    checklists // 빈 체크리스트 객체를 넘겨주기
+                                    mandalart: mandalartResult[0], 
+                                    tedolists: tedolistResult, 
+                                    checklists 
                                 });
                             }
                         }
@@ -98,8 +98,8 @@ router.post('/addTedolist', (req, res) => {
                 console.log(err);
                 res.status(500).send("Server error");
             } else {
-                let tedolist_number = result[0].new_tedolist_number; //배열로 만들어버리기
-                const detailsArray = tedolistDetails.split('\n').map(detail => detail.trim()).filter(detail => detail.length > 0); //테두리스트 one per line으로 받아서 나눔
+                let tedolist_number = result[0].new_tedolist_number;
+                const detailsArray = tedolistDetails.split('\n').map(detail => detail.trim()).filter(detail => detail.length > 0);
                 const values = detailsArray.map(detail => [tedolist_number++, mandalartId, detail]);
                 client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
                     [values],
