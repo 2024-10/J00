@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J00% - Share</title>
+    <link rel="stylesheet" href="/css/share.css">
+</head>
+<body>
+    <div id="page-wrapper">
+        <header>
+            <img src="/images/logo.png" alt="JOD" class="logo">
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/my-mandalart">My Mandalart</a></li>
+                    <li><a href="/share" style="color: green;">Share</a></li>
+                    <li><a href="/profile">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div id="share">
+            <main>
+                <h1><a href="/add_friend">친구 추가하기 +</a></h1> 
+                <div class="tabs">
+                    <button id="following-tab" class="active" onclick="showTab('following')">팔로잉</button>
+                    <button id="followers-tab" onclick="showTab('followers')">팔로워</button>
+                </div>
+                <div id="following" class="tab-content active">
+                    <div class="user-list" id="following-list">
+                        <!-- 팔로잉 목록 -->
+                    </div>
+                </div>
+                <div id="followers" class="tab-content">
+                    <div class="user-list" id="followers-list">
+                        <!-- 팔로워 목록 -->
+                    </div>
+                </div>
+            </main>
+        </div>
+        <script>
+            // 페이지 로드시 초기 탭 설정
+            document.addEventListener('DOMContentLoaded', () => {
+                showTab('following');
+            });
+
+            async function getCurrentUserId() {
+                try {
+                    const response = await fetch('/api/share/currentUserId');
+                    if (!response.ok) {
+                        throw new Error('Failed to get current user ID');
+                    }
+                    const data = await response.json();
+                    return data.user_id;
+                } catch (error) {
+                    console.error('Error fetching current user ID:', error.message);
+                    throw error;
+                }
+            }
+
+            async function fetchFollowingList(userId) {
+                try {
+                    const response = await fetch(`/api/share/followingList?userId=${userId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch following list');
+                    }
+                    const data = await response.json();
+                    return data.followingList || []; 
+                } catch (error) {
+                    console.error('Error fetching following list:', error.message);
+                    return []; 
+                }
+            }
+
+            async function fetchFollowersList(userId) {
+                try {
+                    const response = await fetch(`/api/share/followersList?userId=${userId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch followers list');
+                    }
+                    const data = await response.json();
+                    return data.followersList || [];
+                } catch (error) {
+                    console.error('Error fetching followers list:', error.message);
+                    return [];
+                }
+            }
+
+            async function deleteFollowing(toUserId) {
+                try {
+                    const response = await fetch('/api/share/unfollow', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ to_user_id: toUserId }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to unfollow user');
+                    }
+
+                    const data = await response.json();
+                    alert(`${toUserId}님이 팔로잉 목록에서 삭제되었습니다.`);
+                } catch (error) {
+                    console.error('Error unfollowing user:', error.message);
+                }
+            }
+
+            async function deleteFollower(fromUserId) {
+                try {
+                    const response = await fetch('/api/share/removeFollower', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ from_user_id: fromUserId }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to remove follower');
+                    }
+
+                    const data = await response.json();
+                    alert(`${fromUserId}님이 팔로워 목록에서 삭제되었습니다.`);
+                } catch (error) {
+                    console.error('Error removing follower:', error.message);
+                }
+            }
+
+            async function showFollowingList(userId) {
+                const userList = await fetchFollowingList(userId);
+                const followingListContainer = document.getElementById('following-list');
+                followingListContainer.innerHTML = ''; 
+                console.log(userList);
+
+                userList.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+
+                    const userPlan = document.createElement('span');
+                    userPlan.className = 'user-plan';
+                    userPlan.textContent = `${user}님의 계획`;
+                    userItem.appendChild(userPlan);
+
+                    const cancelButton = document.createElement('button');
+                    cancelButton.className = 'cancel-button';
+                    cancelButton.textContent = '삭제하기';
+                    cancelButton.addEventListener('click', async () => {
+                        await deleteFollowing(user);
+                        await showFollowingList(userId);
+                    });
+                    userItem.appendChild(cancelButton);
+
+                    followingListContainer.appendChild(userItem);
+                });
+            }
+
+            async function showFollowersList(userId) {
+                const userList = await fetchFollowersList(userId);
+                const followersListContainer = document.getElementById('followers-list');
+                followersListContainer.innerHTML = '';
+                console.log(userList);
+
+                userList.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+
+                    const userPlan = document.createElement('span');
+                    userPlan.className = 'user-plan';
+                    userPlan.textContent = `${user}님의 계획`;
+                    userItem.appendChild(userPlan);
+
+                    const cancelButton = document.createElement('button');
+                    cancelButton.className = 'cancel-button';
+                    cancelButton.textContent = '삭제하기';
+                    cancelButton.addEventListener('click', async () => {
+                        await deleteFollower(user);
+                        await showFollowersList(userId);
+                    });
+                    userItem.appendChild(cancelButton);
+
+                    followersListContainer.appendChild(userItem);
+                });
+            }
+
+            function showTab(tabName) {
+                const followingTab = document.getElementById('following-tab');
+                const followersTab = document.getElementById('followers-tab');
+                const followingContent = document.getElementById('following');
+                const followersContent = document.getElementById('followers');
+
+                if (tabName === 'following') {
+                    followingTab.classList.add('active');
+                    followersTab.classList.remove('active');
+                    followingContent.classList.add('active');
+                    followersContent.classList.remove('active');
+                } else {
+                    followingTab.classList.remove('active');
+                    followersTab.classList.add('active');
+                    followingContent.classList.remove('active');
+                    followersContent.classList.add('active');
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    const userId = await getCurrentUserId();
+                    await showFollowingList(userId);
+                    await showFollowersList(userId);
+                } catch (error) {
+                    console.error('Error initializing page:', error.message);
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
