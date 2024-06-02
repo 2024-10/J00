@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const usersRouter = require('./routes/users');
+const shareRouter = require('./routes/share');
+const addFriendRouter = require('./routes/add_friend');
 const client = require('./db'); // MySQL 클라이언트 사용
 
 const app = express();
@@ -21,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 라우트 설정
 app.use('/api/users', usersRouter);
+app.use('/api/share', shareRouter);
+app.use('/api/add_friend', addFriendRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -30,6 +34,15 @@ app.get('/signup', (req, res) => {
 app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
+
+app.get('/share', (req, res) => {
+    res.render('share', { title: 'Share' });
+});
+
+app.get('/add_friend', (req, res) => {
+    res.render('add_friend', { title: 'Add Friend' });
+});
+
 
 app.get('/', (req, res) => {
     const userCookie = req.cookies['USER'];
