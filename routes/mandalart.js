@@ -99,7 +99,7 @@ router.post('/addTedolist', (req, res) => {
                 res.status(500).send("Server error");
             } else {
                 let tedolist_number = result[0].new_tedolist_number; //배열로 만들어버리기
-                const detailsArray = tedolistDetails.split('\n').map(detail => detail.trim()).filter(detail => detail.length > 0); //테두리스트 one per line으로 받아서 나눔
+                const detailsArray = tedolistDetails.split(',').map(detail => detail.trim()).filter(detail => detail.length > 0); //테두리스트 one per line으로 받아서 나눔
                 const values = detailsArray.map(detail => [tedolist_number++, mandalartId, detail]);
                 client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
                     [values],

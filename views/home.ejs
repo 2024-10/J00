@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
-    <header>
-        <img src="/images/logo.png" alt="JOD" class="logo">
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/mandalart">My Mandalart</a></li>
-                <li><a href="/share.html">Share</a></li>
-                <li><a href="/profile.html">Profile</a></li>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button active">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
             </ul>
         </nav>
     </header>
-    <main>
-        <div class="main-content">
-            <img src="/images/logo_home.png" alt="Logo" class="logo-home">
+    <main id="main-section">
+        <div class="container">
+            <img src="/images/logo.svg" alt="J00% Logo Large" class="logo-large">
+            <h1>당신의 목표가 현실이 될 수 있도록</h1>
         </div>
     </main>
 </body>

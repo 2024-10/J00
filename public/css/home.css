@@ -1,49 +1,3 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #fff7e6;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-}
-
-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #fff7e6;
-}
-
-.logo {
-    width: 100px;
-    height: auto;
-}
-
-.logo-home {
-    width: 700px;
-    height: auto;
-}
-
-nav .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-nav .nav-links li {
-    display: inline;
-}
-
-nav .nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    font-weight: bold;
-}
-
 main {
     flex: 1;
     display: flex;
@@ -63,3 +17,46 @@ main {
     color: #006400; /* Dark green color */
     margin: 0;
 }
+
+
+
+.container {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.logo-large {
+    width: 600px;
+    margin-bottom: 10px;
+}
+
+.container h1 {
+    font-size: 40px;
+    color: #006735;
+    font-weight: 100;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+
+
+    .logo-large {
+        width: 400px;
+    }
+
+    .container h1 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .logo-large {
+        width: 200px;
+    }
+
+    .container h1 {
+        font-size: 10px;
+    }
+}
+

@@ -4,33 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mandalart</title>
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/mandalart.css">
 </head>
 <body>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button active">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
     <div class="container">
         <div id="mandalart-grid">
-            <h2>목표 : <%= mandalart.centerGoal %></h2>
-            <div class="mandalart grid-<%= mandalart.tedolist_count %>">
-            </div>
-            <% if (tedolistDetails && tedolistDetails.length > 0) { %>
-                <% tedolistDetails.forEach((tedolist_detail, index) => { %>
-                    <div class="mandalart-cell cell cell-<%= index %>">
-                        <input type="text" class="tedolist-detail-input" value="<%= tedolist_detail %>" readonly />
-                        <% if (checklists[index + 1]) { %>
-                            <ul>
-                                <% checklists[index + 1].forEach(checklist => { %>
-                                    <li><%= checklist.checklist_detail %></li>
-                                <% }); %>
-                            </ul>
-                        <% } %>
-                        <form action="/mandalart/addChecklist" method="POST">
-                            <input type="hidden" name="tedolistNumber" value="<%= index + 1 %>">
-                            <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
-                            <label for="checklist">Add Checklist:</label>
-                            <input type="text" name="checklistDetail" id="checklist">
-                            <button type="submit">Add</button>
-                        </form>
-                    </div>
+            <div class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
+            <% if (tedolists && tedolists.length > 0) { %>
+                <% tedolists.forEach((tedolist, index) => { %>
+                    <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                    <% if (checklists[tedolist.tedolist_number]) { %>
+                        <ul>
+                            <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                                <li><%= checklist.checklist_detail %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
+                    <form action="/mandalart/addChecklist" method="POST">
+                        <input type="hidden" name="tedolistNumber" value="<%= tedolist.tedolist_number %>">
+                        <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
+                        <label for="checklist">Add Checklist:</label>
+                        <input type="text" name="checklistDetail" id="checklist">
+                        <button type="submit">Add</button>
+                    </form>
                 <% }); %>
             <% } else { %>
                 <div class="editContainer">
@@ -44,34 +53,35 @@
             <% } %>
         </div>
     </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.mandalart');
             const centerGoal = '<%= mandalart.centerGoal %>';
             const tedolistCount = <%= mandalart.tedolist_count %>;
-            const tedolistDetails = <%= JSON.stringify(tedolistDetails) %>;
 
             if (container) {
-                generateMandalart(container, centerGoal, tedolistCount, tedolistDetails);
+                generateMandalart(container, centerGoal, tedolistCount);
                 addCellClickHandlers();
             }
         });
 
-        function generateMandalart(container, centerGoal, numCells, tedolistDetails) {
+        function generateMandalart(container, centerGoal, numCells) {
             const positions = getPositions(numCells);
 
             positions.forEach((pos, index) => {
                 const cell = document.createElement('div');
                 cell.classList.add('cell', pos);
                 cell.dataset.position = pos;
-                if (tedolistDetails[index]) {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.classList.add('tedolist-detail-input');
-                    input.value = tedolistDetails[index];
-                    input.readOnly = true;
-                    cell.appendChild(input);
+
+                const input = document.querySelectorAll('.tedolist-detail-input')[index];
+                if (input) {
+                    const textDiv = document.createElement('div');
+                    textDiv.classList.add('cell-text');
+                    textDiv.innerText = input.value;
+                    cell.appendChild(textDiv);
                 }
+
                 container.appendChild(cell);
             });
 
