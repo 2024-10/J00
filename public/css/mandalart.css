@@ -5,7 +5,75 @@
     align-items: center;
     height: 100vh;
     margin: 0;
+    flex-direction: column;
 }
+
+
+.editContainer {
+    background: #fff;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200%;
+    max-width: 400px;
+    text-align: center;
+    margin-left: 300px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.arr1-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#tedolist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+#checklist-container {
+    display: none;
+    margin-left: 600px;
+}
+#checklist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+.save-button-container{
+    justify-content: center;
+}
+
+.create-button{
+    padding: 10px;
+    background-color: #ddd;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.create-button:hover {
+    background-color: #ccc;
+}
+
+
+#checklist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
 
 .mandalart {
     position: relative;
@@ -23,24 +91,16 @@
     align-items: center;
 }
 
+.cell.active {
+    background-color: #F4FFE8 !important;
+}
+
+#checklist-list {
+    margin-top: 10px;
+}
+
 .center {
     background: #D1E4BE;
-}
-
-
-.settings {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.settings input, .settings button {
-    padding: 10px;
-    font-size: 16px;
-}
-
-.settings label {
-    font-weight: bold;
 }
 
 .tedolist-detail-input{
