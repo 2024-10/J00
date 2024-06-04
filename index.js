@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 라우트 설정
 app.use('/api/users', usersRouter);
 app.use('/api/share', shareRouter);
+app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 
 // 뷰 라우트 설정
