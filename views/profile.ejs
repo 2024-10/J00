@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+    <header>
+        <img src="/images/logo.png" alt="JOD" class="logo">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/my-mandalart">My Mandalart</a></li>
+                <li><a href="/share">Share</a></li>
+                <li><a href="/profile">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="profile-section">
+            <h2>프로필</h2>
+            <div class="profile-card">
+                <h3><%= user ? user.user_nickname : 'Guest' %></h3>
+                <p>아이디 : <%= user ? user.user_id : 'Guest' %></p>
+                <p>이메일 : <%= user ? user.user_email : 'Not available' %></p>
+                <p>생년월일 : <%= user ? new Date(user.user_birthday).toISOString().split('T')[0] : 'Not available' %></p>
+            </div>
+        </section>
+        <section class="achievements-section">
+            <h2>업적 목록</h2>
+        <!--임의로 설정함-->
+            <div class="achievement-card">
+                <img src="/images/trophy.png" alt="Trophy Icon">
+                <p>체크리스트 10개 이상 달성</p>
+            </div>
+            <div class="achievement-card">
+                <img src="/images/trophy.png" alt="Trophy Icon">
+                <p>체크리스트 10개 이상 달성</p>
+            </div>
+            <div class="achievement-card">
+                <img src="/images/trophy.png" alt="Trophy Icon">
+                <p>체크리스트 10개 이상 달성</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

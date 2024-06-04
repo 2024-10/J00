@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Mandalart</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/mandalart.css">
+    <style>
+        .cell.active {
+            background-color: #F4FFE8 !important;
+        }
+        #checklist-container {
+            display: none;
+            margin-top: 20px;
+        }
+        #checklist-list {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button active">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>">
+            <% tedolists.forEach((tedolist, index) => { %>
+                <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
+                <% if (checklists[tedolist.tedolist_number]) { %>
+                    <ul>
+                        <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                            <li><%= checklist.checklist_detail %></li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+            <% }); %>
+        </div>
+        <div id="checklist-container">
+            <ul id="checklist-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.mandalart');
+            const centerGoal = '<%= mandalart.centerGoal %>';
+            const tedolistCount = <%= mandalart.tedolist_count %>;
+
+            if (container) {
+                if (tedolistCount > 0) {
+                    generateMandalart(container, centerGoal, tedolistCount);
+                    addCellClickHandlers('<%= mandalart.mandalart_id %>');
+                }
+            }
+        });
+
+        function generateMandalart(container, centerGoal, numCells) {
+            const positions = getPositions(numCells);
+
+            positions.forEach((pos, index) => {
+                const cell = document.createElement('div');
+                cell.classList.add('cell', pos);
+                cell.dataset.position = pos;
+
+                const inputDetail = document.querySelectorAll('.tedolist-detail-input')[index];
+                const inputNumber = document.querySelectorAll('.tedolist-number')[index];
+
+                if (inputDetail && inputNumber) {
+                    const textDiv = document.createElement('div');
+                    textDiv.classList.add('cell-text');
+                    textDiv.innerText = inputDetail.value;
+                    cell.dataset.tedolistNumber = inputNumber.value;
+                    cell.dataset.hasTedolistDetail = "true";
+                    cell.appendChild(textDiv);
+                } else {
+                    cell.dataset.hasTedolistDetail = "false";
+                }
+
+                container.appendChild(cell);
+            });
+
+            const centerCell = document.createElement('div');
+            centerCell.classList.add('cell', 'center');
+            centerCell.dataset.position = 'center';
+            centerCell.innerText = centerGoal;
+            container.appendChild(centerCell);
+        }
+
+        function getPositions(numCells) {
+            switch (numCells) {
+                case 2:
+                    return ["left", "right"];
+                case 3:
+                    return ["left", "right", "down"];
+                case 4:
+                    return ["up", "left", "right", "down"];
+                case 5:
+                    return ["up", "left", "right", "down-left", "down-right"];
+                case 6:
+                    return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
+                case 7:
+                    return ["up-left", "up-right", "left", "right", "down-left", "down", "down-right"];
+                case 8:
+                    return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
+                default:
+                    return [];
+            }
+        }
+
+        function addCellClickHandlers(mandalartId) {
+            const cells = document.querySelectorAll('.mandalart .cell');
+            cells.forEach(cell => {
+                if (!cell.classList.contains('center')) {
+                    cell.addEventListener('click', async (event) => {
+                        if (cell.dataset.hasTedolistDetail === "true") {
+                            cells.forEach(c => c.classList.remove('active'));
+                            event.target.classList.add('active');
+                            const tedolistNumber = event.target.dataset.tedolistNumber;
+                            console.log(`Tedolist Number: ${tedolistNumber}`);
+                            await loadChecklists(mandalartId, tedolistNumber);
+                        } else {
+                            document.querySelector('#checklist-container').style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        async function loadChecklists(mandalartId, tedolistNumber) {
+            const response = await fetch(`/mandalart/checklists/${mandalartId}/${tedolistNumber}`);
+            if (response.ok) {
+                const checklists = await response.json();
+                const checklistContainer = document.querySelector('#checklist-list');
+                checklistContainer.innerHTML = '';
+                console.log(`Checklists loaded for Tedolist Number: ${tedolistNumber}`, checklists);
+                checklists.forEach(checklist => {
+                    const li = document.createElement('li');
+                    li.textContent = checklist.checklist_detail;
+                    checklistContainer.appendChild(li);
+                });
+                document.querySelector('#checklist-container').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
