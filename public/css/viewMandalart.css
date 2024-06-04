@@ -1,0 +1,388 @@
+.container {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+}
+.editContainer {
+    background: #fff;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200%;
+    max-width: 400px;
+    text-align: center;
+    margin-right: 500px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.arr1-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#tedolist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+#checklist-container {
+    display: none;
+    margin-right: 900px;
+}
+#checklist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+.save-button-container{
+    justify-content: center;
+}
+
+.create-button{
+    padding: 10px;
+    background-color: #ddd;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.create-button:hover {
+    background-color: #ccc;
+}
+
+
+#checklist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+
+.mandalart {
+    position: relative;
+    width: 648px;
+    height: 648px;
+    background: white;
+}
+
+.cell {
+    position: absolute;
+    background: white;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell.active {
+    background-color: #F4FFE8 !important;
+}
+
+#checklist-list {
+    margin-top: 10px;
+}
+
+.center {
+    background: #D1E4BE;
+}
+
+.tedolist-detail-input{
+    border: none; 
+    background: transparent;
+    display: none;
+}
+input:focus {outline:none;}
+
+/* .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+} */
+.cell-text {
+    font-size: 14px;
+    padding: 5px;
+}
+
+/* 각 칸 개수에 따른 레이아웃 정의 */
+/* .grid-2 .cell {
+    position: absolute;
+} */
+
+.grid-2 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-2 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-2 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-3 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-3 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-3 .cell.down {
+    width: 648px;
+    height: 217px;
+    left: 0;
+    top: 431px;
+}
+.grid-3 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-4 .cell.up {
+    width: 430px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-4 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0;
+    top: 0;
+}
+.grid-4 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 215px;
+}
+.grid-4 .cell.down {
+    width: 430px;
+    height: 215px;
+    left: 0;
+    top: 430px;
+}
+.grid-4 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-5 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-5 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0px;
+    top: 0px;
+}
+.grid-5 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 0px;
+}
+.grid-5 .cell.down-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-5 .cell.down-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 430px;
+}
+.grid-5 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-6 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-6 .cell.up-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0;
+    top: 0;
+}
+.grid-6 .cell.up-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 0;
+}
+.grid-6 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-6 .cell.down-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 322.5px;
+}
+.grid-6 .cell.down-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0px;
+    top: 322.5px;
+}
+.grid-6 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-7 .cell.up-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-7 .cell.up-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 0px;
+}
+.grid-7 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 215px;
+}
+.grid-7 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-7 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-7 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-7 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-7 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-8 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-8 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0;
+    top: 215px;
+}
+.grid-8 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-8 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-8 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-8 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-8 .cell.up-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-8 .cell.up-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 0px;
+}
+
+.grid-8 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}

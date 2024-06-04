@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Mandalart</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/mandalart.css">
+    <style>
+        .cell.active {
+            background-color: #F4FFE8 !important;
+        }
+        #checklist-container {
+            display: none;
+            margin-top: 20px;
+        }
+        #checklist-list {
+            margin-top: 10px;
+            list-style-type: none;
+            padding: 0;
+        }
+        .center {
+            background-color: #C0D8C0;
+        }
+        .mandalart {
+            position: relative;
+            width: 648px;
+            height: 648px;
+            background: white;
+        }
+        .cell {
+            position: absolute;
+            background: white;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cell-text {
+            font-size: 14px;
+            padding: 5px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        .delete-checklist {
+            cursor: pointer;
+            color: red;
+        }
+        .tedolist-detail-input {
+            border: none;
+            background: transparent;
+            display: none;
+        }
+        input:focus { outline: none; }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button active">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h3>Edit My Mandalart</h3>
+        <form id="mandalart-form" action="/mandalart/update/<%= mandalart.mandalart_id %>" method="POST">
+            <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>">
+                <% function getCellClass(index, count) { 
+                    const classes = [
+                        ['center'],
+                        ['left', 'right'],
+                        ['left', 'right', 'down'],
+                        ['up', 'left', 'right', 'down'],
+                        ['up', 'left', 'right', 'down-left', 'down-right'],
+                        ['up', 'up-left', 'up-right', 'down', 'down-left', 'down-right'],
+                        ['up-left', 'up-right', 'left', 'right', 'down-left', 'down', 'down-right'],
+                        ['up-left', 'up', 'up-right', 'left', 'right', 'down-left', 'down', 'down-right']
+                    ];
+                    return classes[count - 1][index] || '';
+                } %>
+                <% tedolists.forEach((tedolist, index) => { %>
+                    <div class="cell <%= getCellClass(index, mandalart.tedolist_count) %>" data-tedolist-number="<%= tedolist.tedolist_number %>">
+                        <div class="cell-text">
+                            <%= tedolist.tedolist_detail %>
+                        </div>
+                        <input type="text" class="tedolist-detail-input" name="tedolistDetails[<%= index %>][tedolist_detail]" value="<%= tedolist.tedolist_detail %>" />
+                        <input type="hidden" name="tedolistDetails[<%= index %>][tedolist_number]" value="<%= tedolist.tedolist_number %>" />
+                    </div>
+                <% }); %>
+                <div class="cell center">
+                    <div class="center-goal-text"><%= mandalart.centerGoal %></div>
+                </div>
+            </div>
+            <button type="submit">Save</button>
+        </form>
+        <div id="checklist-container">
+            <h4>Checklist</h4>
+            <ul id="checklist-list"></ul>
+            <form id="checklist-form">
+                <input type="hidden" name="tedolistNumber" id="tedolistNumber">
+                <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
+                <label for="checklistDetail">Checklist Item:</label>
+                <input type="text" name="checklistDetail" id="checklistDetail">
+                <button type="submit">Add Checklist</button>
+            </form>
+        </div>
+        <form id="delete-mandalart-form" action="/mandalart/delete/<%= mandalart.mandalart_id %>" method="POST">
+            <button type="submit">Delete Mandalart</button>
+        </form>
+        <button onclick="window.location.href='/'">Cancel</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.mandalart');
+            const tedolistCount = <%= mandalart.tedolist_count %>;
+
+            if (container) {
+                if (tedolistCount > 0) {
+                    addCellClickHandlers('<%= mandalart.mandalart_id %>');
+                    addChecklistFormHandler('<%= mandalart.mandalart_id %>');
+                }
+            }
+
+            enableTedolistEditing();
+        });
+
+        function enableTedolistEditing() {
+            const inputs = document.querySelectorAll('.tedolist-detail-input');
+            inputs.forEach(input => {
+                const textDiv = input.previousElementSibling;
+                textDiv.addEventListener('click', () => {
+                    textDiv.style.display = 'none';
+                    input.style.display = 'block';
+                    input.focus();
+                });
+
+                input.addEventListener('blur', () => {
+                    textDiv.innerText = input.value;
+                    textDiv.style.display = 'block';
+                    input.style.display = 'none';
+                });
+            });
+        }
+
+        function addCellClickHandlers(mandalartId) {
+            const cells = document.querySelectorAll('.mandalart .cell');
+            cells.forEach(cell => {
+                if (!cell.classList.contains('center')) {
+                    cell.addEventListener('click', async (event) => {
+                        if (cell.dataset.tedolistNumber) {
+                            cells.forEach(c => c.classList.remove('active'));
+                            cell.classList.add('active');
+                            const tedolistNumber = cell.dataset.tedolistNumber;
+                            console.log(`Tedolist Number: ${tedolistNumber}`);
+                            const input = document.querySelector('#tedolistNumber');
+                            input.value = tedolistNumber;
+                            document.querySelector('#checklist-container').style.display = 'block';
+                            await loadChecklists(mandalartId, tedolistNumber);
+                        } else {
+                            document.querySelector('#checklist-container').style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        function addChecklistFormHandler(mandalartId) {
+            const form = document.querySelector('#checklist-form');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/mandalart/addChecklist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        mandalart_id: formData.get('mandalart_id'),
+                        tedolistNumber: formData.get('tedolistNumber'),
+                        checklistDetail: formData.get('checklistDetail')
+                    })
+                });
+                if (response.ok) {
+                    const tedolistNumber = formData.get('tedolistNumber');
+                    console.log(`Checklist added for Tedolist Number: ${tedolistNumber}`);
+                    await loadChecklists(mandalartId, tedolistNumber);
+                }
+            });
+        }
+
+        async function loadChecklists(mandalartId, tedolistNumber) {
+            const response = await fetch(`/mandalart/checklists/${mandalartId}/${tedolistNumber}`);
+            if (response.ok) {
+                const checklists = await response.json();
+                const checklistContainer = document.querySelector('#checklist-list');
+                checklistContainer.innerHTML = '';
+                console.log(`Checklists loaded for Tedolist Number: ${tedolistNumber}`, checklists);
+                checklists.forEach(checklist => {
+                    const li = document.createElement('li');
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <span>${checklist.checklist_detail}</span>
+                        <span class="delete-checklist" data-checklist-id="${checklist.checklist_id}">X</span>
+                    `;
+                    checklistContainer.appendChild(li);
+                });
+
+                document.querySelectorAll('.delete-checklist').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const checklistId = event.target.dataset.checklistId;
+                        await deleteChecklist(checklistId);
+                        await loadChecklists(mandalartId, tedolistNumber);
+                    });
+                });
+            }
+        }
+
+        async function deleteChecklist(checklistId) {
+            const response = await fetch(`/mandalart/deleteChecklist/${checklistId}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                console.error('Failed to delete checklist item');
+            }
+        }
+    </script>
+</body>
+</html>
