@@ -1,44 +1,3 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #fff7e6;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff7e6;
-    color: #fff;
-    padding: 1rem;
-}
-
-.logo {
-    width: 100px;
-    height: auto;
-}
-
-.nav-links {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-links li {
-    display: inline;
-    margin-right: 20px;
-}
-
-.nav-links a {
-    color: #000; /* 글씨 색을 검정으로 변경 */
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.nav-links a:hover {
-    text-decoration: underline;
-}
-
 main {
     padding: 2rem;
 }
@@ -88,5 +47,5 @@ main {
 .achievement-card img {
     width: 30px;
     height: auto;
-    margin-right: 1rem;
+    margin-right: 1rem; 
 }

@@ -2,23 +2,6 @@
 <html>
 <head>
   <title><%= title %></title>
-</head>
-<body>
-  <h1>Create Mandalart</h1>
-  <form id = "mandalart-form" action="/mandalart/create" method="POST">
-    <input type="hidden" name="userId" value="<%= user.user_id %>">
-    <label for="centergoal">Center Goal:</label>
-    <input type="text" name="centergoal" id="centergoal">
-    <label for="tedolistCount">Number of Tasks (2-8):</label>
-    <input type="number" name="tedolistCount" id="tedolistCount" min="2" max="8">
-    <button type="submit">Create</button>
-  </form>
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/createMandalart.css">
 </head>

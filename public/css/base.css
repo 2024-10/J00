@@ -10,12 +10,12 @@ body {
 }
 
 header {
-    width: 100%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: none;
+    background-color: #FFFBF1;
+    color: #fff;
+    padding: 1rem;
 }
 
 .logo {
