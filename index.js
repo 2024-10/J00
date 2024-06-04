@@ -32,24 +32,20 @@ app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.get('/signup', (req, res) => {
     res.render('signup', { title: 'Sign Up' });
 });
-
 app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
-
-app.get('/', (req, res) => {
-    const userCookie = req.cookies['USER'];
-    const user = userCookie ? JSON.parse(userCookie) : null;
-    res.render('home', { title: 'Home', user });
-});
-
 app.get('/share', (req, res) => {
     res.render('share', { title: 'Share' });
 });
 app.get('/add_friend', (req, res) => {
     res.render('add_friend', { title: 'Add Friend' });
 });
-
+app.get('/', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    res.render('home', { title: 'Home', user });
+});
 app.get('/profile', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
