@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const usersRouter = require('./routes/users');
 const shareRouter = require('./routes/share');
+const addFriendRouter = require('./routes/add_friend');
 const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
 const client = require('./db'); // MySQL 클라이언트 사용
 
