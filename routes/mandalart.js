@@ -282,6 +282,8 @@ router.get('/edit/:mandalartId', (req, res) => {
     }
 });
 
+
+//체크리스트 목록 보여주기
 router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
     const { mandalartId, tedolistNumber } = req.params;
     client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ?", [mandalartId, tedolistNumber], (err, result) => {
@@ -294,5 +296,166 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
     });
 });
 
+
+
+
+
+
+/////////////////////////////////////////////////
+//~~~~~ 수정모드 시작 ~~~~~
+
+
+// 만다라트 수정 페이지
+router.get('/change/:mandalartId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalartId } = req.params;
+
+    if (user) {
+        client.query("SELECT * FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, mandalartResult) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                if (mandalartResult.length > 0) {
+                    client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalartId], (err, tedolistResult) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send("Server error");
+                        } else {
+                            const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                            if (tedolistIds.length > 0) {
+                                client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
+                                    if (err) {
+                                        console.log(err);
+                                        res.status(500).send("Server error");
+                                    } else {
+                                        const checklists = checklistResult.reduce((acc, checklist) => {
+                                            if (!acc[checklist.tedolist_number]) {
+                                                acc[checklist.tedolist_number] = [];
+                                            }
+                                            acc[checklist.tedolist_number].push(checklist);
+                                            return acc;
+                                        }, {});
+                                        res.render("editMandalart", {
+                                            title: 'Edit Mandalart',
+                                            mandalart: mandalartResult[0],
+                                            tedolists: tedolistResult,
+                                            checklists
+                                        });
+                                    }
+                                });
+                            } else {
+                                const checklists = {};
+                                res.render("editMandalart", {
+                                    title: 'Edit Mandalart',
+                                    mandalart: mandalartResult[0],
+                                    tedolists: tedolistResult,
+                                    checklists
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    res.status(404).send("Mandalart not found");
+                }
+            }
+        });
+    } else {
+        res.redirect('/signin');
+    }
+});
+
+
+
+
+
+
+
+
+
+// 만다라트 수정 처리 (post)
+router.post('/update/:mandalartId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalartId } = req.params;
+    const { tedolistDetails } = req.body;
+
+    if (user) {
+        // Update only the tedolist details
+        const detailsArray = tedolistDetails.map(detail => [detail.tedolist_number, detail.tedolist_detail]);
+        const updateQueries = detailsArray.map(([tedolist_number, tedolist_detail]) => {
+            return new Promise((resolve, reject) => {
+                client.query("UPDATE tedolist SET tedolist_detail = ? WHERE mandalart_id = ? AND tedolist_number = ?", [tedolist_detail, mandalartId, tedolist_number], (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                });
+            });
+        });
+
+        Promise.all(updateQueries).then(() => {
+            res.redirect(`/mandalart/view/${mandalartId}`);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send("Server error");
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+// 만다라트 삭제 처리
+router.post('/delete/:mandalartId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalartId } = req.params;
+
+    if (user) {
+        client.query("DELETE FROM mandalart WHERE mandalart_id = ? AND user_id = ?", [mandalartId, user.user_id], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                res.redirect('/');
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+// Checklist 삭제 처리
+router.delete('/deleteChecklist/:checklistId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { checklistId } = req.params;
+
+    if (user) {
+        client.query("DELETE FROM checklist WHERE checklist_id = ?", [checklistId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                res.status(200).json({ success: true });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
+//체크리스트 목록 보여주기
+router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
+    const { mandalartId, tedolistNumber } = req.params;
+    client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ?", [mandalartId, tedolistNumber], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Server error");
+        } else {
+            res.json(result);
+        }
+    });
+});
 
 module.exports = router;

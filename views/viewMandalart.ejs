@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/mandalart.css">
+    <link rel="stylesheet" href="/css/viewMandalart.css">
     <style>
         .cell.active {
             background-color: #F4FFE8 !important;
@@ -32,20 +32,28 @@
             </ul>
         </nav>
     </header>
+
+    
     <div class="container">
-        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>">
-            <% tedolists.forEach((tedolist, index) => { %>
-                <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
-                <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
-                <% if (checklists[tedolist.tedolist_number]) { %>
-                    <ul>
-                        <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
-                            <li><%= checklist.checklist_detail %></li>
-                        <% }); %>
-                    </ul>
-                <% } %>
-            <% }); %>
+        <h3>나의 만다라트</h3>
+        <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
+        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
+        <div id="checklist-container" class="container arr1-container" style="display:none;">
+            <div class="editContainer">
+                <% tedolists.forEach((tedolist, index) => { %>
+                    <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                    <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
+                    <% if (checklists[tedolist.tedolist_number]) { %>
+                        <ul>
+                            <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                                <li><%= checklist.checklist_detail %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
+                <% }); %>
+            </div>
         </div>
+        
         <div id="checklist-container">
             <ul id="checklist-list"></ul>
         </div>
