@@ -1,16 +1,6 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #fff7e6;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff7e6;
-    color: #fff;
-    padding: 1rem;
 }
 
 .logo {

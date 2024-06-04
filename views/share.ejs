@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J00% - Share</title>
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/share.css">
 </head>
 <body>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button active">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    
     <div id="page-wrapper">
-        <header>
-            <img src="/images/logo.png" alt="JOD" class="logo">
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="/my-mandalart">My Mandalart</a></li>
-                    <li><a href="/share" style="color: green;">Share</a></li>
-                    <li><a href="/profile">Profile</a></li>
-                </ul>
-            </nav>
-        </header>
         <div id="share">
             <main>
                 <h1><a href="/add_friend">친구 추가하기 +</a></h1> 
