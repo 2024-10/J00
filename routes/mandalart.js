@@ -424,6 +424,27 @@ router.post('/delete/:mandalartId', (req, res) => {
     }
 });
 
+// Checklist 삭제 처리
+router.delete('/deleteChecklist/:checklistId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { checklistId } = req.params;
+
+    if (user) {
+        client.query("DELETE FROM checklist WHERE checklist_id = ?", [checklistId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                res.status(200).json({ success: true });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
 //체크리스트 목록 보여주기
 router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
     const { mandalartId, tedolistNumber } = req.params;
