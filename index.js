@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const usersRouter = require('./routes/users');
+const shareRouter = require('./routes/share');
 const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
 const client = require('./db'); // MySQL 클라이언트 사용
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 라우트 설정
 app.use('/api/users', usersRouter);
+app.use('/api/share', shareRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 
 // 뷰 라우트 설정
@@ -37,6 +39,13 @@ app.get('/', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
     res.render('home', { title: 'Home', user });
+});
+
+app.get('/share', (req, res) => {
+    res.render('share', { title: 'Share' });
+});
+app.get('/add_friend', (req, res) => {
+    res.render('add_friend', { title: 'Add Friend' });
 });
 
 app.get('/profile', (req, res) => {
@@ -63,4 +72,4 @@ app.get('/profile', (req, res) => {
 
 // 서버 시작
 const PORT = process.env.PORT || 5006;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on  http://localhost:${PORT}`));

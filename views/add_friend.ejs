@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>친구 추가</title>
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/add_friend.css">
 </head>
 <body>
-<header>
-    <img src="/images/logo.png" alt="JOD" class="logo">
-    <nav>
-        <ul class="nav-links">
-            <li><a href="/my-mandalart.html">My Mandalart</a></li>
-            <li><a href="/share.html">Share</a></li>
-            <li><a href="/profile.html">Profile</a></li>
-        </ul>
-    </nav>
-</header>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button active">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
 <div id="add">
 <main>
     <div class="search">
