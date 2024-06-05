@@ -35,30 +35,28 @@
         </nav>
     </header>
 
-    
     <div class="container">
         <h3>나의 만다라트</h3>
         <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
         <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
-        <div id="checklist-container" class="container arr1-container" style="display:none;">
-            <div class="editContainer">
-                <% tedolists.forEach((tedolist, index) => { %>
-                    <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
-                    <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
-                    <% if (checklists[tedolist.tedolist_number]) { %>
-                        <ul>
-                            <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
-                                <li><%= checklist.checklist_detail %></li>
-                            <% }); %>
-                        </ul>
-                    <% } %>
-                <% }); %>
-            </div>
+        <div class="editContainer">
+            <% tedolists.forEach((tedolist, index) => { %>
+                <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
+                <% if (checklists[tedolist.tedolist_number]) { %>
+                    <ul>
+                        <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                            <li><%= checklist.checklist_detail %></li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+            <% }); %>
         </div>
-        
+
         <div id="checklist-container">
             <ul id="checklist-list"></ul>
         </div>
+
         <!-- 댓글 표시 영역 -->
         <div id="comment-section">
             <h4>댓글</h4>
@@ -163,18 +161,45 @@
                 const checklists = await response.json();
                 const checklistContainer = document.querySelector('#checklist-list');
                 checklistContainer.innerHTML = '';
-                console.log(`Checklists loaded for Tedolist Number: ${tedolistNumber}`, checklists);
                 checklists.forEach(checklist => {
                     const li = document.createElement('li');
-                    li.textContent = checklist.checklist_detail;
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <input type="checkbox" class="checklist-checkbox" data-checklist-id="${checklist.checklist_id}" ${checklist.is_checked ? 'checked' : ''}>
+                        <span>${checklist.checklist_detail}</span>
+                    `;
                     checklistContainer.appendChild(li);
                 });
+
+                document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (event) => {
+                        const checklistId = event.target.dataset.checklistId;
+                        const isChecked = event.target.checked;
+                        await updateChecklistStatus(checklistId, isChecked);
+                        if (isChecked) {
+                            event.target.closest('li').style.display = 'none';
+                        }
+                    });
+                });
+
                 document.querySelector('#checklist-container').style.display = 'block';
             }
         }
-        
-        
-            document.addEventListener('DOMContentLoaded', () => {
+
+        async function updateChecklistStatus(checklistId, isChecked) {
+            const response = await fetch(`/mandalart/updateChecklistStatus/${checklistId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_checked: isChecked })
+            });
+            if (!response.ok) {
+                console.error('Failed to update checklist status');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             const mandalartId = '<%= mandalart.mandalart_id %>';
 
             // Load comments on page load
