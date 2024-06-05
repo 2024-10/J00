@@ -172,116 +172,120 @@
         }
         
         
-        document.addEventListener('DOMContentLoaded', () => {
-        const mandalartId = '<%= mandalart.mandalart_id %>';
+            document.addEventListener('DOMContentLoaded', () => {
+            const mandalartId = '<%= mandalart.mandalart_id %>';
 
-        // 댓글 목록 로드
-        loadComments(mandalartId);
+            // Load comments on page load
+            loadComments(mandalartId);
 
-        // 댓글 작성 버튼 클릭 이벤트
-        document.getElementById('add-comment-button').addEventListener('click', () => {
-            const commentDetail = document.getElementById('new-comment').value.trim();
-            if (commentDetail) {
-                addComment(mandalartId, commentDetail);
-            }
-        });
-
-        // 엔터 키로 댓글 작성
-        document.getElementById('new-comment').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const commentDetail = event.target.value.trim();
+            // Add comment button click event
+            document.getElementById('add-comment-button').addEventListener('click', () => {
+                const commentDetail = document.getElementById('new-comment').value.trim();
                 if (commentDetail) {
                     addComment(mandalartId, commentDetail);
                 }
-            }
-        });
-    });
-
-    async function loadComments(mandalartId) {
-        const response = await fetch(`/comment/${mandalartId}`);
-        if (response.ok) {
-            const comments = await response.json();
-            const commentList = document.getElementById('comment-list');
-            commentList.innerHTML = '';
-            comments.forEach(comment => {
-                const li = document.createElement('li');
-                li.className = 'comment-item';
-                li.innerHTML = `
-                    <div class="comment-header">
-                        <div class="comment-author">
-                            <img src="path/to/profile.jpg" alt="profile">
-                            <span class="comment-author-name">${comment.user_id}</span>
-                        </div>
-                        <span class="comment-date">${comment.date}</span>
-                    </div>
-                    <div class="comment-detail">${comment.comment_detail}</div>
-                    <div class="comment-reactions">
-                        ${generateReactionsHTML(comment)}
-                    </div>
-                    <button class="delete-comment-button" data-comment-id="${comment.comment_id}">삭제</button>
-                `;
-                li.querySelectorAll('.comment-reaction').forEach(reaction => {
-                    reaction.addEventListener('click', () => {
-                        const emoji = reaction.dataset.emoji;
-                        incrementReaction(comment.id, emoji);
-                        const countSpan = reaction.querySelector('span');
-                        countSpan.textContent = parseInt(countSpan.textContent) + 1;
-                    });
-                });
-                li.querySelector('.delete-comment-button').addEventListener('click', () => {
-                    deleteComment(comment.comment_id);
-                });
-                commentList.appendChild(li);
             });
-        }
-    }
 
-    async function addComment(mandalartId, commentDetail) {
-        const response = await fetch('/comment/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ mandalart_id: mandalartId, comment_detail: commentDetail })
+            // Submit comment on Enter key press
+            document.getElementById('new-comment').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const commentDetail = event.target.value.trim();
+                    if (commentDetail) {
+                        addComment(mandalartId, commentDetail);
+                    }
+                }
+            });
         });
-        if (response.ok) {
-            document.getElementById('new-comment').value = '';
-            loadComments(mandalartId);
-        }
-    }
 
-    async function deleteComment(commentId) {
-        const response = await fetch(`/comment/delete/${commentId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+        async function loadComments(mandalartId) {
+            const response = await fetch(`/comment/${mandalartId}`);
+            if (response.ok) {
+                const comments = await response.json();
+                const commentList = document.getElementById('comment-list');
+                commentList.innerHTML = '';
+                comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'comment-item';
+                    li.innerHTML = `
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <img src="path/to/profile.jpg" alt="profile">
+                                <span class="comment-author-name">${comment.user_id}</span>
+                            </div>
+                            <span class="comment-date">${comment.date}</span>
+                        </div>
+                        <div class="comment-detail">${comment.comment_detail}</div>
+                        <div class="comment-reactions">
+                            ${generateReactionsHTML(comment)}
+                        </div>
+                        <button class="delete-comment-button" data-comment-id="${comment.comment_id}">삭제</button>
+                    `;
+                    li.querySelectorAll('.comment-reaction').forEach(reaction => {
+                        reaction.addEventListener('click', async () => {
+                            const emoji = reaction.dataset.emoji;
+                            await incrementReaction(comment.comment_id, emoji);
+                            const countSpan = reaction.querySelector('span');
+                            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                        });
+                    });
+                    li.querySelector('.delete-comment-button').addEventListener('click', async () => {
+                        await deleteComment(comment.comment_id);
+                        loadComments(mandalartId);
+                    });
+                    commentList.appendChild(li);
+                });
             }
-        });
-        if (response.ok) {
-            loadComments('<%= mandalart.mandalart_id %>');
         }
-    }
 
-    async function incrementReaction(commentId, emoji) {
-        await fetch('/comment/reaction/increment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ comment_id: commentId, emoji })
-        });
-    }
+        async function addComment(mandalartId, commentDetail) {
+            const response = await fetch('/comment/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mandalart_id: mandalartId, comment_detail: commentDetail })
+            });
+            if (response.ok) {
+                document.getElementById('new-comment').value = '';
+                loadComments(mandalartId);
+            }
+        }
 
-    function generateReactionsHTML(comment) {
-        const emojis = ['heart', 'crazy', 'sad', 'smile', 'laugh'];
-        return emojis.map(emoji => `
-            <div class="comment-reaction" data-emoji="${emoji}">
-                <img src="path/to/${emoji}.png" alt="${emoji}">
-                <span>${comment[emoji] || 0}</span>
-            </div>
-        `).join('');
-    }
+        async function deleteComment(commentId) {
+            const response = await fetch(`/comment/delete/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                loadComments('<%= mandalart.mandalart_id %>');
+            }
+        }
+
+        async function incrementReaction(commentId, emoji) {
+            const response = await fetch('/comment/reaction/increment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ comment_id: commentId, emoji })
+            });
+            if (!response.ok) {
+                console.log('Failed to increment reaction');
+            }
+        }
+
+        function generateReactionsHTML(comment) {
+            const emojis = ['1', '2', '3', '4', '5'];
+            return emojis.map(emoji => `
+                <div class="comment-reaction" data-emoji="${emoji}">
+                    <img src="path/to/${emoji}.png" alt="${emoji}">
+                    <span>${comment[`imogi${emoji}count`] || 0}</span>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
