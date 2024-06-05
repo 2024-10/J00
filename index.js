@@ -8,6 +8,7 @@ const addFriendRouter = require('./routes/add_friend');
 const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
 const client = require('./db'); // MySQL 클라이언트 사용
 const commentRouter = require('./routes/comment');
+const shareViewMandalrtRouter = require('./routes/share_viewMandalart');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/share', shareRouter);
 app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
+app.use('/share_viewMandalart', shareViewMandalrtRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -68,6 +70,9 @@ app.get('/profile', (req, res) => {
     } else {
         res.redirect('/signin');
     }
+});
+app.get('/share_viewMandalart', (req, res) => {
+    res.render('share_viewMandalart', { title: 'share_viewMandalart' });
 });
 
 // 서버 시작
