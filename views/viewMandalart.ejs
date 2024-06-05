@@ -17,6 +17,9 @@
         #checklist-list {
             margin-top: 10px;
         }
+        #calendar-container {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +59,11 @@
         
         <div id="checklist-container">
             <ul id="checklist-list"></ul>
+        </div>
+        
+        <div id="calendar-container">
+            <h2>My Calendar</h2>
+            <div id="calendar-events"></div>
         </div>
     </div>
 
@@ -160,6 +168,49 @@
                 document.querySelector('#checklist-container').style.display = 'block';
             }
         }
+    </script>
+
+    <!-- 달력보여주는 부분 -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        function start() {
+            gapi.client.init({
+                'apiKey': 'a23d0f0be0904c96430380874a8fd12121a9d855',
+                'clientId': '116996187886670619408.apps.googleusercontent.com',
+                'scope': 'https://www.googleapis.com/auth/calendar.readonly',
+                'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
+            }).then(function () {
+                gapi.auth2.getAuthInstance().signIn().then(loadCalendarEvents);
+            });
+        }
+
+        function loadCalendarEvents() {
+            gapi.client.calendar.events.list({
+                'calendarId': 'primary',
+                'timeMin': (new Date()).toISOString(),
+                'showDeleted': false,
+                'singleEvents': true,
+                'maxResults': 10,
+                'orderBy': 'startTime'
+            }).then(function(response) {
+                const events = response.result.items;
+                const calendarContainer = document.getElementById('calendar-events');
+                calendarContainer.innerHTML = '';
+
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        const li = document.createElement('li');
+                        const when = event.start.dateTime || event.start.date;
+                        li.textContent = `${when} - ${event.summary}`;
+                        calendarContainer.appendChild(li);
+                    });
+                } else {
+                    calendarContainer.innerHTML = 'No upcoming events found.';
+                }
+            });
+        }
+
+        gapi.load('client:auth2', start);
     </script>
 </body>
 </html>
