@@ -35,7 +35,7 @@
     </header>
     
     <div class="container">
-        <h3>유저의 만다라트</h3>
+        <h3 id="user-nickname"></h3>
         <div id="mandalart-grid" class="mandalart grid"></div>
         <div id="checklist-container" class="container arr1-container" style="display:none;">
             <div class="editContainer">
@@ -61,12 +61,16 @@
             return urlParams.get(param);
         }
 
+        // JavaScript 수정
         document.addEventListener('DOMContentLoaded', async () => {
             const userId = getQueryParam('userId');
             if (!userId) {
                 console.error('User ID not found in URL');
                 return;
             }
+
+            // 유저의 만다라트 제목 변경
+            document.getElementById('user-nickname').textContent = `${userId}님의 만다라트`;
 
             try {
                 const response = await fetch(`/mandalart/userMandalart/${userId}`);
@@ -80,6 +84,7 @@
                 console.error('Error fetching mandalart:', error);
             }
         });
+
 
         function displayMandalart(data) {
             const { mandalart, tedolists, checklists } = data;
