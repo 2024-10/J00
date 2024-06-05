@@ -283,7 +283,7 @@
             const emojis = ['1', '2', '3', '4', '5'];
             return emojis.map(emoji => `
                 <div class="comment-reaction" data-emoji="${emoji}">
-                    <img src="path/to/${emoji}.png" alt="${emoji}">
+                    <img src="/images/${emoji}.svg" alt="${emoji}">
                     <span>${comment[`imogi${emoji}count`] || 0}</span>
                 </div>
             `).join('');
