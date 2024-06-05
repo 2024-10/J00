@@ -6,6 +6,8 @@
     <title>View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
+    <link rel="stylesheet" href="/css/comment.css">
+
     <style>
         .cell.active {
             background-color: #F4FFE8 !important;
@@ -210,7 +212,7 @@
                     li.innerHTML = `
                         <div class="comment-header">
                             <div class="comment-author">
-                                <img src="path/to/profile.jpg" alt="profile">
+                                <img src="/images/comment_user.svg" alt="profile">
                                 <span class="comment-author-name">${comment.user_id}</span>
                             </div>
                             <span class="comment-date">${comment.date}</span>
