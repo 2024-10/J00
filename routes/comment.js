@@ -34,7 +34,7 @@ router.post('/add', (req, res) => {
 router.get('/:mandalart_id', (req, res) => {
     const { mandalart_id } = req.params;
 
-    client.query("SELECT * FROM comment WHERE mandalart_id = ?", [mandalart_id], (err, result) => {
+    client.query("SELECT * FROM comment WHERE mandalart_id = ? ORDER BY date ASC", [mandalart_id], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");
