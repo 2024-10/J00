@@ -196,6 +196,7 @@
                     const tedolistNumber = formData.get('tedolistNumber');
                     console.log(`Checklist added for Tedolist Number: ${tedolistNumber}`);
                     await loadChecklists(mandalartId, tedolistNumber);
+                    checklistDetail.value = '';
                 }
             });
         }
