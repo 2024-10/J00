@@ -80,6 +80,25 @@
                 const data = await response.json();
                 displayMandalart(data);
                 loadComments(data.mandalart.mandalart_id);
+
+                // Add comment button click event
+                document.getElementById('add-comment-button').addEventListener('click', () => {
+                    const commentDetail = document.getElementById('new-comment').value.trim();
+                    if (commentDetail) {
+                        addComment(data.mandalart.mandalart_id, commentDetail);
+                    }
+                });
+
+                // Submit comment on Enter key press
+                document.getElementById('new-comment').addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        const commentDetail = event.target.value.trim();
+                        if (commentDetail) {
+                            addComment(data.mandalart.mandalart_id, commentDetail);
+                        }
+                    }
+                });
             } catch (error) {
                 console.error('Error fetching mandalart:', error);
             }
@@ -221,8 +240,7 @@
                         });
                     });
                     li.querySelector('.delete-comment-button').addEventListener('click', async () => {
-                        await deleteComment(comment.comment_id);
-                        loadComments(mandalartId);
+                        await deleteComment(mandalartId,comment.comment_id);
                     });
                     commentList.appendChild(li);
                 });
@@ -240,39 +258,43 @@
         }
 
         async function incrementReaction(commentId, emoji) {
-            await fetch(`/comment/${commentId}/reaction`, {
+            const response = await fetch('/comment/reaction/increment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ emoji })
+                body: JSON.stringify({ comment_id: commentId, emoji })
             });
+            if (!response.ok) {
+                console.log('Failed to increment reaction');
+            }
         }
 
-        async function deleteComment(commentId) {
-            await fetch(`/comment/${commentId}`, {
-                method: 'DELETE'
+        async function deleteComment(mandalartId,commentId) {
+            const response = await fetch(`/comment/delete/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
+            if (response.ok) {
+                loadComments(mandalartId);
+            }
         }
 
-        document.getElementById('add-comment-button').addEventListener('click', async () => {
-            const newComment = document.getElementById('new-comment').value;
-            if (newComment.trim() === '') return;
-
-            const userId = getQueryParam('userId');
-            const mandalartId = getQueryParam('mandalartId');
-
-            await fetch(`/comment/${mandalartId}`, {
+        async function addComment(mandalartId, commentDetail) {
+            const response = await fetch('/comment/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId, commentDetail: newComment })
+                body: JSON.stringify({ mandalart_id: mandalartId, comment_detail: commentDetail })
             });
-
-            document.getElementById('new-comment').value = '';
-            loadComments(mandalartId);
-        });
+            if (response.ok) {
+                document.getElementById('new-comment').value = '';
+                loadComments(mandalartId);
+            }
+        }
     </script>
 </body>
 </html>
