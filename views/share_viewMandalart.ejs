@@ -24,13 +24,25 @@
             </ul>
         </nav>
     </header>
+    <main>
+        <h1>Mandalart Viewer</h1>
+        <p id="user-id-display"></p>
+    </main>
     <script>
-        
-        
+        // Function to get URL parameter
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = getQueryParam('userId');
+            console.log('User ID:', userId); // 콘솔창에 전달받은 유저의 아이디 출력
 
-
-        
+            // Display the user ID on the page
+            const userIdDisplay = document.getElementById('user-id-display');
+            userIdDisplay.textContent = `User ID: ${userId}`;
+        });
     </script>
 </body>
 </html>

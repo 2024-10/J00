@@ -133,38 +133,40 @@
             }
 
             async function showFollowingList(userId) {
-                const userList = await fetchFollowingList(userId);
-                const followingListContainer = document.getElementById('following-list');
-                followingListContainer.innerHTML = ''; 
-                console.log(userList);
+    const userList = await fetchFollowingList(userId);
+    const followingListContainer = document.getElementById('following-list');
+    followingListContainer.innerHTML = ''; 
+    console.log(userList);
 
-                userList.forEach(user => {
-                    const userItem = document.createElement('div');
-                    userItem.className = 'user-item';
+    userList.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'user-item';
 
-                    const userPlan = document.createElement('span');
-                    userPlan.className = 'user-plan';
-                    userPlan.textContent = `${user}님의 계획`;
+        const userPlan = document.createElement('span');
+        userPlan.className = 'user-plan';
+        userPlan.textContent = `${user}님의 계획`;
 
-                    //친구를 클릭하면 친구의 만다라트로 넘어가는 코드
-                    userPlan.addEventListener('click', () => {
-                        console.log(user); // 사용자 아이디를 콘솔에 출력
-                        window.location.href = '/share_viewMandalart'; // 다음 화면으로 이동
-                    });
-                    userItem.appendChild(userPlan);
+        //친구를 클릭하면 친구의 만다라트로 넘어가는 코드
+        userPlan.addEventListener('click', () => {
+            console.log(user); // 사용자 아이디를 콘솔에 출력
+            window.location.href = `/share_viewMandalart?userId=${user}`; // 다음 화면으로 이동
+        });
 
-                    const cancelButton = document.createElement('button');
-                    cancelButton.className = 'cancel-button';
-                    cancelButton.textContent = '삭제하기';
-                    cancelButton.addEventListener('click', async () => {
-                        await deleteFollowing(user);
-                        await showFollowingList(userId);
-                    });
-                    userItem.appendChild(cancelButton);
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = '삭제하기';
+        cancelButton.addEventListener('click', async () => {
+            await deleteFollowing(user);
+            await showFollowingList(userId);
+        });
 
-                    followingListContainer.appendChild(userItem);
-                });
-            }
+        userItem.appendChild(userPlan); // userPlan 추가
+        userItem.appendChild(cancelButton);
+
+        followingListContainer.appendChild(userItem);
+    });
+}
+
 
             async function showFollowersList(userId) {
                 const userList = await fetchFollowersList(userId);
