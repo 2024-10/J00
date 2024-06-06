@@ -59,7 +59,7 @@
 
         <!-- 댓글 표시 영역 -->
         <div id="comment-section">
-            <h4>댓글</h4>
+            <h4>댓글 (<span id="comment-count">0</span>)</h4>
             <ul id="comment-list"></ul>
             
             <div id="new-comment-section">
@@ -230,6 +230,8 @@
             if (response.ok) {
                 const comments = await response.json();
                 const commentList = document.getElementById('comment-list');
+                const commentCountSpan = document.getElementById('comment-count');
+
                 commentList.innerHTML = '';
                 comments.forEach(comment => {
                     const li = document.createElement('li');
@@ -262,6 +264,8 @@
                     });
                     commentList.appendChild(li);
                 });
+                // Update the comment count
+                commentCountSpan.textContent = comments.length;
             }
         }
 
