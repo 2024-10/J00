@@ -62,7 +62,7 @@
                 <ul id="checklist-list"></ul>
             </div>
         </div>
-        <div id="comment-section">
+        <div id="comment-section" style="display:none;">
             <h4>댓글 (<span id="comment-count">0</span>)</h4>
             <ul id="comment-list"></ul>
             
@@ -101,6 +101,8 @@
                 } else {
                     const data = await response.json();
                     document.getElementById('mandalart-grid').classList.add('visible');
+                    document.getElementById('comment-section').style.display = 'block';
+
                     displayMandalart(data);
                     loadComments(data.mandalart.mandalart_id);
 
