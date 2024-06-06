@@ -37,6 +37,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("DOM fully loaded and parsed");
+
+        // Event listener for Enter key on the search input
+        document.getElementById('search').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                searchUser();
+            }
+        });
     });
 
     async function searchUser() {
