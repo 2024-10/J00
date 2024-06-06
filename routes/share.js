@@ -63,7 +63,7 @@ router.get('/followingList', async (req, res) => {
     }
 });
 
-//팔로워 리스트 가져오기
+// 팔로워 리스트 가져오기
 router.get('/followersList', async (req, res) => {
     const userId = req.query.userId; 
     
@@ -83,7 +83,7 @@ router.get('/followersList', async (req, res) => {
     }
 });
 
-//팔로워 삭제하기
+// 팔로워 삭제하기
 router.post('/removeFollower', async (req, res) => {
     const userCookie = req.cookies[USER_COOKIE_KEY];
     if (!userCookie) {
@@ -111,7 +111,7 @@ router.post('/removeFollower', async (req, res) => {
     }
 });
 
-
+// 언팔로우하기
 router.post('/unfollow', async (req, res) => {
     const userCookie = req.cookies[USER_COOKIE_KEY];
     if (!userCookie) {
@@ -136,6 +136,22 @@ router.post('/unfollow', async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
+    }
+});
+
+// 맞팔로우 상태 확인
+router.get('/checkMutualFollow', async (req, res) => {
+    const { currentUserId, targetUserId } = req.query;
+
+    try {
+        const query = `SELECT * FROM follow WHERE from_user_id = ? AND to_user_id = ?`;
+        const results = await queryAsync(query, [targetUserId, currentUserId]);
+        const mutualFollow = results.length > 0;
+
+        res.json({ mutualFollow });
+    } catch (error) {
+        console.error('Error checking mutual follow status:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

@@ -69,6 +69,9 @@ app.get('/profile', (req, res) => {
         res.redirect('/signin');
     }
 });
+app.get('/share_viewMandalart', (req, res) => {
+    res.render('share_viewMandalart', { title: 'share_viewMandalart' });
+});
 
 // 서버 시작
 const PORT = process.env.PORT || 5006;

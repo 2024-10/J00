@@ -495,4 +495,58 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
 });
 
 
+
+
+
+
+
+//////////////////////////////////////
+// sen이 코드를 추가해보겠습니다......
+
+// 특정 유저의 만다라트를 가져오는 API
+router.get('/userMandalart/:userId', (req, res) => {
+    const { userId } = req.params;
+
+    client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Server error");
+        } else {
+            if (mandalartResult.length > 0) {
+                const mandalart = mandalartResult[0];
+                client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send("Server error");
+                    } else {
+                        const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                        if (tedolistIds.length > 0) {
+                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).send("Server error");
+                                } else {
+                                    const checklists = checklistResult.reduce((acc, checklist) => {
+                                        if (!acc[checklist.tedolist_number]) {
+                                            acc[checklist.tedolist_number] = [];
+                                        }
+                                        acc[checklist.tedolist_number].push(checklist);
+                                        return acc;
+                                    }, {});
+                                    res.json({ mandalart, tedolists: tedolistResult, checklists });
+                                }
+                            });
+                        } else {
+                            const checklists = {};
+                            res.json({ mandalart, tedolists: tedolistResult, checklists });
+                        }
+                    }
+                });
+            } else {
+                res.status(404).json({ message: "No Mandalart found for this user" });
+            }
+        }
+    });
+});
+
 module.exports = router;

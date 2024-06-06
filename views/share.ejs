@@ -21,14 +21,13 @@
         </nav>
     </header>
 
-    
     <div id="page-wrapper">
         <div id="share">
             <main>
                 <h1><a href="/add_friend">친구 추가하기 +</a></h1> 
                 <div class="tabs">
-                    <button id="following-tab" class="active" onclick="showTab('following')">팔로잉</button>
-                    <button id="followers-tab" onclick="showTab('followers')">팔로워</button>
+                    <button id="following-tab" class="active" onclick="showTab('following')">팔로잉 (<span id="following-count">0</span>)</button>
+                    <button id="followers-tab" onclick="showTab('followers')">팔로워 (<span id="followers-count">0</span>)</button>
                 </div>
                 <div id="following" class="tab-content active">
                     <div class="user-list" id="following-list">
@@ -43,7 +42,6 @@
             </main>
         </div>
         <script>
-            // 페이지 로드시 초기 탭 설정
             document.addEventListener('DOMContentLoaded', () => {
                 showTab('following');
             });
@@ -69,10 +67,10 @@
                         throw new Error('Failed to fetch following list');
                     }
                     const data = await response.json();
-                    return data.followingList || []; 
+                    return data.followingList || [];
                 } catch (error) {
                     console.error('Error fetching following list:', error.message);
-                    return []; 
+                    return [];
                 }
             }
 
@@ -132,9 +130,27 @@
                 }
             }
 
+            async function checkMutualFollow(currentUserId, targetUserId) {
+                console.log('currentUserId:', currentUserId);
+                console.log('targetUserId:', targetUserId);
+
+                try {
+                    const response = await fetch(`/api/share/checkMutualFollow?currentUserId=${currentUserId}&targetUserId=${targetUserId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to check mutual follow status');
+                    }
+                    const data = await response.json();
+                    return data.mutualFollow;
+                } catch (error) {
+                    console.error('Error checking mutual follow status:', error.message);
+                    return false;
+                }
+            }
+
             async function showFollowingList(userId) {
                 const userList = await fetchFollowingList(userId);
                 const followingListContainer = document.getElementById('following-list');
+                const followingCountSpan = document.getElementById('following-count');
                 followingListContainer.innerHTML = ''; 
                 console.log(userList);
 
@@ -145,7 +161,18 @@
                     const userPlan = document.createElement('span');
                     userPlan.className = 'user-plan';
                     userPlan.textContent = `${user}님의 계획`;
-                    userItem.appendChild(userPlan);
+
+                    userPlan.addEventListener('click', async () => {
+                        console.log(user); // 사용자 아이디를 콘솔에 출력
+
+                        // 맞팔로우 상태 확인
+                        const mutualFollow = await checkMutualFollow(userId, user);
+                        if (mutualFollow) {
+                            window.location.href = `/share_viewMandalart?userId=${user}`; // 다음 화면으로 이동
+                        } else {
+                            alert('서로 팔로잉한 상태에서만 만다라트를 열람할 수 있어요 :( ');
+                        }
+                    });
 
                     const cancelButton = document.createElement('button');
                     cancelButton.className = 'cancel-button';
@@ -154,15 +181,20 @@
                         await deleteFollowing(user);
                         await showFollowingList(userId);
                     });
+
+                    userItem.appendChild(userPlan);
                     userItem.appendChild(cancelButton);
 
                     followingListContainer.appendChild(userItem);
                 });
+                // 팔로잉 수 업데이트
+                 followingCountSpan.textContent = userList.length;
             }
 
             async function showFollowersList(userId) {
                 const userList = await fetchFollowersList(userId);
                 const followersListContainer = document.getElementById('followers-list');
+                const followersCountSpan = document.getElementById('followers-count');
                 followersListContainer.innerHTML = '';
                 console.log(userList);
 
@@ -186,6 +218,8 @@
 
                     followersListContainer.appendChild(userItem);
                 });
+                // 팔로워 수 업데이트
+                followersCountSpan.textContent = userList.length;
             }
 
             function showTab(tabName) {
