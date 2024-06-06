@@ -18,6 +18,25 @@
         #checklist-list {
             margin-top: 10px;
         }
+        #mandalart-grid {
+        opacity: 0;
+        /*transition: opacity 0.5s ease; 이거는 전환 애니메이션임*/
+        }
+        #mandalart-grid.visible {
+            opacity: 1;
+        }
+        #no-mandalart-message {
+            opacity: 0; /* 초기에 텍스트를 숨김 */
+            animation: fadeIn 2s forwards; /* 텍스트 등장 시간을 2초로 설정 */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* 투명도를 0으로 설정하여 숨김 */
+            }
+            to {
+                opacity: 1; /* 투명도를 1로 설정하여 나타남 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -36,13 +55,13 @@
     
     <div class="container">
         <h3 id="user-nickname"></h3>
+        <div id="no-mandalart-message" style="display:none;">아직 만다라트를 생성하지 않았어요:(</div>
         <div id="mandalart-grid" class="mandalart grid"></div>
         <div id="checklist-container" class="container arr1-container" style="display:none;">
             <div class="editContainer">
                 <ul id="checklist-list"></ul>
             </div>
         </div>
-        
         <div id="comment-section">
             <h4>댓글 (<span id="comment-count">0</span>)</h4>
             <ul id="comment-list"></ul>
@@ -71,38 +90,44 @@
 
             // 유저의 만다라트 제목 변경
             document.getElementById('user-nickname').textContent = `${userId}님의 만다라트`;
-
             try {
                 const response = await fetch(`/mandalart/userMandalart/${userId}`);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch mandalart');
-                }
-                const data = await response.json();
-                displayMandalart(data);
-                loadComments(data.mandalart.mandalart_id);
-
-                // Add comment button click event
-                document.getElementById('add-comment-button').addEventListener('click', () => {
-                    const commentDetail = document.getElementById('new-comment').value.trim();
-                    if (commentDetail) {
-                        addComment(data.mandalart.mandalart_id, commentDetail);
+                    if (response.status === 404) {
+                        document.getElementById('no-mandalart-message').style.display = 'block';
+                    } else {
+                        throw new Error('Failed to fetch mandalart');
                     }
-                });
+                } else {
+                    const data = await response.json();
+                    document.getElementById('mandalart-grid').classList.add('visible');
+                    displayMandalart(data);
+                    loadComments(data.mandalart.mandalart_id);
 
-                // Submit comment on Enter key press
-                document.getElementById('new-comment').addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        const commentDetail = event.target.value.trim();
+                    // Add comment button click event
+                    document.getElementById('add-comment-button').addEventListener('click', () => {
+                        const commentDetail = document.getElementById('new-comment').value.trim();
                         if (commentDetail) {
                             addComment(data.mandalart.mandalart_id, commentDetail);
                         }
-                    }
-                });
+                    });
+
+                    // Submit comment on Enter key press
+                    document.getElementById('new-comment').addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            const commentDetail = event.target.value.trim();
+                            if (commentDetail) {
+                                addComment(data.mandalart.mandalart_id, commentDetail);
+                            }
+                        }
+                    });
+                }
             } catch (error) {
                 console.error('Error fetching mandalart:', error);
             }
         });
+
 
 
         function displayMandalart(data) {

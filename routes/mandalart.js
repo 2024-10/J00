@@ -543,7 +543,7 @@ router.get('/userMandalart/:userId', (req, res) => {
                     }
                 });
             } else {
-                res.status(404).send("Mandalart not found");
+                res.status(404).json({ message: "No Mandalart found for this user" });
             }
         }
     });
