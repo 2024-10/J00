@@ -161,9 +161,9 @@
                         const checklistId = event.target.dataset.checklistId;
                         const isChecked = event.target.checked;
                         await updateChecklistStatus(checklistId, isChecked);
-                        if (isChecked) {
-                            event.target.closest('li').style.display = 'none';
-                        }
+                        //if (isChecked) {
+                            //event.target.closest('li').style.display = 'none';
+                        //}
                     });
                 });
 
