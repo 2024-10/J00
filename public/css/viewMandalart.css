@@ -5,7 +5,7 @@
     align-items: center;
     height: 100vh;
     margin: 0;
-    flex-direction: column;
+    flex-direction: row;
 }
 .editContainer {
     background: #fff;
@@ -14,8 +14,13 @@
     padding: 20px;
     width: 200%;
     max-width: 400px;
-    text-align: center;
-    margin-right: 500px;
+    /* text-align: center; */
+
+    margin-left: 30px;
+}
+
+ul{
+    list-style-type: none;
 }
 
 h2 {
@@ -108,24 +113,10 @@ h2 {
 }
 input:focus {outline:none;}
 
-/* .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-sizing: border-box;
-} */
 .cell-text {
     font-size: 14px;
     padding: 5px;
 }
-
-/* 각 칸 개수에 따른 레이아웃 정의 */
-/* .grid-2 .cell {
-    position: absolute;
-} */
 
 .grid-2 .cell.left {
     width: 324px;
@@ -390,10 +381,10 @@ input:focus {outline:none;}
 /* 댓글 리스트를 포함하는 컨테이너 */
 #comment-section {
     position: relative;
-    top: -220px; 
+    top: -50px; 
     width: 100%;
     max-width: 450px;
-    margin-left: 1200px; /* 오른쪽으로 정렬 */
+    margin-left: 120px; /* 오른쪽으로 정렬 */
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;

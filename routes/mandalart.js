@@ -283,10 +283,10 @@ router.get('/edit/:mandalartId', (req, res) => {
 });
 
 
-//체크리스트 목록 보여주기
+// 체크리스트 목록 보여주기
 router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
     const { mandalartId, tedolistNumber } = req.params;
-    client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ?", [mandalartId, tedolistNumber], (err, result) => {
+    client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ? AND DATE(date) = CURDATE()", [mandalartId, tedolistNumber], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");
@@ -295,44 +295,6 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
         }
     });
 });
-
-
-//체크리스트 매일 업데이트.. 해야댄다
-router.put('/updateChecklistStatus/:checklistId', (req, res) => {
-    const userCookie = req.cookies['USER'];
-    const user = userCookie ? JSON.parse(userCookie) : null;
-    const { checklistId } = req.params;
-    const { is_checked } = req.body;
-
-    if (user) {
-        client.query("UPDATE checklist SET is_checked = ? WHERE checklist_id = ?", [is_checked, checklistId], (err, result) => {
-            if (err) {
-                console.log(err);
-                res.status(500).send("Server error");
-            } else {
-                res.status(200).json({ success: true });
-            }
-        });
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
-    }
-});
-
-//체크리스트 매일 리셋해야댄다..
-router.put('/resetChecklistStatus', (req, res) => {
-    client.query("UPDATE checklist SET is_checked = false WHERE is_checked = true", (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send("Server error");
-        } else {
-            res.status(200).json({ success: true });
-        }
-    });
-});
-
-
-
-
 
 
 
@@ -495,7 +457,25 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
 });
 
 
+router.put('/updateChecklistStatus/:checklistId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { checklistId } = req.params;
+    const { is_checked } = req.body;
 
+    if (user) {
+        client.query("UPDATE checklist SET is_checked = ? WHERE checklist_id = ?", [is_checked, checklistId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                res.status(200).json({ success: true });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
 
 
 

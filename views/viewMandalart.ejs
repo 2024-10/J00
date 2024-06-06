@@ -7,19 +7,6 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
     <link rel="stylesheet" href="/css/comment.css">
-
-    <style>
-        .cell.active {
-            background-color: #F4FFE8 !important;
-        }
-        #checklist-container {
-            display: none;
-            margin-top: 20px;
-        }
-        #checklist-list {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
     <header id="main-header">
@@ -34,29 +21,27 @@
             </ul>
         </nav>
     </header>
-
+    <h3>나의 만다라트</h3>
+    <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
     <div class="container">
-        <h3>나의 만다라트</h3>
-        <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
-        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
+        
         <div class="editContainer">
             <% tedolists.forEach((tedolist, index) => { %>
                 <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
                 <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
                 <% if (checklists[tedolist.tedolist_number]) { %>
-                    <ul>
+                    <ul class="checklist" id="checklist-<%= tedolist.tedolist_number %>" style="display:none;">
                         <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
                             <li><%= checklist.checklist_detail %></li>
                         <% }); %>
                     </ul>
                 <% } %>
             <% }); %>
+            <div id="checklist-container">
+                <ul id="checklist-list"></ul>
+            </div>
         </div>
-
-        <div id="checklist-container">
-            <ul id="checklist-list"></ul>
-        </div>
-
+        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
         <!-- 댓글 표시 영역 -->
         <div id="comment-section">
             <h4>댓글 (<span id="comment-count">0</span>)</h4>
