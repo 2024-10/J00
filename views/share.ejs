@@ -26,8 +26,8 @@
             <main>
                 <h1><a href="/add_friend">친구 추가하기 +</a></h1> 
                 <div class="tabs">
-                    <button id="following-tab" class="active" onclick="showTab('following')">팔로잉</button>
-                    <button id="followers-tab" onclick="showTab('followers')">팔로워</button>
+                    <button id="following-tab" class="active" onclick="showTab('following')">팔로잉 (<span id="following-count">0</span>)</button>
+                    <button id="followers-tab" onclick="showTab('followers')">팔로워 (<span id="followers-count">0</span>)</button>
                 </div>
                 <div id="following" class="tab-content active">
                     <div class="user-list" id="following-list">
@@ -150,6 +150,7 @@
             async function showFollowingList(userId) {
                 const userList = await fetchFollowingList(userId);
                 const followingListContainer = document.getElementById('following-list');
+                const followingCountSpan = document.getElementById('following-count');
                 followingListContainer.innerHTML = ''; 
                 console.log(userList);
 
@@ -186,11 +187,14 @@
 
                     followingListContainer.appendChild(userItem);
                 });
+                // 팔로잉 수 업데이트
+                 followingCountSpan.textContent = userList.length;
             }
 
             async function showFollowersList(userId) {
                 const userList = await fetchFollowersList(userId);
                 const followersListContainer = document.getElementById('followers-list');
+                const followersCountSpan = document.getElementById('followers-count');
                 followersListContainer.innerHTML = '';
                 console.log(userList);
 
@@ -214,6 +218,8 @@
 
                     followersListContainer.appendChild(userItem);
                 });
+                // 팔로워 수 업데이트
+                followersCountSpan.textContent = userList.length;
             }
 
             function showTab(tabName) {
