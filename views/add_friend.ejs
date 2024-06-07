@@ -114,6 +114,8 @@
             console.log("Follow response data:", data);  // 디버깅용 로그
             if (data.msg === 'Followed successfully') {
                 alert('친구가 추가되었습니다.');
+                document.getElementById('search').value = ''; // 검색창 값 초기화
+                document.getElementById('userResult').style.display = 'none'; // 검색 결과 숨기기
             } else {
                 throw new Error('친구 추가 중 오류가 발생했습니다.');
             }
