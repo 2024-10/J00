@@ -68,7 +68,7 @@ router.post('/signin', async (req, res) => {
     try {
         let user = await fetchUser(user_id);
         if (!user) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: '사용자를 찾을 수 없습니다.' });
         }
 
         console.log('User found:', user);
@@ -78,7 +78,7 @@ router.post('/signin', async (req, res) => {
         console.log('Password match result:', isMatch); // 디버깅 로그 추가
         if (!isMatch) {
             console.log('Password does not match');
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: '비밀번호 오류' });
         }
 
         const payload = { user: { user_id: user.user_id } };

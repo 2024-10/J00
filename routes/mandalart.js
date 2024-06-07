@@ -283,10 +283,10 @@ router.get('/edit/:mandalartId', (req, res) => {
 });
 
 
-//체크리스트 목록 보여주기
+// 체크리스트 목록 보여주기
 router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
     const { mandalartId, tedolistNumber } = req.params;
-    client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ?", [mandalartId, tedolistNumber], (err, result) => {
+    client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number = ? AND DATE(date) = CURDATE()", [mandalartId, tedolistNumber], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");
@@ -295,8 +295,6 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
         }
     });
 });
-
-
 
 
 
@@ -454,6 +452,79 @@ router.get('/checklists/:mandalartId/:tedolistNumber', (req, res) => {
             res.status(500).send("Server error");
         } else {
             res.json(result);
+        }
+    });
+});
+
+
+router.put('/updateChecklistStatus/:checklistId', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { checklistId } = req.params;
+    const { is_checked } = req.body;
+
+    if (user) {
+        client.query("UPDATE checklist SET is_checked = ? WHERE checklist_id = ?", [is_checked, checklistId], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Server error");
+            } else {
+                res.status(200).json({ success: true });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
+
+
+//////////////////////////////////////
+// sen이 코드를 추가해보겠습니다......
+
+// 특정 유저의 만다라트를 가져오는 API
+router.get('/userMandalart/:userId', (req, res) => {
+    const { userId } = req.params;
+
+    client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Server error");
+        } else {
+            if (mandalartResult.length > 0) {
+                const mandalart = mandalartResult[0];
+                client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send("Server error");
+                    } else {
+                        const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                        if (tedolistIds.length > 0) {
+                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).send("Server error");
+                                } else {
+                                    const checklists = checklistResult.reduce((acc, checklist) => {
+                                        if (!acc[checklist.tedolist_number]) {
+                                            acc[checklist.tedolist_number] = [];
+                                        }
+                                        acc[checklist.tedolist_number].push(checklist);
+                                        return acc;
+                                    }, {});
+                                    res.json({ mandalart, tedolists: tedolistResult, checklists });
+                                }
+                            });
+                        } else {
+                            const checklists = {};
+                            res.json({ mandalart, tedolists: tedolistResult, checklists });
+                        }
+                    }
+                });
+            } else {
+                res.status(404).json({ message: "No Mandalart found for this user" });
+            }
         }
     });
 });

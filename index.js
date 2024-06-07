@@ -7,6 +7,8 @@ const shareRouter = require('./routes/share');
 const addFriendRouter = require('./routes/add_friend');
 const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
 const client = require('./db'); // MySQL 클라이언트 사용
+const schedule = require('node-schedule');
+const commentRouter = require('./routes/comment');
 
 const app = express();
 
@@ -27,6 +29,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/share', shareRouter);
 app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
+app.use('/comment', commentRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -36,9 +39,18 @@ app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
 app.get('/share', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('share', { title: 'Share' });
 });
+
 app.get('/add_friend', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('add_friend', { title: 'Add Friend' });
 });
 app.get('/', (req, res) => {
@@ -67,6 +79,58 @@ app.get('/profile', (req, res) => {
         res.redirect('/signin');
     }
 });
+app.get('/share_viewMandalart', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
+    res.render('share_viewMandalart', { title: 'Share' });
+});
+
+schedule.scheduleJob('0 0 * * *', async () => {
+    try {
+        // 어제 날짜를 'YYYY-MM-DD' 형식으로 가져옴
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        // 오늘 날짜를 'YYYY-MM-DD' 형식으로 가져옴
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        // 어제 날짜의 체크리스트 가져오기
+        client.query("SELECT * FROM checklist WHERE DATE(date) = ?", [yesterdayStr], (err, result) => {
+            if (err) {
+                console.log('Error fetching checklist:', err);
+            } else {
+                const newChecklistEntries = result.map(entry => [
+                    entry.mandalart_id,
+                    entry.tedolist_number,
+                    entry.checklist_detail,
+                    "", // imogi 초기화
+                    todayStr, // 오늘 날짜
+                    false // is_checked 초기화
+                ]);
+
+                // 새로운 체크리스트 삽입
+                if (newChecklistEntries.length > 0) {
+                    client.query("INSERT INTO checklist (mandalart_id, tedolist_number, checklist_detail, imogi, date, is_checked) VALUES ?", [newChecklistEntries], (insertErr, insertResult) => {
+                        if (insertErr) {
+                            console.log('Error inserting new checklist entries:', insertErr);
+                        } else {
+                            console.log('Successfully inserted new checklist entries for today:', insertResult);
+                        }
+                    });
+                } else {
+                    console.log('No checklist entries found for yesterday.');
+                }
+            }
+        });
+    } catch (error) {
+        console.log('Error during scheduled task:', error);
+    }
+});
+
+
 
 // 서버 시작
 const PORT = process.env.PORT || 5006;

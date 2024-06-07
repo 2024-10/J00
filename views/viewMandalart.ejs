@@ -6,22 +6,7 @@
     <title>View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
-    <style>
-        .cell.active {
-            background-color: #F4FFE8 !important;
-        }
-        #checklist-container {
-            display: none;
-            margin-top: 20px;
-        }
-        #checklist-list {
-            margin-top: 10px;
-        }
-        #calendar {
-            margin-top: 20px;
-        }
-    </style>
-    <script src="https://apis.google.com/js/api.js"></script> <!-- Google Calendar API 스크립트 추가 -->
+    <link rel="stylesheet" href="/css/comment.css">
 </head>
 <body>
     <header id="main-header">
@@ -30,51 +15,43 @@
         </a>
         <nav id="main-navigation">
             <ul class="menu">
-                <!--로그아웃 기능인데 다른 파일에 다른 코드 추가해야함 오류나면 일단 주석처리하셈-->
-                <% if (user) { %>
-                    <li class="menu-item">
-                        <form id="logout-form" action="/logout" method="POST">
-                            <button type="submit" class="signup-link">로그아웃</button>
-                        </form>
-                    </li>
-                <% } else { %>
-                    <li class="menu-item">
-                        <button onclick="window.location.href='/signin'" class="signup-link">로그인</button>
-                    </li>
-                <% } %>
-                <!--여기까지 로그아웃 기능-->
                 <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button active">My Mandalart</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
             </ul>
         </nav>
     </header>
-    
+    <h3>나의 만다라트</h3>
+    <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
     <div class="container">
-        <h3>나의 만다라트</h3>
-        <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
-        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
-        <div id="checklist-container" class="container arr1-container" style="display:none;">
-            <div class="editContainer">
-                <% tedolists.forEach((tedolist, index) => { %>
-                    <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
-                    <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
-                    <% if (checklists[tedolist.tedolist_number]) { %>
-                        <ul>
-                            <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
-                                <li><%= checklist.checklist_detail %></li>
-                            <% }); %>
-                        </ul>
-                    <% } %>
-                <% }); %>
+        
+        <div class="editContainer">
+            <% tedolists.forEach((tedolist, index) => { %>
+                <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
+                <% if (checklists[tedolist.tedolist_number]) { %>
+                    <ul class="checklist" id="checklist-<%= tedolist.tedolist_number %>" style="display:none;">
+                        <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                            <li><%= checklist.checklist_detail %></li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+            <% }); %>
+            <div id="checklist-container">
+                <ul id="checklist-list"></ul>
             </div>
         </div>
-        
-        <div id="checklist-container">
-            <ul id="checklist-list"></ul>
+        <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
+        <!-- 댓글 표시 영역 -->
+        <div id="comment-section">
+            <h4>댓글 (<span id="comment-count">0</span>)</h4>
+            <ul id="comment-list"></ul>
+            
+            <div id="new-comment-section">
+                <textarea id="new-comment" placeholder="댓글을 입력하세요"></textarea>
+                <button id="add-comment-button">댓글 작성</button>
+            </div>
         </div>
-
-        <div id="calendar"></div> <!-- 캘린더를 표시할 div 요소 추가 -->
     </div>
 
     <script>
@@ -89,8 +66,6 @@
                     addCellClickHandlers('<%= mandalart.mandalart_id %>');
                 }
             }
-
-            handleClientLoad(); // Google Calendar API 초기화 함수 호출
         });
 
         function generateMandalart(container, centerGoal, numCells) {
@@ -171,66 +146,161 @@
                 const checklists = await response.json();
                 const checklistContainer = document.querySelector('#checklist-list');
                 checklistContainer.innerHTML = '';
-                console.log(`Checklists loaded for Tedolist Number: ${tedolistNumber}`, checklists);
                 checklists.forEach(checklist => {
                     const li = document.createElement('li');
-                    li.textContent = checklist.checklist_detail;
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <input type="checkbox" class="checklist-checkbox" data-checklist-id="${checklist.checklist_id}" ${checklist.is_checked ? 'checked' : ''}>
+                        <span>${checklist.checklist_detail}</span>
+                    `;
                     checklistContainer.appendChild(li);
                 });
+
+                document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (event) => {
+                        const checklistId = event.target.dataset.checklistId;
+                        const isChecked = event.target.checked;
+                        await updateChecklistStatus(checklistId, isChecked);
+                        //if (isChecked) {
+                            //event.target.closest('li').style.display = 'none';
+                        //}
+                    });
+                });
+
                 document.querySelector('#checklist-container').style.display = 'block';
             }
         }
 
-        // Google Calendar API integration
-        function handleClientLoad() {
-            gapi.load('client:auth2', initClient);
+        async function updateChecklistStatus(checklistId, isChecked) {
+            const response = await fetch(`/mandalart/updateChecklistStatus/${checklistId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_checked: isChecked })
+            });
+            if (!response.ok) {
+                console.error('Failed to update checklist status');
+            }
         }
 
-        function initClient() {
-            gapi.client.init({
-                apiKey: 'a23d0f0be0904c96430380874a8fd12121a9d855',
-                clientId: '112866998021-vcbcp79odresm2lntis6umpvbk72hs9t.apps.googleusercontent.com',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-                scope: 'https://www.googleapis.com/auth/calendar.readonly',
-            }).then(() => {
-            console.log("GAPI client initialized.");
-            gapi.auth2.getAuthInstance().signIn().then(() => {
-                console.log("Signed in successfully.");
-                loadCalendar();
-            }).catch((error) => {
-                console.error("Error signing in", error);
-            });
-        }).catch((error) => {
-            console.error("Error initializing gapi client", error);
-        });
-    }
+        document.addEventListener('DOMContentLoaded', () => {
+            const mandalartId = '<%= mandalart.mandalart_id %>';
 
-        function loadCalendar() {
-            gapi.client.calendar.events.list({
-                'calendarId': 'primary',
-                'timeMin': (new Date()).toISOString(),
-                'showDeleted': false,
-                'singleEvents': true,
-                'maxResults': 10,
-                'orderBy': 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                const calendarDiv = document.getElementById('calendar');
-                const calendar = document.createElement('div');
-                calendar.innerHTML = '<h2>Upcoming Events</h2>';
-                if (events.length > 0) {
-                    const ul = document.createElement('ul');
-                    events.forEach(event => {
-                        const li = document.createElement('li');
-                        li.textContent = `${event.summary} (${event.start.dateTime || event.start.date})`;
-                        ul.appendChild(li);
-                    });
-                    calendar.appendChild(ul);
-                } else {
-                    calendar.innerHTML += '<p>No upcoming events found.</p>';
+            // Load comments on page load
+            loadComments(mandalartId);
+
+            // Add comment button click event
+            document.getElementById('add-comment-button').addEventListener('click', () => {
+                const commentDetail = document.getElementById('new-comment').value.trim();
+                if (commentDetail) {
+                    addComment(mandalartId, commentDetail);
                 }
-                calendarDiv.appendChild(calendar);
             });
+
+            // Submit comment on Enter key press
+            document.getElementById('new-comment').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const commentDetail = event.target.value.trim();
+                    if (commentDetail) {
+                        addComment(mandalartId, commentDetail);
+                    }
+                }
+            });
+        });
+
+        async function loadComments(mandalartId) {
+            const response = await fetch(`/comment/${mandalartId}`);
+            if (response.ok) {
+                const comments = await response.json();
+                const commentList = document.getElementById('comment-list');
+                const commentCountSpan = document.getElementById('comment-count');
+
+                commentList.innerHTML = '';
+                comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'comment-item';
+                    li.innerHTML = `
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <img src="/images/comment_user.svg" alt="profile">
+                                <span class="comment-author-name">${comment.user_id}</span>
+                            </div>
+                            <span class="comment-date">${comment.date}</span>
+                        </div>
+                        <div class="comment-detail">${comment.comment_detail}</div>
+                        <div class="comment-reactions">
+                            ${generateReactionsHTML(comment)}
+                        </div>
+                        <button class="delete-comment-button" data-comment-id="${comment.comment_id}">삭제</button>
+                    `;
+                    li.querySelectorAll('.comment-reaction').forEach(reaction => {
+                        reaction.addEventListener('click', async () => {
+                            const emoji = reaction.dataset.emoji;
+                            await incrementReaction(comment.comment_id, emoji);
+                            const countSpan = reaction.querySelector('span');
+                            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                        });
+                    });
+                    li.querySelector('.delete-comment-button').addEventListener('click', async () => {
+                        await deleteComment(comment.comment_id);
+                        loadComments(mandalartId);
+                    });
+                    commentList.appendChild(li);
+                });
+                // Update the comment count
+                commentCountSpan.textContent = comments.length;
+            }
+        }
+
+        async function addComment(mandalartId, commentDetail) {
+            const response = await fetch('/comment/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mandalart_id: mandalartId, comment_detail: commentDetail })
+            });
+            if (response.ok) {
+                document.getElementById('new-comment').value = '';
+                loadComments(mandalartId);
+            }
+        }
+
+        async function deleteComment(commentId) {
+            const response = await fetch(`/comment/delete/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                loadComments('<%= mandalart.mandalart_id %>');
+            }
+        }
+
+        async function incrementReaction(commentId, emoji) {
+            const response = await fetch('/comment/reaction/increment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ comment_id: commentId, emoji })
+            });
+            if (!response.ok) {
+                console.log('Failed to increment reaction');
+            }
+        }
+
+        function generateReactionsHTML(comment) {
+            const emojis = ['1', '2', '3', '4', '5'];
+            return emojis.map(emoji => `
+                <div class="comment-reaction" data-emoji="${emoji}">
+                    <img src="/images/${emoji}.svg" alt="${emoji}">
+                    <span>${comment[`imogi${emoji}count`] || 0}</span>
+                </div>
+            `).join('');
         }
     </script>
 </body>
