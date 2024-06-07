@@ -9,6 +9,7 @@ const mandalartRouter = require('./routes/mandalart'); // Import mandalart route
 const client = require('./db'); // MySQL 클라이언트 사용
 const schedule = require('node-schedule');
 const commentRouter = require('./routes/comment');
+const calendarRouter = require('./routes/calendar'); // 추가
 
 const app = express();
 
@@ -30,6 +31,9 @@ app.use('/api/share', shareRouter);
 app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
+
+app.use('/calendar', calendarRouter);
+
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
