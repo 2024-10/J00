@@ -12,7 +12,7 @@ router.post('/add', (req, res) => {
         const { mandalart_id, comment_detail } = req.body;
         const comment_id = uuidv4();
         const date = new Date();
-
+        
         client.query(
             "INSERT INTO comment (mandalart_id, user_id, comment_id, date, comment_detail) VALUES (?, ?, ?, ?, ?)",
             [mandalart_id, user.user_id, comment_id, date, comment_detail],

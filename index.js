@@ -39,9 +39,18 @@ app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
 app.get('/share', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('share', { title: 'Share' });
 });
+
 app.get('/add_friend', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('add_friend', { title: 'Add Friend' });
 });
 app.get('/', (req, res) => {
@@ -71,7 +80,11 @@ app.get('/profile', (req, res) => {
     }
 });
 app.get('/share_viewMandalart', (req, res) => {
-    res.render('share_viewMandalart', { title: 'share_viewMandalart' });
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
+    res.render('share_viewMandalart', { title: 'Share' });
 });
 
 schedule.scheduleJob('0 0 * * *', async () => {
