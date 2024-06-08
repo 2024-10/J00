@@ -1,0 +1,75 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #F8F8E8;
+    font-family: Arial, sans-serif;
+}
+#calendar {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: flex-end; /* 수직 아래 정렬 */
+}
+
+#details {
+    display: none;
+    background-color: #D3ECA7;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+}
+#details h3 {
+    margin-top: 0;
+}
+.todo-tabs-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ccc;
+}
+.todo-tab {
+    display: inline-block;
+    background-color: #ccc;
+    border: 1px solid #bbb;
+    border-bottom: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: -2px;
+}
+.todo-tab.active {
+    background-color: #ffffff;
+    font-weight: bold;
+    border-color: #ddd;
+}
+.checklist-container {
+    display: none;
+}
+.checklist-container.active {
+    display: block;
+}
+.checklist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.checklist-item input {
+    margin-right: 10px;
+}
+.todo-content {
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 100px;
+}
+.empty-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
