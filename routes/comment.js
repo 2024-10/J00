@@ -39,10 +39,26 @@ router.get('/:mandalart_id', (req, res) => {
             console.log(err);
             res.status(500).send("Server error");
         } else {
-            res.json(result);
+            // 날짜를 변환하여 결과 객체의 date 필드를 업데이트
+            const comments = result.map(comment => {
+                const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZone: 'Asia/Seoul'
+                }).format(comment.date);
+
+                return { ...comment, date: formattedDate };
+            });
+
+            res.json(comments);
         }
     });
 });
+
 
 // 댓글 삭제
 router.delete('/delete/:comment_id', (req, res) => {
