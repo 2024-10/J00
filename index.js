@@ -1,5 +1,3 @@
-// index.js 파일
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -46,24 +44,29 @@ app.use('/calendar', calendarRouter);
 app.get('/signup', (req, res) => {
     res.render('signup', { title: 'Sign Up' });
 });
+
 app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
+
 app.get('/share', (req, res) => {
     if (!res.locals.user) {
         return res.redirect('/signin');
     }
-    res.render('share', { title: 'Share', user: res.locals.user });
+    res.render('share', { title: 'Share' });
 });
+
 app.get('/add_friend', (req, res) => {
     if (!res.locals.user) {
         return res.redirect('/signin');
     }
-    res.render('add_friend', { title: 'Add Friend', user: res.locals.user });
+    res.render('add_friend', { title: 'Add Friend' });
 });
+
 app.get('/', (req, res) => {
-    res.render('home', { title: 'Home', user: res.locals.user });
+    res.render('home', { title: 'Home' });
 });
+
 app.get('/profile', (req, res) => {
     if (res.locals.user) {
         client.query('SELECT * FROM user WHERE user_id = ?', [res.locals.user.user_id], (err, results) => {
@@ -82,17 +85,12 @@ app.get('/profile', (req, res) => {
         res.redirect('/signin');
     }
 });
+
 app.get('/share_viewMandalart', (req, res) => {
     if (!res.locals.user) {
         return res.redirect('/signin');
     }
-    res.render('share_viewMandalart', { title: 'Share', user: res.locals.user });
-});
-app.get('/editMandalart', (req, res) => {
-    if (!res.locals.user) {
-        return res.redirect('/signin');
-    }
-    res.render('editMandalart', { title: 'Edit Mandalart', user: res.locals.user });
+    res.render('share_viewMandalart', { title: 'Share' });
 });
 
 // 스케줄 작업
