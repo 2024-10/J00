@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -38,6 +38,38 @@ async function createUser(newUser) {
     });
 }
 
+// 회원 탈퇴 라우트 추가
+router.post('/delete', async (req, res) => {
+    // 쿠키에서 사용자 정보 가져오기
+    if (!req.cookies || !req.cookies[USER_COOKIE_KEY]) {
+        return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    const user = JSON.parse(req.cookies[USER_COOKIE_KEY]);
+    const userId = user.user_id;
+
+    try {
+        // 사용자 삭제 쿼리 실행
+        client.query('DELETE FROM user WHERE user_id = ?', [userId], (err, result) => {
+            if (err) {
+                console.error('Error deleting user:', err);
+                return res.status(500).send('Server error');
+            }
+
+            if (result.affectedRows > 0) {
+                // 사용자 삭제 성공 시 쿠키 삭제 및 응답
+                res.clearCookie(USER_COOKIE_KEY);
+                return res.json({ msg: 'User deleted successfully' });
+            } else {
+                return res.status(404).json({ msg: 'User not found' });
+            }
+        });
+    } catch (err) {
+        console.error('Error during user deletion:', err);
+        res.status(500).send('Server error');
+    }
+});
+
 router.post('/signup', async (req, res) => {
     const { user_id, user_email, user_pw, user_birthday, user_nickname } = req.body;
 
@@ -68,7 +100,7 @@ router.post('/signin', async (req, res) => {
     try {
         let user = await fetchUser(user_id);
         if (!user) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: '사용자를 찾을 수 없습니다.' });
         }
 
         console.log('User found:', user);
@@ -78,7 +110,7 @@ router.post('/signin', async (req, res) => {
         console.log('Password match result:', isMatch); // 디버깅 로그 추가
         if (!isMatch) {
             console.log('Password does not match');
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return res.status(400).json({ msg: '비밀번호 오류' });
         }
 
         const payload = { user: { user_id: user.user_id } };

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/viewMandalart.css">
     <link rel="stylesheet" href="/css/comment.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+
 </head>
 <body>
     <header id="main-header">
@@ -472,7 +473,168 @@
                             await loadChecklists(mandalartId, tedolistNumber);
                         } else {
                             document.querySelector('#checklist-container').style.display = 'none';
+
                         }
+
+                        mandalartGrid.appendChild(cell);
+                    }
+                }
+
+                container.appendChild(mandalartGrid);
+            }
+
+            function addCellClickHandlers(mandalartId) {
+                const cells = document.querySelectorAll('.mandalart-cell');
+                cells.forEach(cell => {
+                    cell.addEventListener('click', async (event) => {
+                        const row = event.currentTarget.dataset.row;
+                        const col = event.currentTarget.dataset.col;
+
+                        try {
+                            const response = await fetch(`/mandalart/${mandalartId}/goal/${row}/${col}`);
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data && data.goal) {
+                                    alert(`Goal: ${data.goal}`);
+                                } else {
+                                    alert('No goal data available for this cell');
+                                }
+                            } else {
+                                alert('Failed to fetch goal data');
+                            }
+                        } catch (error) {
+                            console.error('Error fetching goal data:', error);
+                            alert('Error fetching goal data');
+                        }
+                    });
+                });
+            }
+
+            async function loadComments(mandalartId) {
+                try {
+                    const response = await fetch(`/mandalart/${mandalartId}/comments`);
+                    if (response.ok) {
+                        const comments = await response.json();
+                        displayComments(comments);
+                    } else {
+                        console.error('Failed to load comments');
+                    }
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                }
+            }
+
+            function displayComments(comments) {
+                const commentList = document.getElementById('comment-list');
+                const commentCount = document.getElementById('comment-count');
+                commentList.innerHTML = '';
+                commentCount.textContent = comments.length;
+
+                comments.forEach(comment => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('comment-item');
+
+                    const detailDiv = document.createElement('div');
+                    detailDiv.classList.add('comment-detail');
+                    detailDiv.textContent = comment.comment_detail;
+
+                    const timestampDiv = document.createElement('div');
+                    timestampDiv.classList.add('comment-timestamp');
+                    timestampDiv.textContent = `작성 시간: ${comment.comment_timestamp}`;
+
+                    listItem.appendChild(detailDiv);
+                    listItem.appendChild(timestampDiv);
+                    commentList.appendChild(listItem);
+                });
+            }
+
+            async function addComment(mandalartId, commentDetail) {
+                try {
+                    const response = await fetch(`/mandalart/${mandalartId}/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ comment_detail: commentDetail })
+                    });
+
+                    if (response.ok) {
+                        const newComment = await response.json();
+                        document.getElementById('new-comment').value = '';
+                        loadComments(mandalartId);
+                    } else {
+                        console.error('Failed to add comment');
+                    }
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                }
+            }
+        });
+
+        function getPositions(numCells) {
+            switch (numCells) {
+                case 2:
+                    return ["left", "right"];
+                case 3:
+                    return ["left", "right", "down"];
+                case 4:
+                    return ["up", "left", "right", "down"];
+                case 5:
+                    return ["up", "left", "right", "down-left", "down-right"];
+                case 6:
+                    return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
+                case 7:
+                    return ["up-left", "up-right", "left", "right", "down-left", "down", "down-right"];
+                case 8:
+                    return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
+                default:
+                    return [];
+            }
+        }
+
+        function addCellClickHandlers(mandalartId) {
+            const cells = document.querySelectorAll('.mandalart .cell');
+            cells.forEach(cell => {
+                if (!cell.classList.contains('center')) {
+                    cell.addEventListener('click', async (event) => {
+                        if (cell.dataset.hasTedolistDetail === "true") {
+                            cells.forEach(c => c.classList.remove('active'));
+                            event.target.classList.add('active');
+                            const tedolistNumber = event.target.dataset.tedolistNumber;
+                            console.log(`Tedolist Number: ${tedolistNumber}`);
+                            await loadChecklists(mandalartId, tedolistNumber);
+                        } else {
+                            document.querySelector('#checklist-container').style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        async function loadChecklists(mandalartId, tedolistNumber) {
+            const response = await fetch(`/mandalart/checklists/${mandalartId}/${tedolistNumber}`);
+            if (response.ok) {
+                const checklists = await response.json();
+                const checklistContainer = document.querySelector('#checklist-list');
+                checklistContainer.innerHTML = '';
+                checklists.forEach(checklist => {
+                    const li = document.createElement('li');
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <input type="checkbox" class="checklist-checkbox" data-checklist-id="${checklist.checklist_id}" ${checklist.is_checked ? 'checked' : ''}>
+                        <span>${checklist.checklist_detail}</span>
+                    `;
+                    checklistContainer.appendChild(li);
+                });
+
+                document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (event) => {
+                        const checklistId = event.target.dataset.checklistId;
+                        const isChecked = event.target.checked;
+                        await updateChecklistStatus(checklistId, isChecked);
+                        //if (isChecked) {
+                            //event.target.closest('li').style.display = 'none';
+                        //}
                     });
                 }
             });

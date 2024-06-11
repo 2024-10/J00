@@ -6,6 +6,17 @@
     <title>Profile</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <style>
+        .delete-button {
+            background-color: #006735;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header id="main-header">
@@ -14,9 +25,22 @@
         </a>
         <nav id="main-navigation">
             <ul class="menu">
+                <% if (user) { %>
+                    <!-- 로그인 상태일 때, 로그아웃 버튼 -->
+                    <li class="menu-item">
+                        <form id="logout-form" action="/logout" method="POST">
+                            <button type="submit" class="signup-link">로그아웃</button>
+                        </form>
+                    </li>
+                <% } else { %>
+                    <!-- 비로그인 상태일 때, 로그인 버튼 -->
+                    <li class="menu-item">
+                        <button onclick="window.location.href='/signin'" class="signup-link">로그인</button>
+                    </li>
+                <% } %>                
                 <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
-                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
-                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button active">Profile</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button active">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
             </ul>
         </nav>
     </header>
@@ -24,10 +48,17 @@
         <section class="profile-section">
             <h2>프로필</h2>
             <div class="profile-card">
-                <h3><%= user ? user.user_nickname : 'Guest' %></h3>
+                <h3>
+                    <%= user ? user.user_nickname : 'Guest' %> 
+                </h3>
                 <p>아이디 : <%= user ? user.user_id : 'Guest' %></p>
                 <p>이메일 : <%= user ? user.user_email : 'Not available' %></p>
                 <p>생년월일 : <%= user ? new Date(user.user_birthday).toISOString().split('T')[0] : 'Not available' %></p>
+                
+                <!-- 회원 탈퇴 버튼 추가 -->
+                <% if (user) { %>
+                    <button class="delete-button" onclick="confirmDelete()">회원 탈퇴</button>
+                <% } %>
             </div>
         </section>
         <section class="achievements-section">
@@ -35,5 +66,35 @@
             <p style="font-weight: bold; font-size: 1.2em;">현재까지 달성한 업적이 없습니다.</p>
         </section>
     </main>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
+                deleteUser();
+            }
+        }
+
+        async function deleteUser() {
+            try {
+                const response = await fetch('/api/users/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('회원 탈퇴가 완료되었습니다.');
+                    window.location.href = '/signin';
+                } else {
+                    const result = await response.json();
+                    alert(`회원 탈퇴 실패: ${result.msg}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
 </body>
 </html>

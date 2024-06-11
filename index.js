@@ -9,6 +9,7 @@ const mandalartRouter = require('./routes/mandalart'); // Import mandalart route
 const client = require('./db'); // MySQL 클라이언트 사용
 const schedule = require('node-schedule');
 const commentRouter = require('./routes/comment');
+const calendarRouter = require('./routes/calendar'); // 추가
 
 const app = express();
 
@@ -24,12 +25,21 @@ app.use(cookieParser());
 // 정적 파일 미들웨어
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 전역적으로 `user` 변수를 설정하는 미들웨어 추가
+app.use((req, res, next) => {
+    const userCookie = req.cookies ? req.cookies['USER'] : null;
+    res.locals.user = userCookie ? JSON.parse(userCookie) : null;
+    next();
+});
+
 // 라우트 설정
 app.use('/api/users', usersRouter);
 app.use('/api/share', shareRouter);
 app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
+app.use('/calendar', calendarRouter);
+app.use('/api/users', usersRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -39,9 +49,18 @@ app.get('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
 app.get('/share', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('share', { title: 'Share' });
 });
+
 app.get('/add_friend', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
     res.render('add_friend', { title: 'Add Friend' });
 });
 app.get('/', (req, res) => {
@@ -71,7 +90,11 @@ app.get('/profile', (req, res) => {
     }
 });
 app.get('/share_viewMandalart', (req, res) => {
-    res.render('share_viewMandalart', { title: 'share_viewMandalart' });
+    const userCookie = req.cookies['USER'];
+    if (!userCookie) {
+        return res.redirect('/signin');
+    }
+    res.render('share_viewMandalart', { title: 'Share' });
 });
 
 schedule.scheduleJob('0 0 * * *', async () => {
@@ -117,7 +140,11 @@ schedule.scheduleJob('0 0 * * *', async () => {
     }
 });
 
-
+// 로그아웃 라우트
+app.post('/logout', (req, res) => {
+    res.clearCookie('USER');
+    res.redirect('/signin');
+});
 
 // 서버 시작
 const PORT = process.env.PORT || 5006;
