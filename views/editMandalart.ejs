@@ -70,10 +70,12 @@
             </div>
             <div class="button-container">
                 <button class="btn" type="submit">완료</button>
-                <form id="delete-mandalart-form" action="/mandalart/delete/<%= mandalart.mandalart_id %>" method="POST" style="display: inline;">
-                    <button class="btn" type="submit">현재 만다라트 버리기</button>
-                </form>
             </div>
+        </form>
+
+        <!-- 만다라트 삭제 버튼 -->
+        <form id="delete-mandalart-form" action="/mandalart/delete/<%= mandalart.mandalart_id %>" method="POST" onsubmit="return confirmDelete()">
+            <button class="btn delete-btn" type="submit">현재 만다라트 삭제하기</button>
         </form>
     </div>
 
@@ -191,6 +193,10 @@
             if (!response.ok) {
                 console.error('Failed to delete checklist item');
             }
+        }
+
+        function confirmDelete() {
+            return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
         }
     </script>
 </body>
