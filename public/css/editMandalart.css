@@ -1,0 +1,434 @@
+/* 만다라트 관련 */
+body{
+    background-color: #EEEEEE;
+}
+header{
+    background-color: #EEEEEE;
+}
+.container {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    margin-top: -50px;
+    flex-direction: row;
+}
+
+#tedolist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+.mandalart {
+    position: relative;
+    width: 648px;
+    height: 648px;
+    background: white;
+}
+h3{
+    text-align: center;
+}
+.cell {
+    position: absolute;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.cell.active {
+    background-color: #F4FFE8 !important;
+}
+.center {
+    background: #D1E4BE;
+}
+
+.cell-text {
+    font-size: 14px;
+    padding: 5px;
+}
+
+.tedolist-detail-input{
+    border: none; 
+    background: transparent;
+    display: none;
+}
+input:focus {outline:none;}
+
+.cell-text {
+    font-size: 14px;
+    padding: 5px;
+}
+.delete-checklist {
+    cursor: pointer;
+    color: red;
+}
+
+/* 체크리스트 */
+
+#checklistDetail {
+    border: none;
+    border-bottom: 1px solid #000; /* 밑줄 추가 */
+    outline: none; /* 선택 시 기본 테두리 제거 */
+    width: 100%; /* 전체 너비를 사용 */
+    padding: 5px; /* 텍스트와 밑줄 사이의 패딩 */
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}
+
+#checklistDetail:focus {
+    border-bottom: 1px solid #007BFF; /* 포커스 시 밑줄 색상 변경 */
+}
+#checklist-container {
+    background: #fff;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    height: 500px;
+    text-align: center;
+    margin-right: 10px;
+}
+#checklist-container::-webkit-scrollbar {
+    width: 10px;
+    background-color: black;
+  }
+
+
+#checklist-form{
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+#checklist-list {
+    margin-top: 10px;
+    list-style-type: none;
+    padding: 0;
+}
+.checklist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+
+
+/* 각종 버튼 관련 */
+#doneBtn{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+#doneBtn button{
+    border-radius: 50px;
+    border: none;
+    background-color: #D9D9D9;
+    margin-top: 5px;
+    width: 60px;
+}
+
+#delete-mandalart-form button{
+    border-radius: 50px;
+    border: none;
+    background-color: #D9D9D9;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+
+#checklist-container button{
+    border-radius: 50px;
+    border: none;
+    background-color: #D9D9D9;
+}
+
+.button-container {
+    display: flex; /* 버튼들을 가로로 정렬 */
+    justify-content: center; /* 버튼들을 중앙 정렬 */
+    margin-top: 20px; /* 위쪽 여백 추가 */
+    
+    
+}
+
+.button-container button {
+    margin-left: 10px; /* 버튼 간의 간격을 위해 왼쪽에 여백 추가 */
+    border-radius: 50px;
+    border: none;
+    background-color: #D9D9D9;
+    height: 30px;
+}
+
+#checklist-container button,
+#checklist-form button {
+    display: block;
+    margin: 10px auto; /* 중앙 정렬을 위해 자동 여백 */
+}
+
+
+/* 만다라트 셀 관련 */
+.grid-2 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-2 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-2 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-3 .cell.left {
+    width: 324px;
+    height: 648px;
+    left: 0;
+    top: 0;
+}
+.grid-3 .cell.right {
+    width: 324px;
+    height: 648px;
+    left: 324px;
+    top: 0;
+}
+.grid-3 .cell.down {
+    width: 648px;
+    height: 217px;
+    left: 0;
+    top: 431px;
+}
+.grid-3 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-4 .cell.up {
+    width: 430px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-4 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0;
+    top: 0;
+}
+.grid-4 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 215px;
+}
+.grid-4 .cell.down {
+    width: 430px;
+    height: 215px;
+    left: 0;
+    top: 430px;
+}
+.grid-4 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-5 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-5 .cell.left {
+    width: 215px;
+    height: 430px;
+    left: 0px;
+    top: 0px;
+}
+.grid-5 .cell.right {
+    width: 215px;
+    height: 430px;
+    left: 430px;
+    top: 0px;
+}
+.grid-5 .cell.down-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-5 .cell.down-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 430px;
+}
+.grid-5 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-6 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-6 .cell.up-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0;
+    top: 0;
+}
+.grid-6 .cell.up-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 0;
+}
+.grid-6 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-6 .cell.down-right {
+    width: 215px;
+    height: 322.5px;
+    left: 430px;
+    top: 322.5px;
+}
+.grid-6 .cell.down-left {
+    width: 215px;
+    height: 322.5px;
+    left: 0px;
+    top: 322.5px;
+}
+.grid-6 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-7 .cell.up-left {
+    width: 322.5px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-7 .cell.up-right {
+    width: 322.5px;
+    height: 215px;
+    left: 322.5px;
+    top: 0px;
+}
+.grid-7 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 215px;
+}
+.grid-7 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-7 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-7 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-7 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-7 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}
+
+.grid-8 .cell.up {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 0;
+}
+.grid-8 .cell.left {
+    width: 215px;
+    height: 215px;
+    left: 0;
+    top: 215px;
+}
+.grid-8 .cell.right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 215px;
+}
+.grid-8 .cell.down {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 430px;
+}
+.grid-8 .cell.down-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 430px;
+}
+.grid-8 .cell.down-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 430px;
+}
+.grid-8 .cell.up-left {
+    width: 215px;
+    height: 215px;
+    left: 0px;
+    top: 0px;
+}
+.grid-8 .cell.up-right {
+    width: 215px;
+    height: 215px;
+    left: 430px;
+    top: 0px;
+}
+
+.grid-8 .cell.center {
+    width: 215px;
+    height: 215px;
+    left: 215px;
+    top: 215px;
+}

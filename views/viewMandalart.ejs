@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
     <link rel="stylesheet" href="/css/comment.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
 </head>
 <body>
     <header id="main-header">
@@ -21,10 +22,12 @@
             </ul>
         </nav>
     </header>
-    <h3>나의 만다라트</h3>
-    <button onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">수정</button>
+    
+    <div class="header-container">
+        <h3>나의 만다라트</h3>
+        <img src="/images/edit.svg" alt="Edit" class="edit-icon" onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">
+    </div>
     <div class="container">
-        
         <div class="editContainer">
             <% tedolists.forEach((tedolist, index) => { %>
                 <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
@@ -53,6 +56,19 @@
             </div>
         </div>
     </div>
+
+    <div class="calendar-container">
+        <div id="calendar"></div>
+        <div id="details">
+            <h3>Details for <span id="selected-date"></span></h3>
+            <div class="todo-tabs-container" id="tedolist-tabs"></div>
+            <div class="todo-content" id="checklist-content"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -161,9 +177,331 @@
                         const checklistId = event.target.dataset.checklistId;
                         const isChecked = event.target.checked;
                         await updateChecklistStatus(checklistId, isChecked);
-                        if (isChecked) {
-                            event.target.closest('li').style.display = 'none';
+                        //if (isChecked) {
+                            //event.target.closest('li').style.display = 'none';
+                        //}
+                    });
+                });
+
+                document.querySelector('#checklist-container').style.display = 'block';
+            }
+        }
+
+        async function updateChecklistStatus(checklistId, isChecked) {
+            const response = await fetch(`/mandalart/updateChecklistStatus/${checklistId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_checked: isChecked })
+            });
+            if (!response.ok) {
+                console.error('Failed to update checklist status');
+            }
+        }
+
+        
+        async function incrementReaction(commentId, emoji) {
+            const response = await fetch('/comment/reaction/increment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ comment_id: commentId, emoji })
+            });
+            if (!response.ok) {
+                console.log('Failed to increment reaction');
+            }
+        }
+
+        function generateReactionsHTML(comment) {
+            const emojis = ['1', '2', '3', '4', '5'];
+            return emojis.map(emoji => `
+                <div class="comment-reaction" data-emoji="${emoji}">
+                    <img src="/images/${emoji}.svg" alt="${emoji}">
+                    <span>${comment[`imogi${emoji}count`] || 0}</span>
+                </div>
+            `).join('');
+        }
+        
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                defaultView: 'month',
+                dayClick: function (date, jsEvent, view) {
+                    var selectedDate = date.format('YYYY-MM-DD');
+                    $('#selected-date').text(selectedDate);
+                    loadDetails(selectedDate);
+                }
+            });
+
+            async function loadDetails(date) {
+                const response = await fetch(`/calendar/details/${date}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const tedolistTabsContainer = $('#tedolist-tabs');
+                    const checklistContent = $('#checklist-content');
+
+                    tedolistTabsContainer.html('');
+                    checklistContent.html('');
+
+                    if (data.tedolist.length > 0) {
+                        data.tedolist.forEach((tedolist, index) => {
+                            const tabId = `tab-${index}`;
+                            const checklistId = `checklist-${index}`;
+                            const isActive = index === 0 ? 'active' : '';
+
+                            tedolistTabsContainer.append(`
+                                <div class="todo-tab ${isActive}" id="${tabId}" data-checklist="${checklistId}">
+                                    ${tedolist.detail}
+                                </div>
+                            `);
+
+                            if (tedolist.checklists.length > 0) {
+                                const checklistHTML = tedolist.checklists.map(checklist => `
+                                    <div class="checklist-item">
+                                        <input type="checkbox" ${checklist.is_checked ? 'checked' : ''}>
+                                        <span>${checklist.detail}</span>
+                                    </div>
+                                `).join('');
+
+                                checklistContent.append(`
+                                    <div class="checklist-container ${isActive}" id="${checklistId}">
+                                        ${checklistHTML}
+                                    </div>
+                                `);
+                            } else {
+                                checklistContent.append(`
+                                    <div class="checklist-container ${isActive}" id="${checklistId}">
+                                        <p class="empty-message">해당 날짜에는 체크리스트를 작성하지 않았습니다</p>
+                                    </div>
+                                `);
+                            }
+                        });
+
+                        $('.todo-tab').click(function () {
+                            const selectedTab = $(this);
+                            const selectedChecklist = selectedTab.data('checklist');
+
+                            $('.todo-tab').removeClass('active');
+                            $('.checklist-container').removeClass('active');
+
+                            selectedTab.addClass('active');
+                            $(`#${selectedChecklist}`).addClass('active');
+                        });
+                    } else {
+                        checklistContent.append('<p class="empty-message">해당 날짜에는 체크리스트를 작성하지 않았습니다</p>');
+                    }
+
+                    $('#details').show();
+                } else {
+                    console.error('Failed to load details');
+                }
+            }
+
+            const mandalartId = '<%= mandalart.mandalart_id %>';
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const container = document.querySelector('.mandalart');
+                const centerGoal = '<%= mandalart.centerGoal %>';
+                const tedolistCount = <%= mandalart.tedolist_count %>;
+
+                if (container) {
+                    if (tedolistCount > 0) {
+                        generateMandalart(container, centerGoal, tedolistCount);
+                        addCellClickHandlers(mandalartId);
+                    }
+                }
+
+                loadComments(mandalartId);
+
+                document.getElementById('add-comment-button').addEventListener('click', () => {
+                    const commentDetail = document.getElementById('new-comment').value.trim();
+                    if (commentDetail) {
+                        addComment(mandalartId, commentDetail);
+                    }
+                });
+            });
+
+            function generateMandalart(container, centerGoal, tedolistCount) {
+                const mandalartGrid = document.createElement('div');
+                mandalartGrid.classList.add('mandalart-grid');
+                mandalartGrid.classList.add(`grid-${tedolistCount}`);
+                mandalartGrid.style.display = 'grid';
+                mandalartGrid.style.gridTemplateColumns = `repeat(${tedolistCount}, 1fr)`;
+                mandalartGrid.style.gridTemplateRows = `repeat(${tedolistCount}, 1fr)`;
+                mandalartGrid.style.gap = '5px';
+
+                for (let row = 0; row < tedolistCount; row++) {
+                    for (let col = 0; col < tedolistCount; col++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('mandalart-cell');
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+
+                        if (row === Math.floor(tedolistCount / 2) && col === Math.floor(tedolistCount / 2)) {
+                            cell.textContent = centerGoal;
+                            cell.classList.add('center-cell');
                         }
+
+                        mandalartGrid.appendChild(cell);
+                    }
+                }
+
+                container.appendChild(mandalartGrid);
+            }
+
+            function addCellClickHandlers(mandalartId) {
+                const cells = document.querySelectorAll('.mandalart-cell');
+                cells.forEach(cell => {
+                    cell.addEventListener('click', async (event) => {
+                        const row = event.currentTarget.dataset.row;
+                        const col = event.currentTarget.dataset.col;
+
+                        try {
+                            const response = await fetch(`/mandalart/${mandalartId}/goal/${row}/${col}`);
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data && data.goal) {
+                                    alert(`Goal: ${data.goal}`);
+                                } else {
+                                    alert('No goal data available for this cell');
+                                }
+                            } else {
+                                alert('Failed to fetch goal data');
+                            }
+                        } catch (error) {
+                            console.error('Error fetching goal data:', error);
+                            alert('Error fetching goal data');
+                        }
+                    });
+                });
+            }
+
+            async function loadComments(mandalartId) {
+                try {
+                    const response = await fetch(`/mandalart/${mandalartId}/comments`);
+                    if (response.ok) {
+                        const comments = await response.json();
+                        displayComments(comments);
+                    } else {
+                        console.error('Failed to load comments');
+                    }
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                }
+            }
+
+            function displayComments(comments) {
+                const commentList = document.getElementById('comment-list');
+                const commentCount = document.getElementById('comment-count');
+                commentList.innerHTML = '';
+                commentCount.textContent = comments.length;
+
+                comments.forEach(comment => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('comment-item');
+
+                    const detailDiv = document.createElement('div');
+                    detailDiv.classList.add('comment-detail');
+                    detailDiv.textContent = comment.comment_detail;
+
+                    const timestampDiv = document.createElement('div');
+                    timestampDiv.classList.add('comment-timestamp');
+                    timestampDiv.textContent = `작성 시간: ${comment.comment_timestamp}`;
+
+                    listItem.appendChild(detailDiv);
+                    listItem.appendChild(timestampDiv);
+                    commentList.appendChild(listItem);
+                });
+            }
+
+            async function addComment(mandalartId, commentDetail) {
+                try {
+                    const response = await fetch(`/mandalart/${mandalartId}/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ comment_detail: commentDetail })
+                    });
+
+                    if (response.ok) {
+                        const newComment = await response.json();
+                        document.getElementById('new-comment').value = '';
+                        loadComments(mandalartId);
+                    } else {
+                        console.error('Failed to add comment');
+                    }
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                }
+            }
+        });
+
+        function getPositions(numCells) {
+            switch (numCells) {
+                case 2:
+                    return ["left", "right"];
+                case 3:
+                    return ["left", "right", "down"];
+                case 4:
+                    return ["up", "left", "right", "down"];
+                case 5:
+                    return ["up", "left", "right", "down-left", "down-right"];
+                case 6:
+                    return ["up", "up-left", "up-right", "down", "down-left", "down-right"];
+                case 7:
+                    return ["up-left", "up-right", "left", "right", "down-left", "down", "down-right"];
+                case 8:
+                    return ["up-left", "up", "up-right", "left", "right", "down-left", "down", "down-right"];
+                default:
+                    return [];
+            }
+        }
+
+        function addCellClickHandlers(mandalartId) {
+            const cells = document.querySelectorAll('.mandalart .cell');
+            cells.forEach(cell => {
+                if (!cell.classList.contains('center')) {
+                    cell.addEventListener('click', async (event) => {
+                        if (cell.dataset.hasTedolistDetail === "true") {
+                            cells.forEach(c => c.classList.remove('active'));
+                            event.target.classList.add('active');
+                            const tedolistNumber = event.target.dataset.tedolistNumber;
+                            console.log(`Tedolist Number: ${tedolistNumber}`);
+                            await loadChecklists(mandalartId, tedolistNumber);
+                        } else {
+                            document.querySelector('#checklist-container').style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        async function loadChecklists(mandalartId, tedolistNumber) {
+            const response = await fetch(`/mandalart/checklists/${mandalartId}/${tedolistNumber}`);
+            if (response.ok) {
+                const checklists = await response.json();
+                const checklistContainer = document.querySelector('#checklist-list');
+                checklistContainer.innerHTML = '';
+                checklists.forEach(checklist => {
+                    const li = document.createElement('li');
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <input type="checkbox" class="checklist-checkbox" data-checklist-id="${checklist.checklist_id}" ${checklist.is_checked ? 'checked' : ''}>
+                        <span>${checklist.checklist_detail}</span>
+                    `;
+                    checklistContainer.appendChild(li);
+                });
+
+                document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (event) => {
+                        const checklistId = event.target.dataset.checklistId;
+                        const isChecked = event.target.checked;
+                        await updateChecklistStatus(checklistId, isChecked);
+                        //if (isChecked) {
+                            //event.target.closest('li').style.display = 'none';
+                        //}
                     });
                 });
 
