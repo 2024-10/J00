@@ -93,22 +93,33 @@ app.get('/share_viewMandalart', (req, res) => {
     res.render('share_viewMandalart', { title: 'Share' });
 });
 
-// 스케줄 작업
+// 자정마다 어제의 체크리스트를 오늘로 복사하는 작업 스케줄링
 schedule.scheduleJob('0 0 * * *', async () => {
     try {
         // 어제 날짜를 'YYYY-MM-DD' 형식으로 가져옴
         const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setDate(yesterday.getDate());
         const yesterdayStr = yesterday.toISOString().split('T')[0];
 
         // 오늘 날짜를 'YYYY-MM-DD' 형식으로 가져옴
-        const todayStr = new Date().toISOString().split('T')[0];
+        const today = new Date();
+        today.setDate(today.getDate() + 1);
+        const todayStr = today.toISOString().split('T')[0];
 
+        console.log(`Fetching checklists for date: ${yesterdayStr}`);
+        
         // 어제 날짜의 체크리스트 가져오기
         client.query("SELECT * FROM checklist WHERE DATE(date) = ?", [yesterdayStr], (err, result) => {
             if (err) {
                 console.log('Error fetching checklist:', err);
             } else {
+                console.log(`Found ${result.length} checklists for date: ${yesterdayStr}`);
+                
+                if (result.length === 0) {
+                    console.log('No checklist entries found for yesterday.');
+                    return;
+                }
+
                 const newChecklistEntries = result.map(entry => [
                     entry.mandalart_id,
                     entry.tedolist_number,
@@ -119,17 +130,17 @@ schedule.scheduleJob('0 0 * * *', async () => {
                 ]);
 
                 // 새로운 체크리스트 삽입
-                if (newChecklistEntries.length > 0) {
-                    client.query("INSERT INTO checklist (mandalart_id, tedolist_number, checklist_detail, imogi, date, is_checked) VALUES ?", [newChecklistEntries], (insertErr, insertResult) => {
+                client.query(
+                    "INSERT INTO checklist (mandalart_id, tedolist_number, checklist_detail, imogi, date, is_checked) VALUES ?",
+                    [newChecklistEntries],
+                    (insertErr, insertResult) => {
                         if (insertErr) {
                             console.log('Error inserting new checklist entries:', insertErr);
                         } else {
-                            console.log('Successfully inserted new checklist entries for today:', insertResult);
+                            console.log('Successfully inserted new checklist entries for today:', insertResult.affectedRows);
                         }
-                    });
-                } else {
-                    console.log('No checklist entries found for yesterday.');
-                }
+                    }
+                );
             }
         });
     } catch (error) {
