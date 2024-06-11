@@ -14,7 +14,7 @@
         </a>
         <nav id="main-navigation">
             <ul class="menu">
-                <% if (user) { %>
+                <% if (typeof user !== 'undefined' && user) { %>
                     <!-- 로그인 상태일 때, 로그아웃 버튼 -->
                     <li class="menu-item">
                         <form id="logout-form" action="/logout" method="POST">
@@ -201,7 +201,7 @@
                     followingListContainer.appendChild(userItem);
                 });
                 // 팔로잉 수 업데이트
-                 followingCountSpan.textContent = userList.length;
+                followingCountSpan.textContent = userList.length;
             }
 
             async function showFollowersList(userId) {
