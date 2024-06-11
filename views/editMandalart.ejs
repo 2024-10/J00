@@ -5,58 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/mandalart.css">
+    <link rel="stylesheet" href="/css/editMandalart.css">
     <style>
-        .cell.active {
-            background-color: #F4FFE8 !important;
-        }
-        #checklist-container {
-            display: none;
-            margin-top: 20px;
-        }
-        #checklist-list {
-            margin-top: 10px;
-            list-style-type: none;
-            padding: 0;
-        }
         .center {
-            background-color: #C0D8C0;
+            background: #D1E4BE;
         }
-        .mandalart {
-            position: relative;
-            width: 648px;
-            height: 648px;
-            background: white;
-        }
-        .cell {
-            position: absolute;
-            background: white;
-            border: 1px solid black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .cell-text {
-            font-size: 14px;
-            padding: 5px;
-        }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 5px;
-            border-bottom: 1px solid #ccc;
-        }
-        .delete-checklist {
-            cursor: pointer;
-            color: red;
-        }
-        .tedolist-detail-input {
-            border: none;
-            background: transparent;
-            display: none;
-        }
-        input:focus { outline: none; }
     </style>
 </head>
 <body>
@@ -72,9 +25,22 @@
             </ul>
         </nav>
     </header>
+    
     <div class="container">
-        <h3>Edit My Mandalart</h3>
+        <div id="checklist-container">
+            <h4>체크리스트</h4>
+            <ul id="checklist-list"></ul>
+            <form id="checklist-form">
+                <input type="hidden" name="tedolistNumber" id="tedolistNumber">
+                <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
+                <label for="checklistDetail">새로 추가하기</label>
+                <input type="text" name="checklistDetail" id="checklistDetail">
+                <button type="submit">저장</button>
+            </form>
+        </div>
+
         <form id="mandalart-form" action="/mandalart/update/<%= mandalart.mandalart_id %>" method="POST">
+            <h3>나의 만다라트</h3>
             <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>">
                 <% function getCellClass(index, count) { 
                     const classes = [
@@ -102,23 +68,14 @@
                     <div class="center-goal-text"><%= mandalart.centerGoal %></div>
                 </div>
             </div>
-            <button type="submit">Save</button>
+            <div class="button-container">
+                <button class="btn" type="submit">완료</button>
+                <form id="delete-mandalart-form" action="/mandalart/delete/<%= mandalart.mandalart_id %>" method="POST" style="display: inline;">
+                    <button class="btn" type="submit">현재 만다라트 버리기</button>
+                </form>
+                <button id="cancelBtn" class="btn" onclick="window.location.href='/'">취소하기</button>
+            </div>
         </form>
-        <div id="checklist-container">
-            <h4>Checklist</h4>
-            <ul id="checklist-list"></ul>
-            <form id="checklist-form">
-                <input type="hidden" name="tedolistNumber" id="tedolistNumber">
-                <input type="hidden" name="mandalart_id" value="<%= mandalart.mandalart_id %>">
-                <label for="checklistDetail">Checklist Item:</label>
-                <input type="text" name="checklistDetail" id="checklistDetail">
-                <button type="submit">Add Checklist</button>
-            </form>
-        </div>
-        <form id="delete-mandalart-form" action="/mandalart/delete/<%= mandalart.mandalart_id %>" method="POST">
-            <button type="submit">Delete Mandalart</button>
-        </form>
-        <button onclick="window.location.href='/'">Cancel</button>
     </div>
 
     <script>
