@@ -38,6 +38,38 @@ async function createUser(newUser) {
     });
 }
 
+// 회원 탈퇴 라우트 추가
+router.post('/delete', async (req, res) => {
+    // 쿠키에서 사용자 정보 가져오기
+    if (!req.cookies || !req.cookies[USER_COOKIE_KEY]) {
+        return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    const user = JSON.parse(req.cookies[USER_COOKIE_KEY]);
+    const userId = user.user_id;
+
+    try {
+        // 사용자 삭제 쿼리 실행
+        client.query('DELETE FROM user WHERE user_id = ?', [userId], (err, result) => {
+            if (err) {
+                console.error('Error deleting user:', err);
+                return res.status(500).send('Server error');
+            }
+
+            if (result.affectedRows > 0) {
+                // 사용자 삭제 성공 시 쿠키 삭제 및 응답
+                res.clearCookie(USER_COOKIE_KEY);
+                return res.json({ msg: 'User deleted successfully' });
+            } else {
+                return res.status(404).json({ msg: 'User not found' });
+            }
+        });
+    } catch (err) {
+        console.error('Error during user deletion:', err);
+        res.status(500).send('Server error');
+    }
+});
+
 router.post('/signup', async (req, res) => {
     const { user_id, user_email, user_pw, user_birthday, user_nickname } = req.body;
 

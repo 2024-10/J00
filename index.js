@@ -25,15 +25,21 @@ app.use(cookieParser());
 // 정적 파일 미들웨어
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 전역적으로 `user` 변수를 설정하는 미들웨어 추가
+app.use((req, res, next) => {
+    const userCookie = req.cookies ? req.cookies['USER'] : null;
+    res.locals.user = userCookie ? JSON.parse(userCookie) : null;
+    next();
+});
+
 // 라우트 설정
 app.use('/api/users', usersRouter);
 app.use('/api/share', shareRouter);
 app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
-
 app.use('/calendar', calendarRouter);
-
+app.use('/api/users', usersRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -134,7 +140,11 @@ schedule.scheduleJob('0 0 * * *', async () => {
     }
 });
 
-
+// 로그아웃 라우트
+app.post('/logout', (req, res) => {
+    res.clearCookie('USER');
+    res.redirect('/signin');
+});
 
 // 서버 시작
 const PORT = process.env.PORT || 5006;
