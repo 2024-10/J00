@@ -530,44 +530,4 @@ router.get('/userMandalart/:userId', (req, res) => {
     });
 });
 
-//캘린더 관려 코드 추가
-// 특정 날짜의 테두리스트와 체크리스트를 가져오는 API
-router.get('/details/:date', (req, res) => {
-    const { date } = req.params;
-    const userCookie = req.cookies['USER'];
-    const user = userCookie ? JSON.parse(userCookie) : null;
-
-    if (user) {
-        const query = `
-            SELECT t.tedolist_number, t.tedolist_detail, c.checklist_detail, c.is_checked
-            FROM calendar cal
-            JOIN tedolist t ON cal.tedolist_number = t.tedolist_number AND cal.mandalart_id = t.mandalart_id
-            JOIN checklist c ON cal.checklist_id = c.checklist_id AND cal.mandalart_id = c.mandalart_id
-            JOIN mandalart m ON cal.mandalart_id = m.mandalart_id
-            WHERE cal.date = ? AND cal.user_id = ?
-        `;
-
-        client.query(query, [date, user.user_id], (err, results) => {
-            if (err) {
-                console.error('Database query error:', err);
-                return res.status(500).json({ error: 'Database query error' });
-            }
-
-            const tedolist = results.map(row => ({
-                tedolist_number: row.tedolist_number,
-                detail: row.tedolist_detail
-            }));
-            const checklist = results.map(row => ({
-                detail: row.checklist_detail,
-                is_checked: row.is_checked
-            }));
-
-            res.json({ tedolist, checklist });
-        });
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
-    }
-});
-//여기까지 캘린더 관련 코드
-
 module.exports = router;
