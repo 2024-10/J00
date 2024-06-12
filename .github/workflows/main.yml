@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  PROJECT_ID: ${{  GCP_PROJECT_ID  }}
+  PROJECT_ID: ${{  secrets.GCP_PROJECT_ID  }}
   GCE_INSTANCE: j00per 
-  GCE_INSTANCE_ZONE: ${{  GCP_ZONE  }}
+  GCE_INSTANCE_ZONE: ${{  secrets.GCP_ZONE  }}
 
 jobs:
   setup-build-publish-deploy:
@@ -23,8 +23,8 @@ jobs:
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
         with:
           version: '290.0.1'
-          service_account_key: ${{  GCP_SA_KEY  }}
-          project_id: ${{  GCP_PROJECT_ID  }}
+          service_account_key: ${{  secrets.GCP_SA_KEY  }}
+          project_id: ${{  secrets.GCP_PROJECT_ID  }}
 
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
