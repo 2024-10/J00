@@ -16,7 +16,7 @@ jobs:
     - name: Setup SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.GCP_SSH_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Deploy to GCP
       run: |
@@ -24,4 +24,5 @@ jobs:
         cd /var/www/j00.shop  # 애플리케이션의 실제 경로로 이동
         git pull origin main  # 최신 코드를 가져옵니다
         npm install           # 필요한 패키지를 설치합니다
-        pm2 restart index.js    # 애플리케이션을 다시 시작합니다 (index.js를 실제 시작 파일로 교체)
+        pm2 restart inde.js    # 애플리케이션을 다시 시작합니다
+        EOF
