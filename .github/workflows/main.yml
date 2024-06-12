@@ -16,7 +16,7 @@ jobs:
     - name: Setup SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.GCP_SA_KEY }}
+        ssh-private-key: ${{ secrets.GCP_SSH_KEY }}
 
     - name: Deploy to GCP
       run: |
