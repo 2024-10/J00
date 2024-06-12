@@ -3,97 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FullCalendar</title>
+    <title>Calendar</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/calendar.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            background-color: #F8F8E8;
-            font-family: Arial, sans-serif;
-        }
-        #calendar {
-            width: 600px;
-            margin-right: 20px;
-        }
-        #details {
-            display: none;
-            background-color: #D3ECA7;
-            padding: 20px;
-            border-radius: 8px;
-            width: 400px;
-        }
-        #details h3 {
-            margin-top: 0;
-        }
-        .todo-tabs-container {
-            overflow-x: auto; /* 가로 스크롤 추가 */
-            white-space: nowrap; /* 항목을 한 줄로 나열 */
-            padding-bottom: 10px; /* 스크롤바와의 여백 */
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ccc;
-        }
-        .todo-tab {
-            display: inline-block; /* 탭들을 한 줄로 정렬 */
-            background-color: #ccc;
-            border: 1px solid #bbb;
-            border-bottom: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-            margin-right: 5px;
-            margin-bottom: -2px; /* To overlap the border */
-        }
-        .todo-tab.active {
-            background-color: #ffffff;
-            font-weight: bold;
-            border-color: #ddd;
-        }
-        .checklist-container {
-            display: none;
-        }
-        .checklist-container.active {
-            display: block;
-        }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .checklist-item input {
-            margin-right: 10px;
-        }
-        .todo-content {
-            padding: 10px;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            min-height: 100px; /* 최소 높이 설정 */
-        }
-        .empty-message {
-            text-align: center;
-            color: #888;
-            font-style: italic;
-        }
-    </style>
 </head>
 <body>
-    <div id="calendar"></div>
-    <div id="details">
-        <h3>Details for <span id="selected-date"></span></h3>
-        <div class="todo-tabs-container" id="tedolist-tabs"></div>
-        <div class="todo-content" id="checklist-content"></div>
+    <header id="main-header">
+        <a href="/">
+            <img src="/images/logo.svg" alt="logo" class="logo">
+        </a>
+        <nav id="main-navigation">
+            <ul class="menu">
+                <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/calendar'" class="nav-button active">Calendar</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="page-wrapper">
+        <div id="calendar"></div>
+        <div id="details">
+            <h3 class="today-label"><span id="selected-date"></span></h3>
+            <div class="todo-tabs-container" id="tedolist-tabs"></div>
+            <div class="todo-content" id="checklist-content"></div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-    
     <script>
         $(document).ready(function() {
             $('#calendar').fullCalendar({
+                locale: 'ko', // 한국어로 설정
                 defaultView: 'month',
                 dayClick: function(date, jsEvent, view) {
                     var selectedDate = date.format('YYYY-MM-DD');
@@ -116,16 +61,14 @@
                         data.tedolist.forEach((tedolist, index) => {
                             const tabId = `tab-${index}`;
                             const checklistId = `checklist-${index}`;
-                            const isActive = index === 0 ? 'active' : ''; // 첫 번째 탭을 활성화
+                            const isActive = index === 0 ? 'active' : '';
 
-                            // 북마크 형식의 탭 생성
                             tedolistTabsContainer.append(`
                                 <div class="todo-tab ${isActive}" id="${tabId}" data-checklist="${checklistId}">
                                     ${tedolist.detail}
                                 </div>
                             `);
 
-                            // 체크리스트 내용 생성
                             if (tedolist.checklists.length > 0) {
                                 const checklistHTML = tedolist.checklists.map(checklist => `
                                     <div class="checklist-item">
@@ -148,16 +91,13 @@
                             }
                         });
 
-                        // 탭 클릭 이벤트 처리
                         $('.todo-tab').click(function() {
                             const selectedTab = $(this);
                             const selectedChecklist = selectedTab.data('checklist');
 
-                            // 모든 탭과 체크리스트 컨테이너의 active 클래스 제거
                             $('.todo-tab').removeClass('active');
                             $('.checklist-container').removeClass('active');
 
-                            // 클릭한 탭과 해당 체크리스트 컨테이너에 active 클래스 추가
                             selectedTab.addClass('active');
                             $(`#${selectedChecklist}`).addClass('active');
                         });

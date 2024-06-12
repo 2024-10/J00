@@ -1,28 +1,131 @@
+header {
+    display: flex;
+    justify-content: space-between; /* 로고와 메뉴를 양 끝으로 배치 */
+    align-items: center;
+    background-color: #FFFBF1;
+    padding-left: 0.1rem;
+    width: 100%; /* 헤더의 너비를 전체 화면으로 설정 */
+}
+
+nav {
+    display: flex;
+    justify-content: flex-end; /* 메뉴를 오른쪽 정렬 */
+    flex-grow: 1; /* nav가 가능한 모든 공간을 차지하도록 */
+}
+
+.logo {
+    margin-right: auto; /* 로고를 왼쪽에 고정 */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 메뉴를 오른쪽 정렬 */
+    width: 100%; /* ul이 nav 전체 너비를 차지하게 설정 */
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 35px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.nav-button.active {
+    color: #006735;
+}
+
+.nav-button:hover {
+    color: #006735;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0;
+    }
+
+    nav ul li {
+        margin: 5px 0;
+    }
+
+    .nav-button {
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+    }
+
+    .logo {
+        width: 40px;
+    }
+
+    nav ul li a {
+        font-size: 14px;
+    }
+
+    .nav-button {
+        font-size: 15px;
+    }
+}
+
 body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    background-color: #F8F8E8;
+    background-color: #FFFBF1;
     font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
+
+#page-wrapper {
+    display: flex; /* 캘린더와 체크리스트를 나란히 배치 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: flex-start; /* 상단 정렬 */
+    gap: 50px; /* 간격 조정 */
+    padding: 20px;
+}
+
 #calendar {
-    width: 100%;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: flex-end; /* 수직 아래 정렬 */
+    width: 50%; /* 캘린더 너비 조정 */
+    min-width: 300px; /* 최소 너비 설정 */
+    height: auto; /* 높이 자동 조정 */
+    
 }
 
 #details {
     display: none;
-    background-color: #D3ECA7;
+    width: 30%; /* 체크리스트 영역 너비 조정 */
     padding: 20px;
     border-radius: 8px;
-    width: 100%;
+    /*border: 2px solid #ccc;*/
+    margin-top: 10px; /* 체크리스트 컨테이너를 아래로 이동 */
 }
-#details h3 {
-    margin-top: 0;
-}
+
 .todo-tabs-container {
     overflow-x: auto;
     white-space: nowrap;
@@ -30,6 +133,7 @@ body {
     margin-bottom: 20px;
     border-bottom: 2px solid #ccc;
 }
+
 .todo-tab {
     display: inline-block;
     background-color: #ccc;
@@ -42,25 +146,31 @@ body {
     margin-right: 5px;
     margin-bottom: -2px;
 }
+
 .todo-tab.active {
-    background-color: #ffffff;
+    background-color: #D1E4BE;
     font-weight: bold;
     border-color: #ddd;
 }
+
 .checklist-container {
     display: none;
 }
+
 .checklist-container.active {
     display: block;
 }
+
 .checklist-item {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
+
 .checklist-item input {
     margin-right: 10px;
 }
+
 .todo-content {
     padding: 10px;
     background-color: #ffffff;
@@ -68,8 +178,21 @@ body {
     border-radius: 5px;
     min-height: 100px;
 }
+
 .empty-message {
     text-align: center;
     color: #888;
     font-style: italic;
 }
+
+.fc-today {
+    background-color: #D1E4BE !important; 
+    color: #000; 
+}
+
+.today-label {
+    color: #006735; /* 원하는 색상으로 변경 */
+    font-weight: bold; /* 텍스트 굵기 조정 (선택 사항) */
+    margin-bottom: 10px; /* 아래 여백 추가 (선택 사항) */
+}
+
