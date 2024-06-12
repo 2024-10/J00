@@ -14,15 +14,16 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+        chmod 600 private_key
+        ssh-agent bash -c 'ssh-add private_key; ssh-add -l'
 
     - name: Deploy to GCP
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
-        cd /var/www/j00.shop  # 애플리케이션의 실제 경로로 이동
-        git pull origin main  # 최신 코드를 가져옵니다
-        npm install           # 필요한 패키지를 설치합니다
-        pm2 restart inde.js    # 애플리케이션을 다시 시작합니다
+        cd /var/www/j00.shop
+        git pull origin main
+        npm install
+        pm2 restart inde.js
         EOF
