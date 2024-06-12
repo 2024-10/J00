@@ -187,7 +187,8 @@ router.post('/addTedolist', (req, res) => {
 router.post('/addChecklist', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
-    const today = new Date();
+    let offset = 1000*60*60*9;
+    const today = new Date(Date.now() + offset);
     today.setDate(today.getDate());  // 왜 안되는데
     const date = today.toISOString().split('T')[0];
 
