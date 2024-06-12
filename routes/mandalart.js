@@ -188,7 +188,7 @@ router.post('/addChecklist', (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
     const today = new Date();
-    today.setDate(today.getDate() + 1);
+    today.setDate(today.getDate()); // !!!!!!!!!!!!!!!오늘 날짜로
     const date = today.toISOString().split('T')[0];
 
     if (user) {
