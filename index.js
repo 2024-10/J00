@@ -98,12 +98,12 @@ schedule.scheduleJob('0 0 * * *', async () => {
     try {
         // 어제 날짜를 'YYYY-MM-DD' 형식으로 가져옴
         const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate());
+        yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().split('T')[0];
 
         // 오늘 날짜를 'YYYY-MM-DD' 형식으로 가져옴
         const today = new Date();
-        today.setDate(today.getDate() + 1);
+        today.setDate(today.getDate());
         const todayStr = today.toISOString().split('T')[0];
 
         console.log(`Fetching checklists for date: ${yesterdayStr}`);
