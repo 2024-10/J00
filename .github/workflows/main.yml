@@ -14,13 +14,14 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup SSH
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key  # 비밀 키를 파일로 저장
-        chmod 600 ssh_private_key  # 파일 권한 설정
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Deploy to GCP
       run: |
-        ssh -o ssh_private_key -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+        ssh -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
         cd /var/www/j00.shop  # 애플리케이션의 실제 경로로 이동
         git pull origin main  # 최신 코드를 가져옵니다
         npm install           # 필요한 패키지를 설치합니다
