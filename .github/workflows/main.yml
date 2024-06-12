@@ -1,33 +1,26 @@
 name: Deploy to GCP
-
 on:
   push:
     branches:
       - main  # main 브랜치에 푸시될 때 실행
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
     - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key  # 비밀 키를 파일로 저장
+        chmod 600 ssh_private_key  # 파일 권한 설정
     - name: Deploy to GCP
       run: |
-        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-        ssh -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
+        ssh -T -i ssh_private_key -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
         cd /var/www/j00.shop  # 애플리케이션의 실제 경로로 이동
         git pull origin main  # 최신 코드를 가져옵니다
         npm install           # 필요한 패키지를 설치합니다
         pm2 restart index.js   # 애플리케이션을 다시 시작합니다
         EOF
-
     - name: Clean up
       run: |
         rm ssh_private_key  # 비밀 키 파일을 제거
