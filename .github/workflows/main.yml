@@ -21,7 +21,7 @@ jobs:
 
     - name: Deploy to GCP
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.GCP_VM_NAME }}@${{ secrets.GCP_VM_NAME2 }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no hyunsoo@34.64.186.27 << 'EOF'
         cd /var/www/j00.shop
         git pull origin main
         npm install
