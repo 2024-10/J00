@@ -43,40 +43,78 @@ router.get('/currentUserId', async (req, res) => {
     }
 });
 
-// 팔로잉 리스트 가져오기
-router.get('/followingList', async (req, res) => {
+// 팔로잉 전체 수 가져오기
+router.get('/followingCount', async (req, res) => {
     const userId = req.query.userId;
-    
+
     try {
-        const query = 'SELECT to_user_id FROM follow WHERE from_user_id = ?';
+        const query = 'SELECT COUNT(*) AS totalFollowing FROM follow WHERE from_user_id = ?';
         const results = await queryAsync(query, [userId]);
 
-        const userIds = [];
-        results.forEach(row => {
-            userIds.push(row.to_user_id);
-        });
-
-        res.status(200).json({ followingList: userIds });
+        res.status(200).json({ totalFollowing: results[0].totalFollowing });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
 
-// 팔로워 리스트 가져오기
-router.get('/followersList', async (req, res) => {
-    const userId = req.query.userId; 
-    
+// 팔로워 전체 수 가져오기
+router.get('/followersCount', async (req, res) => {
+    const userId = req.query.userId;
+
     try {
-        const query = 'SELECT from_user_id FROM follow WHERE to_user_id = ?';
+        const query = 'SELECT COUNT(*) AS totalFollowers FROM follow WHERE to_user_id = ?';
         const results = await queryAsync(query, [userId]);
 
-        const userIds = [];
-        results.forEach(row => {
-            userIds.push(row.from_user_id);
-        });
+        res.status(200).json({ totalFollowers: results[0].totalFollowers });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
 
-        res.status(200).json({ followersList: userIds });
+// 팔로잉 리스트 가져오기 (페이지네이션)
+router.get('/followingList', async (req, res) => {
+    const userId = req.query.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    try {
+        const query = 'SELECT to_user_id FROM follow WHERE from_user_id = ? LIMIT ? OFFSET ?';
+        const results = await queryAsync(query, [userId, limit, offset]);
+
+        const countQuery = 'SELECT COUNT(*) AS total FROM follow WHERE from_user_id = ?';
+        const countResults = await queryAsync(countQuery, [userId]);
+
+        const userIds = results.map(row => row.to_user_id);
+        const totalPages = Math.ceil(countResults[0].total / limit);
+
+        res.status(200).json({ followingList: userIds, totalPages });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// 팔로워 리스트 가져오기 (페이지네이션)
+router.get('/followersList', async (req, res) => {
+    const userId = req.query.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    try {
+        const query = 'SELECT from_user_id FROM follow WHERE to_user_id = ? LIMIT ? OFFSET ?';
+        const results = await queryAsync(query, [userId, limit, offset]);
+
+        const countQuery = 'SELECT COUNT(*) AS total FROM follow WHERE to_user_id = ?';
+        const countResults = await queryAsync(countQuery, [userId]);
+
+        const userIds = results.map(row => row.from_user_id);
+        const totalPages = Math.ceil(countResults[0].total / limit);
+
+        res.status(200).json({ followersList: userIds, totalPages });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
