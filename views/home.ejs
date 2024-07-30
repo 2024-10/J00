@@ -12,6 +12,11 @@
         <a href="/">
             <img src="/images/logo.svg" alt="logo" class="logo">
         </a>
+        <button id="nav-toggle" class="nav-toggle">
+            <span class="nav-icon"></span>
+            <span class="nav-icon"></span>
+            <span class="nav-icon"></span>
+        </button>
         <nav id="main-navigation">
             <ul class="menu">
                 <% if (user) { %>
@@ -40,5 +45,19 @@
             <h1>당신의 목표가 현실이 될 수 있도록</h1>
         </div>
     </main>
+
+    <script>
+        // 모바일 네비바
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.getElementById('nav-toggle');
+            const mainNav = document.getElementById('main-navigation');
+            const mainHeader = document.getElementById('main-header');
+
+            navToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                mainHeader.classList.toggle('active-header');
+            });
+        });
+    </script>
 </body>
 </html>

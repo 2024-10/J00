@@ -5,7 +5,6 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
     justify-content: center;
 }
 
@@ -25,8 +24,7 @@ header {
 
 nav ul {
     list-style: none;
-    /* margin: 0; */
-    margin-right: 0px;
+    margin-right: 0;
     padding: 0;
     display: flex;
     align-items: center;
@@ -54,30 +52,71 @@ nav ul li {
     color: #006735;
 }
 
+/* 햄버거 메뉴 버튼 */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 10px;
+    background: none;
+    border: none;
+}
 
-/* Responsive Styles */
+.nav-toggle .nav-icon {
+    width: 25px;
+    height: 3px;
+    background-color: #000;
+    margin: 4px 0;
+    transition: all 0.3s;
+}
+
+/* 모바일 */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
+    .nav-toggle {
+        display: flex;
     }
 
-    .logo {
-        margin-bottom: 10px;
+    nav {
+        display: none;
+    }
+
+    .active-header {
+        background-color: #F4FFE8; /* 추가: header의 배경색 변경 */
+    }
+    nav.active {
+        display: block;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #F4FFE8;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     nav ul {
         flex-direction: column;
-        align-items: flex-start;
-        margin: 0;
+        align-items: flex-start; /* 수정: 모든 메뉴 항목을 왼쪽 정렬 */
+        width: 100%;
+        padding: 10px 0;
     }
 
     nav ul li {
-        margin: 5px 0;
+        width: 100%;
+        text-align: left; /* 수정: 왼쪽 정렬 */
+        margin: 0;
+        padding: 0 15px; /* 추가: 좌우 여백 추가 */
     }
 
-    .nav-button{
-        font-size: 25px;
+    nav ul li:last-child {
+        border-bottom: none;
+    }
+
+    .nav-button {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 18px;
+        text-align: left; /* 수정: 버튼 내 텍스트 왼쪽 정렬 */
     }
 }
 
@@ -94,7 +133,7 @@ nav ul li {
         font-size: 14px;
     }
 
-    .nav-button{
+    .nav-button {
         font-size: 15px;
     }
 }
