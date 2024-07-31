@@ -1,6 +1,5 @@
 /* 로그인/로그아웃 버튼 */
 button{
-    border-radius: 50px;
     border: none;
     background-color: #FFFBF1;
 }
@@ -44,7 +43,10 @@ main {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-
+    button{
+        border: none;
+        background-color: #F4FFE8;
+    }
 
     .logo-large {
         width: 400px;
