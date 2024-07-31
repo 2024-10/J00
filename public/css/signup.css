@@ -3,18 +3,19 @@ body {
     font-family: Arial, sans-serif;
     background-color: #FFFBF1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    position: relative;
 }
 
 .signup-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
     width: 100%;
-    margin-right: 350px;
+    box-sizing: border-box;
 }
 
 .signup-box {
@@ -23,17 +24,16 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 300px;
 }
 
+/* 로고 기본 스타일 */
 .logo {
-    width: 600px; 
     height: auto;
     margin-bottom: 1.5rem;
-    margin-left: 300px;
 }
 
 h2 {
@@ -44,6 +44,9 @@ h2 {
 
 .input-group {
     margin-bottom: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .input-group input {
@@ -77,4 +80,63 @@ h2 {
 
 .signup-link:hover {
     text-decoration: underline;
+}
+
+
+/* 비모바일 환경 스타일 */
+@media (min-width: 769px) {
+    .logo {
+        width: 600px; /* 큰 화면에서 로고 크기 */
+        margin-left: 0; /* 중앙 정렬을 위해 마진 제거 */
+        position: absolute; /* 절대 위치로 설정 */
+        left: 50%; /* 수평 중앙 정렬 */
+        transform: translateX(-90%);
+    }
+
+    .signup-container {
+        justify-content: flex-end; /* 오른쪽 정렬 */
+        align-items: flex-start;
+        margin-right: 45%; /* 로그인 박스를 오른쪽으로 밀기 위한 여백 */
+        height: 100%; /* 높이를 100%로 설정 */
+    }
+
+    .signup-box {
+        width: 300px;
+        margin-top: 20px; /* 로그인 박스 위쪽 간격 조정 */
+    }
+}
+
+/* 모바일 환경 스타일 */
+@media (max-width: 768px) {
+    body {
+        justify-content: flex-start;
+    }
+
+    .logo {
+        width: 150px; /* 모바일에서 로고 크기 조정 */
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        margin: 0; /* 추가 마진 제거 */
+        transform: none; /* 중앙 정렬 보정 제거 */
+    }
+
+    .signup-container {
+        margin-top: 150px; /* 로고 아래에 로그인 박스 배치 */
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 20px;
+    }
+
+    .signup-box {
+        width: 100%;
+        max-width: 350px;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-box {
+        padding: 1rem;
+    }
 }
