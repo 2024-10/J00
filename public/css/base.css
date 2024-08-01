@@ -6,6 +6,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+    position: relative; /* 네비게이션 바 위치 기준 설정 */
 }
 
 header {
@@ -15,6 +17,8 @@ header {
     background-color: #FFFBF1;
     color: #fff;
     padding: 1rem;
+    position: relative; /* 네비게이션 바의 상위 레이어로 설정 */
+    z-index: 1; /* 네비게이션 바보다 낮은 z-index 설정 */
 }
 
 .logo {
@@ -61,6 +65,8 @@ nav ul li {
     margin-right: 10px;
     background: none;
     border: none;
+    position: relative;
+    z-index: 10001; /* 네비게이션 바보다 위에 있어야 합니다 */
 }
 
 .nav-toggle .nav-icon {
@@ -69,6 +75,7 @@ nav ul li {
     background-color: #000;
     margin: 4px 0;
     transition: all 0.3s;
+    position: relative;
 }
 
 /* 모바일 */
@@ -79,44 +86,38 @@ nav ul li {
 
     nav {
         display: none;
-    }
-
-    .active-header {
-        background-color: #F4FFE8; /* 추가: header의 배경색 변경 */
-    }
-    nav.active {
-        display: block;
-        position: absolute;
-        top: 60px;
+        position: fixed; /* 화면 전체를 덮도록 설정 */
+        top: 0;
         left: 0;
         width: 100%;
+        height: 100%; /* 전체 높이를 차지하도록 설정 */
         background-color: #F4FFE8;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 10000; /* 다른 요소보다 위에 위치 */
+        overflow-y: auto; /* 필요시 스크롤 가능 */
+    }
+
+    nav.active {
+        display: block;
     }
 
     nav ul {
         flex-direction: column;
-        align-items: flex-start; /* 수정: 모든 메뉴 항목을 왼쪽 정렬 */
-        width: 100%;
-        padding: 10px 0;
+        align-items: flex-start;
+        padding: 60px 0 10px 20px; /* 헤더와의 간격 확보 및 좌측 여백 */
     }
 
     nav ul li {
         width: 100%;
-        text-align: left; /* 수정: 왼쪽 정렬 */
+        text-align: left;
         margin: 0;
-        padding: 0 15px; /* 추가: 좌우 여백 추가 */
-    }
-
-    nav ul li:last-child {
-        border-bottom: none;
+        padding: 10px 0; /* 각 메뉴 항목의 상하 여백 조정 */
     }
 
     .nav-button {
         width: 100%;
-        padding: 10px 0;
         font-size: 18px;
-        text-align: left; /* 수정: 버튼 내 텍스트 왼쪽 정렬 */
+        text-align: left;
+        padding: 10px 20px; /* 텍스트의 좌우 여백 추가 */
     }
 }
 
@@ -127,10 +128,6 @@ nav ul li {
 
     .logo {
         width: 40px;
-    }
-
-    nav ul li a {
-        font-size: 14px;
     }
 
     .nav-button {

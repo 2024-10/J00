@@ -1,25 +1,33 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFFBF1;
+    overflow-x: hidden;
+}
+
+/* 기본 스타일 */
 #page-wrapper {
-    display: flex; /* 캘린더와 체크리스트를 나란히 배치 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: flex-start; /* 상단 정렬 */
-    gap: 50px; /* 간격 조정 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
     padding: 20px;
+    position: relative; /* 네비게이션 바를 고려한 설정 */
 }
 
 #calendar {
-    width: 50%; /* 캘린더 너비 조정 */
-    min-width: 300px; /* 최소 너비 설정 */
-    height: auto; /* 높이 자동 조정 */
-    
+    width: 50%;
+    min-width: 300px;
+    height: auto;
 }
 
 #details {
     display: none;
-    width: 30%; /* 체크리스트 영역 너비 조정 */
+    width: 30%;
     padding: 20px;
     border-radius: 8px;
-    /*border: 2px solid #ccc;*/
-    margin-top: 10px; /* 체크리스트 컨테이너를 아래로 이동 */
+    margin-top: 10px;
+    position: relative; /* 네비게이션 바를 고려한 설정 */
 }
 
 .todo-tabs-container {
@@ -82,13 +90,40 @@
 }
 
 .fc-today {
-    background-color: #D1E4BE !important; 
-    color: #000; 
+    background-color: #D1E4BE !important;
+    color: #000;
 }
 
 .today-label {
-    color: #006735; /* 원하는 색상으로 변경 */
-    font-weight: bold; /* 텍스트 굵기 조정 (선택 사항) */
-    margin-bottom: 10px; /* 아래 여백 추가 (선택 사항) */
+    color: #006735;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
+/* 모바일 스타일 */
+@media (max-width: 768px) {
+    #page-wrapper {
+        flex-direction: column; /* 세로로 나열 */
+        align-items: center; /* 중앙 정렬 */
+        gap: 20px;
+    }
+
+    #calendar, #details {
+        width: 100%; /* 전체 너비 사용 */
+        min-width: unset; /* 최소 너비 해제 */
+    }
+
+    #details {
+        display: block; /* 체크리스트 영역 표시 */
+    }
+}
+
+@media (max-width: 480px) {
+    #page-wrapper {
+        padding: 10px; /* 여백 축소 */
+    }
+
+    .todo-tab {
+        padding: 5px 10px; /* 탭의 패딩 축소 */
+    }
+}
