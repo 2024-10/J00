@@ -41,15 +41,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
     <script>
+        
         // 모바일 네비바
         document.addEventListener('DOMContentLoaded', () => {
             const navToggle = document.getElementById('nav-toggle');
             const mainNav = document.getElementById('main-navigation');
             const mainHeader = document.getElementById('main-header');
+            const calendarElement = document.getElementById('calendar');
 
             navToggle.addEventListener('click', () => {
                 mainNav.classList.toggle('active');
                 mainHeader.classList.toggle('active-header');
+
+                if (mainNav.classList.contains('active')) {
+                    calendarElement.style.zIndex = '-100000'; // z-index를 낮춰서 네비게이션 바가 위로 오게 설정
+                } else {
+                    calendarElement.style.zIndex = 'auto'; // z-index를 기본값으로 되돌림
+                }
             });
         });
 

@@ -106,7 +106,7 @@ h2 {
     }
 }
 
-/* 모바일 환경 스타일 */
+/* 모바일 */
 @media (max-width: 768px) {
     body {
         justify-content: flex-start;
