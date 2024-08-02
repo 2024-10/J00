@@ -3,17 +3,36 @@ const router = express.Router();
 const client = require('../db');
 const USER_COOKIE_KEY = 'USER';
 const cron = require('node-cron');
+const moment = require('moment-timezone');
+
+// const resetCheeringValues = () => {
+//     console.log('Manually resetting cheering values to 0');
+//     client.query('UPDATE user SET cheering = 0', (err, results) => {
+//         if (err) {
+//             console.error('Error resetting cheering values:', err);
+//         } else {
+//             console.log('Cheering values reset successfully');
+//         }
+//     });
+// };
+
+// // 수동 실행 테스트
+// resetCheeringValues();
 
 // 자정마다 사용자의 cheering 초기화
 cron.schedule('0 0 * * *', () => {
-    console.log('Resetting cheering values to 0');
-    client.query('UPDATE user SET cheering = 0', (err, results) => {
-        if (err) {
-            console.error('Error resetting cheering values:', err);
-        } else {
-            console.log('Cheering values reset successfully');
-        }
-    });
+    const now = moment().tz('Asia/Seoul').format('HH:mm');
+    console.log(`Current time: ${now}`);
+    if (now === '00:00') {
+        console.log('Resetting cheering values to 0 at KST midnight');
+        client.query('UPDATE user SET cheering = 0', (err, results) => {
+            if (err) {
+                console.error('Error resetting cheering values:', err);
+            } else {
+                console.log('Cheering values reset successfully');
+            }
+        });
+    }
 });
 
 // 응원하기 코드
