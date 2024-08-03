@@ -13,7 +13,7 @@ main {
     max-width: 800px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 텍스트 왼쪽 정렬 */
+    align-items: flex-start;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -49,7 +49,7 @@ h1 a:hover {
     gap: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
-    justify-content: flex-start; /* 탭 텍스트 왼쪽 정렬 */
+    justify-content: flex-start;
 }
 
 .tabs button {
@@ -77,14 +77,14 @@ h1 a:hover {
 .tab-content.active {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 콘텐츠 왼쪽 정렬 */
+    align-items: center;
     justify-content: center;
 }
 
 .user-list {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 사용자 목록 왼쪽 정렬 */
+    align-items: center;
     width: 100%;
 }
 
@@ -92,15 +92,15 @@ h1 a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 10px 15px;
     border: 1px solid #e0e0e0;
     border-radius: 10px; 
     background-color: #fff;
     width: 100%;
-    max-width: 600px; 
+    max-width: 600px;
     margin-bottom: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
-    transition: transform 0.2s; 
+    transition: transform 0.2s;
 }
 
 .user-item:hover {
@@ -110,6 +110,7 @@ h1 a:hover {
 .user-item span {
     flex: 1;
     text-align: left;
+    margin-right: 10px;
 }
 
 .cancel-button,.click-button {
@@ -118,11 +119,11 @@ h1 a:hover {
     border-radius: 5px; 
     padding: 7px 15px; 
     cursor: pointer;
-    transition: background-color 0.3s; 
-    margin-left: 10px;
+    transition: background-color 0.3s;
+    margin-left: auto;
 }
 
-.cancel-button:hover,.click-button:hover {
+.cancel-button:hover,.click-button {
     background-color: #d0d0d0;
 }
 
@@ -134,19 +135,35 @@ h1 a:hover {
     }
 
     .tabs {
-        flex-direction: column;
+        flex-direction: row;
+        align-items: flex-start;
         gap: 10px;
     }
 
     .tabs button {
-        width: 100%;
-        text-align: left; /* 버튼 텍스트 왼쪽 정렬 */
+        width: auto;
+        text-align: left;
+    }
+
+    .user-item {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .user-item span {
+        text-align: left;
+        width: auto;
+        margin-right: 10px;
+    }
+    
+    .cancel-button {
+        margin-left: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .tabs {
-        flex-direction: column;
+        flex-direction: row;
     }
 
     .tabs button {
@@ -155,12 +172,13 @@ h1 a:hover {
     }
 
     .user-item {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        max-width: 280px;
     }
 
     .cancel-button {
-        align-self: flex-end;
+        align-self: center;
         margin-top: 10px;
     }
 }
