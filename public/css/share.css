@@ -120,10 +120,10 @@ h1 a:hover {
     padding: 7px 15px; 
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-left: auto;
+    margin-left: 10px; /* 재수정 */
 }
 
-.cancel-button:hover,.click-button {
+.cancel-button:hover,.click-button:hover {
     background-color: #d0d0d0;
 }
 
