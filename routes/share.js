@@ -44,14 +44,14 @@ router.post('/cheer', async (req, res) => {
     }
     const from_user_id = JSON.parse(userCookie).user_id;
     const { to_user_id } = req.body;
-    const today = new Date().toISOString().split('T')[0];
+    const todayKST = moment().tz('Asia/Seoul').format('YYYY-MM-DD')
 
     console.log(`Cheering from ${from_user_id} to ${to_user_id}`);
 
     try {
         // 오늘 이미 응원했는지 확인
         const checkQuery = 'SELECT * FROM cheering_log WHERE from_user_id = ? AND to_user_id = ? AND cheer_date = ?';
-        const checkResult = await queryAsync(checkQuery, [from_user_id, to_user_id, today]);
+        const checkResult = await queryAsync(checkQuery, [from_user_id, to_user_id, todayKST]);
 
         if (checkResult.length > 0) {
             return res.status(400).json({ msg: '하루에 한 번만 응원할 수 있어요' });
@@ -63,7 +63,7 @@ router.post('/cheer', async (req, res) => {
 
         // cheering_log 테이블에 기록 추가
         const logQuery = 'INSERT INTO cheering_log (from_user_id, to_user_id, cheer_date) VALUES (?, ?, ?)';
-        await queryAsync(logQuery, [from_user_id, to_user_id, today]);
+        await queryAsync(logQuery, [from_user_id, to_user_id, todayKST]);
 
         res.status(200).json({ msg: 'Cheered successfully' });
     } catch (err) {
@@ -71,6 +71,7 @@ router.post('/cheer', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 async function queryAsync(query, params) {
     return new Promise((resolve, reject) => {
         client.query(query, params, (err, results) => {
