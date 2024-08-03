@@ -1,7 +1,19 @@
-.flex-fill{
+#container {
     display: flex;
-    margin-top: 100px;
-    margin-left: 650px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0; /* 추가된 여백이 없도록 설정 */
+}
+
+.flex-fill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0px;
 }
 
 .container {
@@ -17,9 +29,11 @@
     border: 1px solid black;
     border-radius: 10px;
     padding: 20px;
-    width: 200%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 500px;
     text-align: center;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
+    margin: 0 auto; /* 중앙 정렬 */
 }
 
 h2 {
@@ -30,6 +44,7 @@ h2 {
 form {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 label {
@@ -39,53 +54,62 @@ label {
 }
 
 input {
-    resize: none;
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
-    width: calc(100% - 20px);
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.create-button{
+.create-button {
     padding: 10px;
     background-color: #ddd;
     border: none;
     border-radius: 50px;
     font-size: 16px;
     cursor: pointer;
+    width: 100%;
 }
 
 .create-button:hover {
     background-color: #ccc;
 }
 
-
-/* Responsive Styles */
+/* 모바일 */
 @media (max-width: 768px) {
-    .flex-fill{
-        display: flex;
-        margin-top: 10px;
-        margin-left: 20px;
+    #container {
+        min-height: 70vh; /* 화면 전체 높이로 설정 */
     }
     .form-container {
-        width: 100%;
-        max-width: 90%;
+        max-width: 300px; /* 모바일 화면에서 너비 100% */
+        padding: 20px;
     }
 
+    h2 {
+        font-size: 20px;
+    }
 
+    label {
+        font-size: 15px;
+    }
 
+    input {
+        font-size: 13px;
+    }
+
+    .create-button {
+        font-size: 15px;
+        padding: 10px;
+    }
 }
 
 @media (max-width: 480px) {
-    .flex-fill{
-        display: flex;
-        margin-top: 10px;
-        margin-left: 5px;
-    }
     .form-container {
-        padding: 10px;
+        max-width: 300px; /* 작은 화면에서 너비 100% */
+        padding: 15px;
+        margin: 0 auto; /* 자동 마진을 추가하여 중앙에 위치 */
     }
 
     h2 {
