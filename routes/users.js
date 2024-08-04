@@ -5,14 +5,10 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const client = require('../db'); // MySQL 클라이언트 사용
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // 업로드된 파일을 저장할 디렉토리
 
 const USER_COOKIE_KEY = 'USER';
-
-const app = express();
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
 
 async function fetchUser(user_id) {
     return new Promise((resolve, reject) => {
@@ -40,7 +36,6 @@ async function createUser(newUser) {
 
 // 회원 탈퇴 라우트 추가
 router.post('/delete', async (req, res) => {
-    // 쿠키에서 사용자 정보 가져오기
     if (!req.cookies || !req.cookies[USER_COOKIE_KEY]) {
         return res.status(401).json({ msg: 'Unauthorized' });
     }
@@ -49,7 +44,6 @@ router.post('/delete', async (req, res) => {
     const userId = user.user_id;
 
     try {
-        // 사용자 삭제 쿼리 실행
         client.query('DELETE FROM user WHERE user_id = ?', [userId], (err, result) => {
             if (err) {
                 console.error('Error deleting user:', err);
@@ -57,7 +51,6 @@ router.post('/delete', async (req, res) => {
             }
 
             if (result.affectedRows > 0) {
-                // 사용자 삭제 성공 시 쿠키 삭제 및 응답
                 res.clearCookie(USER_COOKIE_KEY);
                 return res.json({ msg: 'User deleted successfully' });
             } else {
@@ -70,8 +63,13 @@ router.post('/delete', async (req, res) => {
     }
 });
 
-router.post('/signup', async (req, res) => {
+// 회원 가입 라우트
+router.post('/signup', upload.single('user_image'), async (req, res) => {
     const { user_id, user_email, user_pw, user_birthday, user_nickname } = req.body;
+    const user_image = req.file; // 업로드된 파일 정보
+
+    // 업로드된 파일 정보 로그
+    console.log('Uploaded file:', req.file);
 
     try {
         let user = await fetchUser(user_id);
@@ -79,7 +77,14 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-        const newUser = { user_id, user_email, user_pw, user_birthday, user_nickname };
+        const newUser = {
+            user_id,
+            user_email,
+            user_pw,
+            user_birthday,
+            user_nickname,
+            user_image: user_image ? user_image.filename : null // 파일명이 데이터베이스에 저장됨
+        };
         await createUser(newUser);
 
         const payload = { user: { user_id: newUser.user_id } };
@@ -94,6 +99,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+// 로그인 라우트
 router.post('/signin', async (req, res) => {
     const { user_id, user_pw } = req.body;
 
@@ -125,6 +131,7 @@ router.post('/signin', async (req, res) => {
     }
 });
 
+// 사용자 정보 확인 라우트
 router.get('/', async (req, res) => {
     const userCookie = req.cookies[USER_COOKIE_KEY];
 
@@ -146,5 +153,35 @@ router.get('/', async (req, res) => {
         <h1>Not Logged In</h1>
     `);
 });
+
+// 프로필 이미지 변경 라우트
+router.post('/updateProfileImage', upload.single('user_image'), async (req, res) => {
+    const user = req.cookies[USER_COOKIE_KEY] ? JSON.parse(req.cookies[USER_COOKIE_KEY]) : null;
+    if (!user) {
+        return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    const user_id = user.user_id;
+    const user_image = req.file;
+
+    if (!user_image) {
+        return res.status(400).json({ msg: 'No image uploaded' });
+    }
+
+    try {
+        client.query('UPDATE user SET user_image = ? WHERE user_id = ?', [user_image.filename, user_id], (err, results) => {
+            if (err) {
+                console.error('Error updating profile image:', err);
+                return res.status(500).json({ msg: 'Server error' });
+            }
+
+            res.redirect('/profile');
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 
 module.exports = router;

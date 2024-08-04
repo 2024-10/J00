@@ -24,6 +24,7 @@ app.use(cookieParser());
 
 // 정적 파일 미들웨어
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // 프로필 관련
 
 // 전역적으로 `user` 변수를 설정하는 미들웨어 추가
 app.use((req, res, next) => {

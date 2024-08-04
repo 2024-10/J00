@@ -49,3 +49,38 @@ main {
     height: auto;
     margin-right: 1rem;
 }
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.user-nickname {
+    margin-left: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.profile-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: -2px;
+    right: -10px;
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+}
