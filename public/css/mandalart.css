@@ -1,23 +1,24 @@
-.container {
-    font-family: Arial, sans-serif;
+.container0 {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    flex-direction: column;
+    align-items: flex-start;
+    flex-direction: row; /* 가로 정렬 */
+    min-height: 100vh;
 }
 
+.mandalart {
+    margin-right: 320px; /* mandalart와 editContainer 사이 간격 조정 */
+}
 
 .editContainer {
     background: #fff;
     border: 1px solid black;
     border-radius: 10px;
     padding: 20px;
-    width: 200%;
     max-width: 400px;
+    width: 100%;
     text-align: center;
-    margin-left: 300px;
+    margin: 0;
 }
 
 h2 {
@@ -33,7 +34,7 @@ h2 {
     align-items: flex-start;
 }
 
-#tedolist-form{
+#tedolist-form {
     display: grid;
     justify-content: center;
     text-align: center;
@@ -41,19 +42,20 @@ h2 {
 
 #checklist-container {
     display: none;
-    margin-left: 600px;
+    margin-left: -200px;
+    width: 300px;
 }
-#checklist-form{
+#checklist-form {
     display: grid;
     justify-content: center;
     text-align: center;
 }
 
-.save-button-container{
+.save-button-container {
     justify-content: center;
 }
 
-.create-button{
+.create-button {
     padding: 10px;
     background-color: #ddd;
     border: none;
@@ -67,13 +69,11 @@ h2 {
     background-color: #ccc;
 }
 
-
-#checklist-form{
+#checklist-form {
     display: grid;
     justify-content: center;
     text-align: center;
 }
-
 
 .mandalart {
     position: relative;
@@ -103,32 +103,21 @@ h2 {
     background: #D1E4BE;
 }
 
-.tedolist-detail-input{
-    border: none; 
+.tedolist-detail-input {
+    border: none;
     background: transparent;
     display: none;
 }
-input:focus {outline:none;}
+input:focus {
+    outline: none;
+}
 
-/* .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-sizing: border-box;
-} */
 .cell-text {
     font-size: 14px;
     padding: 5px;
 }
 
 /* 각 칸 개수에 따른 레이아웃 정의 */
-/* .grid-2 .cell {
-    position: absolute;
-} */
-
 .grid-2 .cell.left {
     width: 324px;
     height: 648px;
@@ -387,4 +376,311 @@ input:focus {outline:none;}
     height: 215px;
     left: 215px;
     top: 215px;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+
+    .container0 {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+    }
+    .arr1-container {
+        margin-top: -10px;
+        display: flex;
+        flex-direction: column; 
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .editContainer {
+        padding: 10px;
+        width: 100%;
+        max-width: 300px;
+    }
+    .mandalart {
+        width: 330px;
+        height: 330px;
+        max-width: 330px;
+        margin: 0 auto;
+        margin-bottom: 20px;
+    }
+
+    #checklist-container {
+        margin-left: 0px;
+        width: 200px;
+    }
+
+    /* 각 칸 개수에 따른 레이아웃 정의 */
+    .grid-2 .cell.left {
+        width: 165px;
+        height: 330px;
+        left: 0;
+        top: 0;
+    }
+    .grid-2 .cell.right {
+        width: 165px;
+        height: 330px;
+        left: 165px;
+        top: 0;
+    }
+    .grid-2 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-3 .cell.left {
+        width: 165px;
+        height: 330px;
+        left: 0;
+        top: 0;
+    }
+    .grid-3 .cell.right {
+        width: 165px;
+        height: 330px;
+        left: 165px;
+        top: 0;
+    }
+    .grid-3 .cell.down {
+        width: 330px;
+        height: 110px;
+        left: 0;
+        top: 220px;
+    }
+    .grid-3 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-4 .cell.up {
+        width: 220px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-4 .cell.left {
+        width: 110px;
+        height: 220px;
+        left: 0;
+        top: 0;
+    }
+    .grid-4 .cell.right {
+        width: 110px;
+        height: 220px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-4 .cell.down {
+        width: 220px;
+        height: 110px;
+        left: 0;
+        top: 220px;
+    }
+    .grid-4 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-5 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-5 .cell.left {
+        width: 109px;
+        height: 220px;
+        left: 0px;
+        top: 0px;
+    }
+    .grid-5 .cell.right {
+        width: 109px;
+        height: 220px;
+        left: 220px;
+        top: 0px;
+    }
+    .grid-5 .cell.down-left {
+        width: 165px;
+        height: 110px;
+        left: 0px;
+        top: 220.5px;
+    }
+    .grid-5 .cell.down-right {
+        width: 164px;
+        height: 110px;
+        left: 165px;
+        top: 220.5px;
+    }
+    .grid-5 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-6 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-6 .cell.up-left {
+        width: 109px;
+        height: 165px;
+        left: 0;
+        top: 0;
+    }
+    .grid-6 .cell.up-right {
+        width: 109px;
+        height: 165px;
+        left: 220px;
+        top: 0;
+    }
+    .grid-6 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220px;
+    }
+    .grid-6 .cell.down-right {
+        width: 109px;
+        height: 165px;
+        left: 220px;
+        top: 165px;
+    }
+    .grid-6 .cell.down-left {
+        width: 109px;
+        height: 165px;
+        left: 0px;
+        top: 165px;
+    }
+    .grid-6 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-7 .cell.up-left {
+        width: 165px;
+        height: 110px;
+        left: 0px;
+        top: 0px;
+    }
+    .grid-7 .cell.up-right {
+        width: 165px;
+        height: 110px;
+        left: 165px;
+        top: 0px;
+    }
+    .grid-7 .cell.left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 110px;
+    }
+    .grid-7 .cell.right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-7 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.down-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.down-right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-8 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 1px;
+    }
+    .grid-8 .cell.left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 110px;
+    }
+    .grid-8 .cell.right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-8 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220px;
+    }
+    .grid-8 .cell.down-right {
+        width: 110px;
+        height: 109px;
+        left: 220px;
+        top: 221px;
+    }
+    .grid-8 .cell.down-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 220px;
+    }
+    .grid-8 .cell.up-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 1px;
+    }
+    .grid-8 .cell.up-right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 1px;
+    }
+    .grid-8 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .editContainer {
+        padding: 10px;
+        width: 100%;
+        max-width: 300px;
+        margin-left: 0px;
+    }
 }

@@ -1,27 +1,41 @@
-name: Deploy to GCP
+name: Deploy to AWS
 on:
   push:
-    branches:
-      - main  # main 브랜치에 푸시될 때 실행
+    branches: [ " main " ]
+  pull_request:
+    branches: [ " main " ]
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Setup SSH
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key  # 비밀 키를 파일로 저장
-        chmod 600 ssh_private_key  # 파일 권한 설정
-    - name: Deploy to GCP
-      run: |
-        ssh -T -i ssh_private_key -o StrictHostKeyChecking=no "${{ secrets.GCP_VM_NAME }}"@"${{ secrets.GCP_VM_NAME2 }}" << 'EOF'
-        sudo su 
-        cd /var/www/j00.shop  # 애플리케이션의 실제 경로로 이동
-        git pull origin main  # 최신 코드를 가져옵니다
-        npm install           # 필요한 패키지를 설치합니다
-        pm2 restart index.js   # 애플리케이션을 다시 시작합니다
-        EOF
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Project
+      run: npm run build
+      
+    - name: Deploy to EC2
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        AWS_REGION: ap-northeast-2
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key
+          chmod 600 ssh_private_key
+          scp -o StrictHostKeyChecking=no -i ssh_private_key -r ./* ${EC2_USER}@${{ secrets.EC2_HOST }}:/home/ubuntu/your-app-folder/
+          ssh -o StrictHostKeyChecking=no -i ssh_private_key ${EC2_USER}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /home/ubuntu/your-app-folder/
+          npm install --production
+          pm2 restart index.js
     - name: Clean up
       run: |
-        rm ssh_private_key  # 비밀 키 파일을 제거
+        rm ssh_private_key
