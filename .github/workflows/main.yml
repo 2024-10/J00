@@ -1,9 +1,9 @@
 name: Deploy to AWS
 on:
   push:
-    branches: [ " main " ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ " main " ]
+    branches: [ "main" ]
       
 jobs:
   deploy:
@@ -17,7 +17,7 @@ jobs:
       with:
         node-version: '12'
 
-    - name: check npm -v
+    - name: Check npm version
       run: npm -v
 
     - name: Install dependencies
@@ -32,30 +32,30 @@ jobs:
         cp -r * deploy/
         cd deploy
         zip -r ../deploy.zip .
-      shell: bash
       
     - name: Deploy to EC2
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         EC2_USER: "ubuntu"
         EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key
-          chmod 600 ssh_private_key
-          scp -o StrictHostKeyChecking=no -i ssh_private_key -r ./* ${EC2_USER}@${{ secrets.EC2_HOST }}:/home/ubuntu/your-app-folder/
-          ssh -o StrictHostKeyChecking=no -i ssh_private_key ${EC2_USER}@${{ secrets.EC2_HOST }} << 'EOF'
-            unzip -o /home/ubuntu/deploy.zip -d /home/ubuntu/app/
-          cd /home/ubuntu/J00_BE/
+      run: |
+        echo "$SSH_PRIVATE_KEY" > ssh_private_key
+        chmod 600 ssh_private_key
+        scp -o StrictHostKeyChecking=no -i ssh_private_key deploy.zip ${EC2_USER}@${{ secrets.EC2_HOST }}:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no -i ssh_private_key ${EC2_USER}@${{ secrets.EC2_HOST }} << 'EOF'
+          unzip -o /home/ubuntu/deploy.zip -d /home/ubuntu/your-app-folder/
+          cd /home/ubuntu/your-app-folder/
           npm install --production
           pm2 restart index.js
-        shell: bash
+        EOF
+      shell: bash
 
-    - name: deploy with AWS codeDeploy
-      run: aws deploy create-deployment
-        --application-name j00-codedeploy
-        --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name deployuser
-        
-    - name: Clean up
+    - name: Deploy with AWS CodeDeploy
       run: |
-        rm ssh_key.pem
+        aws deploy create-deployment \
+          --application-name j00-codedeploy \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --deployment-group-name deployuser
+
+    - name: Clean up
+      run: rm ssh_private_key
