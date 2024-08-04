@@ -25,26 +25,37 @@ jobs:
 
     - name: Build Project
       run: npm run build
+
+    - name: Prepare deployment package
+      run: |
+        mkdir -p deploy
+        cp -r * deploy/
+        cd deploy
+        zip -r ../deploy.zip .
+      shell: bash
       
     - name: Deploy to EC2
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        AWS_REGION: ap-northeast-2
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        EC2_USER: "ubuntu"
+        EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_private_key
           chmod 600 ssh_private_key
           scp -o StrictHostKeyChecking=no -i ssh_private_key -r ./* ${EC2_USER}@${{ secrets.EC2_HOST }}:/home/ubuntu/your-app-folder/
           ssh -o StrictHostKeyChecking=no -i ssh_private_key ${EC2_USER}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd /home/ubuntu/your-app-folder/
+            unzip -o /home/ubuntu/deploy.zip -d /home/ubuntu/app/
+          cd /home/ubuntu/J00_BE/
           npm install --production
           pm2 restart index.js
+        shell: bash
 
     - name: deploy with AWS codeDeploy
       run: aws deploy create-deployment
         --application-name j00-codedeploy
         --deployment-config-name CodeDeployDefault.OneAtATime
         --deployment-group-name deployuser
+        
     - name: Clean up
       run: |
-        rm ssh_private_key
+        rm ssh_key.pem
