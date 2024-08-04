@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
@@ -33,33 +34,36 @@
         <img src="/images/edit.svg" alt="Edit" class="edit-icon" onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">
     </div>
     <div class="container">
-        <div class="editContainer">
-            <% tedolists.forEach((tedolist, index) => { %>
-                <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
-                <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
-                <% if (checklists[tedolist.tedolist_number]) { %>
-                    <ul class="checklist" id="checklist-<%= tedolist.tedolist_number %>" style="display:none;">
-                        <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
-                            <li><%= checklist.checklist_detail %></li>
-                        <% }); %>
-                    </ul>
-                <% } %>
-            <% }); %>
-            <div id="checklist-container">
-                <ul id="checklist-list"></ul>
-            </div>
-        </div>
         <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %>"></div>
-        <!-- 댓글 표시 영역 -->
-        <div id="comment-section">
-            <h4>댓글 (<span id="comment-count">0</span>)</h4>
-            <ul id="comment-list"></ul>
-            
-            <div id="new-comment-section">
-                <textarea id="new-comment" placeholder="댓글을 입력하세요"></textarea>
-                <button id="add-comment-button">댓글 작성</button>
+        <div class="editContainer">
+            <div class="editContainerColor">
+                <% tedolists.forEach((tedolist, index) => { %>
+                    <input type="text" class="tedolist-detail-input" value="<%= tedolist.tedolist_detail %>" readonly />
+                    <input type="hidden" class="tedolist-number" value="<%= tedolist.tedolist_number %>" />
+                    <% if (checklists[tedolist.tedolist_number]) { %>
+                        <ul class="checklist" id="checklist-<%= tedolist.tedolist_number %>" style="display:none;">
+                            <% checklists[tedolist.tedolist_number].forEach(checklist => { %>
+                                <li><%= checklist.checklist_detail %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
+                <% }); %>
+                <div id="checklist-container">
+                    <ul id="checklist-list"></ul>
+                </div>
+            </div>
+            <!-- 댓글 표시 영역 -->
+            <div id="comment-section">
+                <h4>댓글 (<span id="comment-count">0</span>)</h4>
+                <ul id="comment-list"></ul>
+                
+                <div id="new-comment-section">
+                    <textarea id="new-comment" placeholder="댓글을 입력하세요"></textarea>
+                    <button id="add-comment-button">댓글 작성</button>
+                </div>
             </div>
         </div>
+        
     </div>
 
     <div class="calendar-container">
@@ -75,6 +79,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <script>
+        // 모바일 가로모드 방지
+        
+
         // 모바일 네비바
         document.addEventListener('DOMContentLoaded', () => {
             const navToggle = document.getElementById('nav-toggle');
