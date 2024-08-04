@@ -19,6 +19,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          scripts: |
+          script: |
             chmod +x ~/deploy.sh
             ~/deploy.sh
