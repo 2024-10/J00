@@ -22,16 +22,6 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-
-    - name: Build Project
-      run: npm run build
-
-    - name: Prepare deployment package
-      run: |
-        mkdir -p deploy
-        cp -r * deploy/
-        cd deploy
-        zip -r ../deploy.zip .
       
     - name: Deploy to EC2
       env:
