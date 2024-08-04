@@ -16,6 +16,18 @@
             border-radius: 5px;
             margin-top: 20px;
         }
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+        }
+        .profile-image-container img.profile-image {
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .file-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -41,32 +53,42 @@
         <section class="profile-section">
             <h2>프로필</h2>
             <div class="profile-card">
-                <h3>
-                    <%= user ? user.user_nickname : 'Guest' %> 
-                </h3>
+                <div class="profile-info">
+                    <div class="profile-image-container">
+                        <% if (user && user.user_image) { %>
+                            <img src="/uploads/<%= user.user_image %>" alt="프로필 사진" class="profile-image">
+                        <% } else { %>
+                            <img src="/images/default-profile.png" alt="기본 프로필 사진" class="profile-image">
+                        <% } %>
+                        <img src="/images/edit-icon.png" alt="edit" class="edit-icon" onclick="document.getElementById('fileInput').click();">
+                        <form id="editForm" class="edit-form" action="/api/users/updateProfileImage" method="POST" enctype="multipart/form-data">
+                            <input type="file" id="fileInput" name="user_image" accept="image/*" class="file-input" onchange="document.getElementById('editForm').submit();">
+                        </form>
+                    </div>
+                    <h3 class="user-nickname"><%= user ? user.user_nickname : 'Guest' %></h3>
+                </div>
                 <p>아이디 : <%= user ? user.user_id : 'Guest' %></p>
                 <p>이메일 : <%= user ? user.user_email : 'Not available' %></p>
                 <p>생년월일 : <%= user ? new Date(user.user_birthday).toISOString().split('T')[0] : 'Not available' %></p>
-                
-                <!-- 회원 탈퇴 버튼 추가 -->
+                            
                 <% if (user) { %>
                     <button class="delete-button" onclick="confirmDelete()">회원 탈퇴</button>
                 <% } %>
-            </div>
+            </div>            
         </section>
 
         <section class="profile-section">
             <div class="profile-card">
                 <p>
                     <% if (user && user.cheering > 0) { %>
-                      <%= user.cheering %>명이 <%= user.user_nickname %>님을 응원하고 있어요!
+                        <%= user.cheering %>명이 <%= user.user_nickname %>님을 응원하고 있어요!
                     <% } else { %>
-                      j00per가 <%= user ? user.user_nickname : 'Guest' %>님을 응원하고 있어요!
+                        j00per가 <%= user ? user.user_nickname : 'Guest' %>님을 응원하고 있어요!
                     <% } %>
-                  </p>
+                </p>
             </div>
         </section>
-          
+
         <section class="achievements-section">
             <h2>업적</h2>
             <p style="font-weight: bold; font-size: 1.2em;">현재까지 달성한 업적이 없습니다.</p>
@@ -74,7 +96,6 @@
     </main>
 
     <script>
-
         // 모바일 네비바
         document.addEventListener('DOMContentLoaded', () => {
             const navToggle = document.getElementById('nav-toggle');
