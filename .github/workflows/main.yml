@@ -17,6 +17,9 @@ jobs:
       with:
         node-version: '12'
 
+    - name: check npm -v
+      run: npm -v
+
     - name: Install dependencies
       run: npm install
 
@@ -36,6 +39,12 @@ jobs:
           cd /home/ubuntu/your-app-folder/
           npm install --production
           pm2 restart index.js
+
+    - name: deploy with AWS codeDeploy
+      run: aws deploy create-deployment
+        --application-name j00-codedeploy
+        --deployment-config-name CodeDeployDefault.OneAtATime
+        --deployment-group-name deployuser
     - name: Clean up
       run: |
         rm ssh_private_key
