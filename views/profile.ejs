@@ -54,6 +54,19 @@
                 <% } %>
             </div>
         </section>
+
+        <section class="profile-section">
+            <div class="profile-card">
+                <p>
+                    <% if (user && user.cheering > 0) { %>
+                      <%= user.cheering %>명이 <%= user.user_nickname %>님을 응원하고 있어요!
+                    <% } else { %>
+                      j00per가 <%= user ? user.user_nickname : 'Guest' %>님을 응원하고 있어요!
+                    <% } %>
+                  </p>
+            </div>
+        </section>
+          
         <section class="achievements-section">
             <h2>업적</h2>
             <p style="font-weight: bold; font-size: 1.2em;">현재까지 달성한 업적이 없습니다.</p>

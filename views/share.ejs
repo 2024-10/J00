@@ -206,7 +206,15 @@
                         alert('서로 팔로잉한 상태에서만 만다라트를 열람할 수 있어요 :( ');
                     }
                 });
-
+                
+                //이 부분
+                const clickButton = document.createElement('button');
+                clickButton.className = 'click-button';
+                clickButton.textContent = '응원하기';
+                clickButton.addEventListener('click', async () => {
+                    await cheerUser(userId, user);
+                });
+                
                 const cancelButton = document.createElement('button');
                 cancelButton.className = 'cancel-button';
                 cancelButton.textContent = '삭제하기';
@@ -216,6 +224,7 @@
                 });
 
                 userItem.appendChild(userPlan);
+                userItem.appendChild(clickButton);
                 userItem.appendChild(cancelButton);
 
                 followingListContainer.appendChild(userItem);
@@ -225,6 +234,30 @@
             document.getElementById('following-prev').disabled = page <= 1;
             document.getElementById('following-next').disabled = page >= totalPages;
         }
+        
+        async function cheerUser(fromUserId, toUserId) {
+            try {
+                const response = await fetch('/api/share/cheer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ to_user_id: toUserId }),
+                });
+        
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.msg || 'Failed to cheer user');
+                }
+        
+                const data = await response.json();
+                alert(`${toUserId}님을 응원했습니다!`);
+            } catch (error) {
+                console.error('Error cheering user:', error.message);
+                alert(error.message);
+            }
+        }
+        
 
         async function showFollowersList(userId, page = 1) {
             const { followersList, totalPages } = await fetchFollowersList(userId, page);

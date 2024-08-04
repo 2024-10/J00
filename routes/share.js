@@ -2,6 +2,75 @@ const express = require('express');
 const router = express.Router();
 const client = require('../db');
 const USER_COOKIE_KEY = 'USER';
+const cron = require('node-cron');
+const moment = require('moment-timezone');
+
+// const resetCheeringValues = () => {
+//     console.log('Manually resetting cheering values to 0');
+//     client.query('UPDATE user SET cheering = 0', (err, results) => {
+//         if (err) {
+//             console.error('Error resetting cheering values:', err);
+//         } else {
+//             console.log('Cheering values reset successfully');
+//         }
+//     });
+// };
+
+// // 수동 실행 테스트
+// resetCheeringValues();
+
+// 자정마다 사용자의 cheering 초기화
+cron.schedule('0 0 * * *', () => {
+    const now = moment().tz('Asia/Seoul').format('HH:mm');
+    console.log(`Current time: ${now}`);
+    if (now === '00:00') {
+        console.log('Resetting cheering values to 0 at KST midnight');
+        client.query('UPDATE user SET cheering = 0', (err, results) => {
+            if (err) {
+                console.error('Error resetting cheering values:', err);
+            } else {
+                console.log('Cheering values reset successfully');
+            }
+        });
+    }
+});
+
+// 응원하기 코드
+router.post('/cheer', async (req, res) => {
+    const userCookie = req.cookies[USER_COOKIE_KEY];
+    if (!userCookie) {
+        console.log('User not authenticated');
+        return res.status(401).json({ msg: 'Not authenticated' });
+    }
+    const from_user_id = JSON.parse(userCookie).user_id;
+    const { to_user_id } = req.body;
+    const todayKST = moment().tz('Asia/Seoul').format('YYYY-MM-DD')
+
+    console.log(`Cheering from ${from_user_id} to ${to_user_id}`);
+
+    try {
+        // 오늘 이미 응원했는지 확인
+        const checkQuery = 'SELECT * FROM cheering_log WHERE from_user_id = ? AND to_user_id = ? AND cheer_date = ?';
+        const checkResult = await queryAsync(checkQuery, [from_user_id, to_user_id, todayKST]);
+
+        if (checkResult.length > 0) {
+            return res.status(400).json({ msg: '하루에 한 번만 응원할 수 있어요' });
+        }
+
+        // cheering 값을 증가시키는 쿼리
+        const updateQuery = 'UPDATE user SET cheering = cheering + 1 WHERE user_id = ?';
+        await queryAsync(updateQuery, [to_user_id]);
+
+        // cheering_log 테이블에 기록 추가
+        const logQuery = 'INSERT INTO cheering_log (from_user_id, to_user_id, cheer_date) VALUES (?, ?, ?)';
+        await queryAsync(logQuery, [from_user_id, to_user_id, todayKST]);
+
+        res.status(200).json({ msg: 'Cheered successfully' });
+    } catch (err) {
+        console.error('Error updating cheering:', err.message);
+        res.status(500).send('Server error');
+    }
+});
 
 async function queryAsync(query, params) {
     return new Promise((resolve, reject) => {
