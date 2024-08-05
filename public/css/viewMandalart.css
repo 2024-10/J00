@@ -698,6 +698,12 @@ input:focus {outline:none;}
     left: 215px;
     top: 215px;
 }
+
+
+
+
+
+
 /* 모바일 */
 @media (max-width: 768px) {
     /* 헤더 아래 */
@@ -746,7 +752,7 @@ input:focus {outline:none;}
     .editContainer { 
         padding: 20px;
         max-width: 330px;
-        width: 95%;
+        width: 90%;
         height: 400px;
         text-align: center;
         margin: 0 auto;
@@ -1030,6 +1036,10 @@ input:focus {outline:none;}
         margin: 0 30px;
         height: 100vh;
     }
+    /* 체크리스트 */
+    .editContainer { 
+        width: 95%;
+    }
 }
 
 @media (max-width: 380px) {
@@ -1037,5 +1047,28 @@ input:focus {outline:none;}
     .container {
         margin: 0 20px;
         height: 120vh;
+    }
+    
+}
+
+
+@media (max-width: 350px) {
+    /* 헤더 아래 */
+    .container {
+        margin: 5px;
+        height: 100vh;
+    }
+    /* 만다라트*/
+    .mandalart {
+        width: 330px;
+        height: 330px;
+        max-width: 330px;
+        margin: 0 auto;
+    }
+
+    /* 체크리스트 */
+    .editContainer { 
+        width: 100%;
+        margin-left: 8px;
     }
 }
