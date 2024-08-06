@@ -120,6 +120,8 @@ main {
     #userResult {
         flex-direction: column;
         align-items: stretch;
+        width: 90%;
+        max-width: 600px; 
     }
 
     .add-button {

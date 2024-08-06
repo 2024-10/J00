@@ -704,8 +704,9 @@ input:focus {outline:none;}
 
 
 
+
 /* 모바일 */
-@media (max-width: 768px) {
+@media (orientation: portrait) and (max-width: 768px) {
     /* 헤더 아래 */
     .container {
         display: flex;
@@ -1030,7 +1031,7 @@ input:focus {outline:none;}
     }
 }
 
-@media (max-width: 390px) {
+@media (orientation: portrait) and (max-width: 390px) {
     /* 헤더 아래 */
     .container {
         margin: 0 30px;
@@ -1042,17 +1043,21 @@ input:focus {outline:none;}
     }
 }
 
-@media (max-width: 380px) {
+@media (orientation: portrait) and (max-width: 380px) {
     /* 헤더 아래 */
     .container {
         margin: 0 20px;
-        height: 120vh;
+        height: 125vh;
+    }
+    /* 체크리스트 */
+    .editContainer { 
+        width: 100%;
     }
     
 }
 
 
-@media (max-width: 350px) {
+@media (orientation: portrait) and (max-width: 350px) {
     /* 헤더 아래 */
     .container {
         margin: 5px;
@@ -1065,10 +1070,352 @@ input:focus {outline:none;}
         max-width: 330px;
         margin: 0 auto;
     }
-
+    /* 댓글 */
+    #new-comment {
+        width: 47%;
+        height: 30px;
+        border-radius: 4px;
+        margin-bottom: 10px;       
+    }
     /* 체크리스트 */
     .editContainer { 
         width: 100%;
         margin-left: 8px;
+    }
+}
+
+/* 모바일 가로모드 */
+@media (orientation: landscape) and (max-height: 768px) {
+
+    /* 만다라트*/
+    .mandalart {
+        width: 330px;
+        height: 330px;
+        max-width: 330px;
+        margin: 0 auto;
+    }
+
+    /* 댓글 */
+    .comment-section {
+        width: 80%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    #new-comment {
+        width: 60%;
+        height: 30px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    
+        background-color: none;
+        resize: none;
+        border: none;
+        border-bottom: none;
+        outline: none;
+
+        
+    }
+
+    /* 체크리스트 */
+    .editContainer { 
+        padding: 20px;
+        max-width: 330px;
+        width: 90%;
+        height: 400px;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 0px;
+        flex-direction: column;
+    }
+    .editContainerColor{
+        padding-top: 10px;
+        background: #D1E4BE;
+        border: none;
+        border-radius: 10px;
+        width: 100%;
+        height: 100px;
+    
+    }
+
+    /* 각 칸 개수에 따른 레이아웃 정의 */
+    .grid-2 .cell.left {
+        width: 165px;
+        height: 330px;
+        left: 0;
+        top: 0;
+    }
+    .grid-2 .cell.right {
+        width: 165px;
+        height: 330px;
+        left: 165px;
+        top: 0;
+    }
+    .grid-2 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-3 .cell.left {
+        width: 165px;
+        height: 330px;
+        left: 0;
+        top: 0;
+    }
+    .grid-3 .cell.right {
+        width: 165px;
+        height: 330px;
+        left: 165px;
+        top: 0;
+    }
+    .grid-3 .cell.down {
+        width: 330px;
+        height: 110px;
+        left: 0;
+        top: 220px;
+    }
+    .grid-3 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-4 .cell.up {
+        width: 220px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-4 .cell.left {
+        width: 110px;
+        height: 220px;
+        left: 0;
+        top: 0;
+    }
+    .grid-4 .cell.right {
+        width: 110px;
+        height: 220px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-4 .cell.down {
+        width: 220px;
+        height: 110px;
+        left: 0;
+        top: 220px;
+    }
+    .grid-4 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-5 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-5 .cell.left {
+        width: 109px;
+        height: 220px;
+        left: 0px;
+        top: 0px;
+    }
+    .grid-5 .cell.right {
+        width: 109px;
+        height: 220px;
+        left: 220px;
+        top: 0px;
+    }
+    .grid-5 .cell.down-left {
+        width: 165px;
+        height: 110px;
+        left: 0px;
+        top: 220.5px;
+    }
+    .grid-5 .cell.down-right {
+        width: 164px;
+        height: 110px;
+        left: 165px;
+        top: 220.5px;
+    }
+    .grid-5 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-6 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 0;
+    }
+    .grid-6 .cell.up-left {
+        width: 109px;
+        height: 165px;
+        left: 0;
+        top: 0;
+    }
+    .grid-6 .cell.up-right {
+        width: 109px;
+        height: 165px;
+        left: 220px;
+        top: 0;
+    }
+    .grid-6 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220px;
+    }
+    .grid-6 .cell.down-right {
+        width: 109px;
+        height: 165px;
+        left: 220px;
+        top: 165px;
+    }
+    .grid-6 .cell.down-left {
+        width: 109px;
+        height: 165px;
+        left: 0px;
+        top: 165px;
+    }
+    .grid-6 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-7 .cell.up-left {
+        width: 165px;
+        height: 110px;
+        left: 0px;
+        top: 0px;
+    }
+    .grid-7 .cell.up-right {
+        width: 165px;
+        height: 110px;
+        left: 165px;
+        top: 0px;
+    }
+    .grid-7 .cell.left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 110px;
+    }
+    .grid-7 .cell.right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-7 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.down-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.down-right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 220.5px;
+    }
+    .grid-7 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+
+    .grid-8 .cell.up {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 1px;
+    }
+    .grid-8 .cell.left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 110px;
+    }
+    .grid-8 .cell.right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 110px;
+    }
+    .grid-8 .cell.down {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 220px;
+    }
+    .grid-8 .cell.down-right {
+        width: 110px;
+        height: 109px;
+        left: 220px;
+        top: 221px;
+    }
+    .grid-8 .cell.down-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 220px;
+    }
+    .grid-8 .cell.up-left {
+        width: 110px;
+        height: 110px;
+        left: 0px;
+        top: 1px;
+    }
+    .grid-8 .cell.up-right {
+        width: 110px;
+        height: 110px;
+        left: 220px;
+        top: 1px;
+    }
+    .grid-8 .cell.center {
+        width: 110px;
+        height: 110px;
+        left: 110px;
+        top: 110px;
+    }
+}
+@media (orientation: landscape) and (max-height: 400px){
+    #new-comment {
+        width: 60%;        
+    }
+}
+
+@media (orientation: landscape) and (max-height: 380px){
+    /* 댓글 */
+    .comment-section {
+        width: 80%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    #new-comment {
+        width: 38%;        
+    }
+
+    /* 체크리스트 */
+    .editContainer { 
+        width: 35%;
     }
 }

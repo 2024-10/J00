@@ -118,6 +118,10 @@ input:focus {
 }
 
 /* 각종 버튼 관련 */
+.btn{
+    color: black;
+}
+
 #doneBtn {
     align-items: center;
     display: flex;
