@@ -11,7 +11,7 @@
     <div class="signup-container">
         <div class="signup-box">
             <h2>Sign Up</h2>
-            <form id="signupForm" action="/api/users/signup" method="POST">
+            <form id="signupForm" action="/api/users/signup" method="POST" enctype="multipart/form-data">
                 <div class="input-group">
                     <input type="text" name="user_id" placeholder="Name" required>
                 </div>
@@ -27,6 +27,9 @@
                 <div class="input-group">
                     <input type="text" name="user_nickname" placeholder="Nickname" required>
                 </div>
+                <div class="input-group">
+                    <input type="file" name="user_image" accept="image/*">
+                </div>
                 <button type="submit" class="btn">가입하기</button>
             </form>
             <p>이미 계정이 있습니까? <a href="/signin" class="signup-link">로그인 하기</a></p>
@@ -37,15 +40,13 @@
         document.getElementById('signupForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const form = event.target;
-            const formData = new URLSearchParams(new FormData(form)).toString();
+            const formData = new FormData(form); // FormData 객체 생성
 
             const response = await fetch(form.action, {
                 method: form.method,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: formData,
+                body: formData, // FormData 객체 전송
             });
+
             if (response.ok) {
                 alert('회원가입에 성공했습니다!');
                 window.location.href = '/signin';
