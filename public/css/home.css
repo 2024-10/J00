@@ -45,7 +45,7 @@ main {
     font-weight: 100;
 }
 
-/* Responsive Styles */
+/* 모바일 */
 @media (max-width: 768px) {
     button{
         border: none;
@@ -72,3 +72,23 @@ main {
     }
 }
 
+/* 모바일 가로모드 */
+@media (orientation: landscape) and (max-height: 768px) {
+    button{
+        border: none;
+        background-color: #F4FFE8;
+    }
+
+    .container {
+        text-align: center;
+        margin-top: 0px;
+    }
+    .logo-large {
+        width: 340px;
+    }
+
+    .container h1 {
+        font-size: 20px;
+    }
+
+}
