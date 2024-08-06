@@ -6,13 +6,11 @@
     <title>J00% - View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/share_viewMandalart.css">
-
     <style>
         .cell.active {
             background-color: #F4FFE8 !important;
         }
         #checklist-container {
-            display: none;
             margin-top: 20px;
         }
         #checklist-list {
@@ -37,8 +35,13 @@
         <a href="/">
             <img src="/images/logo.svg" alt="logo" class="logo">
         </a>
+        <button id="nav-toggle" class="nav-toggle">
+            <span class="nav-icon"></span>
+            <span class="nav-icon"></span>
+            <span class="nav-icon"></span>
+        </button>
         <nav id="main-navigation">
-            <ul class="menu">   
+            <ul class="menu">
                 <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button active">Share</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/calendar'" class="nav-button">Calendar</button></li>
@@ -46,28 +49,44 @@
             </ul>
         </nav>
     </header>
-    
+    <h3 id="user-nickname"></h3>
     <div class="container">
-        <h3 id="user-nickname"></h3>
         <div id="no-mandalart-message" style="display:none;">아직 만다라트를 생성하지 않았어요:(</div>
+        
+        <!-- 만다라트 -->
         <div id="mandalart-grid" class="mandalart grid" style="display:none;"></div>
-        <div id="checklist-container" class="container arr1-container" style="display:none;">
+        <!-- 체크리스트 -->
+        <div id="checklist-container" style="display:none;">
             <div class="editContainer">
-                <ul id="checklist-list"></ul>
-            </div>
-        </div>
-        <div id="comment-section" style="display:none;">
-            <h4>댓글 (<span id="comment-count">0</span>)</h4>
-            <ul id="comment-list"></ul>
-            
-            <div id="new-comment-section">
-                <textarea id="new-comment" placeholder="댓글을 입력하세요"></textarea>
-                <button id="add-comment-button">댓글 작성</button>
+                <div class="editContainerColor">
+                    <ul id="checklist-list"></ul>
+                </div>
+                <!-- 댓글 -->
+                <div id="comment-section" style="display:none;">
+                    <h4>댓글 (<span id="comment-count">0</span>)</h4>
+                    <ul id="comment-list"></ul>
+                    
+                    <div id="new-comment-section">
+                        <textarea id="new-comment" placeholder="댓글을 입력하세요"></textarea>
+                        <button id="add-comment-button">댓글 작성</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
+        // 모바일 네비바
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.getElementById('nav-toggle');
+            const mainNav = document.getElementById('main-navigation');
+            const mainHeader = document.getElementById('main-header');
+
+            navToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                mainHeader.classList.toggle('active-header');
+            });
+        });
         // Function to get URL parameter
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -94,37 +113,40 @@
                     }
                 } else {
                     const data = await response.json();
-                    document.getElementById('mandalart-grid').style.display = 'block';
-                    document.getElementById('comment-section').style.display = 'block';
+                    if (data && data.mandalart && data.tedolists.length > 0) {
+                        document.getElementById('mandalart-grid').style.display = 'block';
+                        document.getElementById('checklist-container').style.display = 'block';
+                        document.getElementById('comment-section').style.display = 'block';
 
-                    displayMandalart(data);
-                    loadComments(data.mandalart.mandalart_id);
+                        displayMandalart(data);
+                        loadComments(data.mandalart.mandalart_id);
 
-                    // Add comment button click event
-                    document.getElementById('add-comment-button').addEventListener('click', () => {
-                        const commentDetail = document.getElementById('new-comment').value.trim();
-                        if (commentDetail) {
-                            addComment(data.mandalart.mandalart_id, commentDetail);
-                        }
-                    });
-
-                    // Submit comment on Enter key press
-                    document.getElementById('new-comment').addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault();
-                            const commentDetail = event.target.value.trim();
+                        // Add comment button click event
+                        document.getElementById('add-comment-button').addEventListener('click', () => {
+                            const commentDetail = document.getElementById('new-comment').value.trim();
                             if (commentDetail) {
                                 addComment(data.mandalart.mandalart_id, commentDetail);
                             }
-                        }
-                    });
+                        });
+
+                        // Submit comment on Enter key press
+                        document.getElementById('new-comment').addEventListener('keydown', (event) => {
+                            if (event.key === 'Enter') {
+                                event.preventDefault();
+                                const commentDetail = event.target.value.trim();
+                                if (commentDetail) {
+                                    addComment(data.mandalart.mandalart_id, commentDetail);
+                                }
+                            }
+                        });
+                    } else {
+                        document.getElementById('no-mandalart-message').style.display = 'block';
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching mandalart:', error);
             }
         });
-
-
 
         function displayMandalart(data) {
             const { mandalart, tedolists, checklists } = data;
@@ -263,7 +285,7 @@
                         });
                     });
                     li.querySelector('.delete-comment-button').addEventListener('click', async () => {
-                        await deleteComment(mandalartId,comment.comment_id);
+                        await deleteComment(mandalartId, comment.comment_id);
                     });
                     commentList.appendChild(li);
                 });
@@ -295,7 +317,7 @@
             }
         }
 
-        async function deleteComment(mandalartId,commentId) {
+        async function deleteComment(mandalartId, commentId) {
             const response = await fetch(`/comment/delete/${commentId}`, {
                 method: 'DELETE',
                 headers: {
