@@ -157,25 +157,43 @@ router.post('/addTedolist', (req, res) => {
 
     if (user) {
         const { mandalartId, tedolistDetails } = req.body;
-        client.query("SELECT COALESCE(MAX(tedolist_number), 0) + 1 AS new_tedolist_number FROM tedolist WHERE mandalart_id = ?", [mandalartId], (err, result) => {
+        
+        // Get the current mandalart to check the count
+        client.query("SELECT tedolist_count FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, result) => {
             if (err) {
                 console.log(err);
                 res.status(500).send("Server error");
-            } else {
-                let tedolist_number = result[0].new_tedolist_number; 
-                const detailsArray = tedolistDetails.split(',').map(detail => detail.trim()).filter(detail => detail.length > 0); 
-                const values = detailsArray.map(detail => [tedolist_number++, mandalartId, detail]);
-                client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
-                    [values],
-                    (err, result) => {
+            } else if (result.length > 0) {
+                const tedolistCount = result[0].tedolist_count;
+                const expectedDetailsCount = tedolistCount;
+                const detailsArray = tedolistDetails.split(',').map(detail => detail.trim()).filter(detail => detail.length > 0);
+
+                if (detailsArray.length !== expectedDetailsCount) {
+                    res.status(400).send(`<script>alert('입력된 항목의 개수가 올바르지 않습니다. ${expectedDetailsCount}개의 항목을 입력하세요.'); window.location.href='/mandalart/edit/${mandalartId}';</script>`);
+                } else {
+                    client.query("SELECT COALESCE(MAX(tedolist_number), 0) + 1 AS new_tedolist_number FROM tedolist WHERE mandalart_id = ?", [mandalartId], (err, result) => {
                         if (err) {
                             console.log(err);
                             res.status(500).send("Server error");
                         } else {
-                            res.redirect(`/mandalart/edit/${mandalartId}`); // Edit 페이지에 머물도록 수정
+                            let tedolist_number = result[0].new_tedolist_number; 
+                            const values = detailsArray.map(detail => [tedolist_number++, mandalartId, detail]);
+                            client.query("INSERT INTO tedolist (tedolist_number, mandalart_id, tedolist_detail) VALUES ?", 
+                                [values],
+                                (err, result) => {
+                                    if (err) {
+                                        console.log(err);
+                                        res.status(500).send("Server error");
+                                    } else {
+                                        res.redirect(`/mandalart/edit/${mandalartId}`); // Edit 페이지에 머물도록 수정
+                                    }
+                                }
+                            );
                         }
-                    }
-                );
+                    });
+                }
+            } else {
+                res.status(404).send("Mandalart not found");
             }
         });
     } else {
