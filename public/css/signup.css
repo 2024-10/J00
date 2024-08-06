@@ -107,7 +107,7 @@ h2 {
 }
 
 /* 모바일 환경 스타일 */
-@media (max-width: 768px) {
+@media (orientation: portrait) and (max-width: 768px) {
     body {
         justify-content: flex-start;
     }
@@ -138,5 +138,27 @@ h2 {
 @media (max-width: 480px) {
     .signup-box {
         padding: 1rem;
+    }
+}
+
+
+/* 모바일 가로모드 */
+@media (orientation: landscape) and (max-height: 768px) {
+    body {
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+    .logo{
+        width: 200px;
+        position: relative;
+        transform: none;
+        left: auto;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+
+    .signup-container {
+        margin-top: -150px;
+        padding: 20px;
     }
 }
