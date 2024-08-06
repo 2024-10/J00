@@ -1,5 +1,6 @@
 /* 로그인/로그아웃 버튼 */
 button{
+    color: black;
     border: none;
     background-color: #FFFBF1;
 }
