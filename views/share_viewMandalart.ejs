@@ -244,7 +244,11 @@
                 console.log(`Checklists loaded for Tedolist Number: ${tedolistNumber}`, checklists);
                 checklists.forEach(checklist => {
                     const li = document.createElement('li');
-                    li.textContent = checklist.checklist_detail;
+                    li.classList.add('checklist-item');
+                    li.innerHTML = `
+                        <input type="checkbox" ${checklist.is_checked ? 'checked' : ''} disabled>
+                        <span>${checklist.checklist_detail}</span>
+                    `;
                     checklistContainer.appendChild(li);
                 });
                 document.querySelector('#checklist-container').style.display = 'block';

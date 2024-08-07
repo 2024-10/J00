@@ -8,7 +8,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    height: 90vh;
+    height: auto;
     margin: 0 auto;
     flex-direction: row;
     gap: 20px;
@@ -700,11 +700,6 @@ input:focus {outline:none;}
 }
 
 
-
-
-
-
-
 /* 모바일 */
 @media (orientation: portrait) and (max-width: 768px) {
     /* 헤더 아래 */
@@ -716,9 +711,9 @@ input:focus {outline:none;}
         padding: 0;
         margin: 0 auto;
         gap: 5px;
-        height: 100vh;
+        height: auto;
         width: 80%;
-    }
+    }   
 
     /* 만다라트*/
     .mandalart {
@@ -1418,4 +1413,9 @@ input:focus {outline:none;}
     .editContainer { 
         width: 35%;
     }
+}
+
+/* 세로모드에서 키보드 열게 되었을 때 -> 가로모드로 인식*/
+@media (orientation: landscape) and (max-height: 630px) and (max-width: 400px){
+
 }
