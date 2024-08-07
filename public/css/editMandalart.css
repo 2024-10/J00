@@ -151,17 +151,17 @@ input:focus {
 }
 
 .button-container {
-    display: flex; /* 버튼들을 가로로 정렬 */
-    justify-content: center; /* 버튼들을 중앙 정렬 */
-    margin-top: 20px; /* 위쪽 여백 추가 */
-    position: absolute; /* 버튼을 화면 하단에 고정 */
-    bottom: 40px; /* 화면 하단에서 10px 위로 */
-    width: 100%; /* 전체 너비를 차지 */
-    left: 0; /* 좌우 정렬 */
+    display: flex;
+    justify-content: center; 
+    margin-top: 20px;
+    position: absolute;
+
+    width: 100%;
+    left: 0;
 }
 
 .button-container button {
-    margin-left: 10px; /* 버튼 간의 간격을 위해 왼쪽에 여백 추가 */
+    margin-left: 10px;
     border-radius: 50px;
     border: none;
     background-color: #D9D9D9;
@@ -448,9 +448,10 @@ input:focus {
         padding: 0;
         margin: 0 auto;
         gap: 5px;
-        height: 90vh;
+        height: auto;
         width: 90%;
-        margin-top: -100px;
+        margin-top: 0px;
+
     }
     .mandalart {
         width: 330px;
@@ -474,6 +475,9 @@ input:focus {
         margin: 0 auto;
     }
 
+    .button-container{
+        bottom: -30px;
+    }
     
 
     /* 각 칸 개수에 따른 레이아웃 정의 */
@@ -743,8 +747,8 @@ input:focus {
     /* 헤더 아래 */
     .container {
         margin: 0 auto;
-        height: 90vh;
-        margin-top: -80px;
+        height: auto;
+        margin-top: 0px;
     }
     /* 체크리스트 */
     .editContainer { 
@@ -756,8 +760,8 @@ input:focus {
     /* 헤더 아래 */
     .container {
         margin: 0 20px;
-        height: 110vh;
-        margin-top: -50px;
+        height: auto;
+        margin-top: 0px;
     }
     
 }
@@ -768,7 +772,7 @@ input:focus {
     .container {
         margin-top: -50px;
         margin-left: 17px;
-        height: 90vh;
+        height: auto;
     }
     /* 만다라트*/
     .mandalart {
