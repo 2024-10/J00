@@ -10,16 +10,16 @@ const USER_COOKIE_KEY = 'USER';
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, path.join(__dirname, '../uploads')); // 업로드 디렉토리 경로 확인
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // 파일 이름을 고유하게 생성
+        cb(null, Date.now() + path.extname(file.originalname)); // 고유 파일명 생성
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한을 5MB로 설정
+    limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한 (5MB)
 });
 
 async function fetchUser(user_id) {
@@ -195,6 +195,5 @@ router.post('/updateProfileImage', upload.single('user_image'), async (req, res)
         res.status(500).send('Server error');
     }
 });
-
 
 module.exports = router;
