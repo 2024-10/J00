@@ -12,7 +12,7 @@ const commentRouter = require('./routes/comment');
 const calendarRouter = require('./routes/calendar'); // 추가
 const { timeLog } = require('console');
 const { title } = require('process');
-
+const paymentRouter = require('./routes/payment'); // 추가
 
 const app = express();
 
@@ -43,6 +43,7 @@ app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
 app.use('/calendar', calendarRouter);
+app.use('/payment', paymentRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -135,6 +136,14 @@ app.post('/payment', async(req, res) => {
         res.status(401).json({ success : false, error : '로그인하세영'});
     }
 
+});
+
+app.get('/success', (req, res) => {
+    res.render('success', {title : 'membership-success'}); 
+});
+
+app.get('/fail', (req, res) => {
+    res.render('fail', {title : 'membership-fail'}); 
 });
 
 // 자정마다 어제의 체크리스트를 오늘로 복사하는 작업 스케줄링
