@@ -13,6 +13,7 @@ const calendarRouter = require('./routes/calendar'); // 추가
 const { timeLog } = require('console');
 const { title } = require('process');
 const paymentRouter = require('./routes/payment'); // 추가
+const successRouter = require('./routes/success'); // 추가
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
 app.use('/calendar', calendarRouter);
 app.use('/payment', paymentRouter);
+app.use('/success', successRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
