@@ -10,6 +10,9 @@ const client = require('./db'); // MySQL 클라이언트 사용
 const schedule = require('node-schedule');
 const commentRouter = require('./routes/comment');
 const calendarRouter = require('./routes/calendar'); // 추가
+const { timeLog } = require('console');
+const { title } = require('process');
+
 
 const app = express();
 
@@ -92,6 +95,11 @@ app.get('/share_viewMandalart', (req, res) => {
         return res.redirect('/signin');
     }
     res.render('share_viewMandalart', { title: 'Share' });
+});
+
+//멤버쉽-설명창 라우트
+app.get('/membership', (req, res) => {
+    res.render('membership', {title : 'explain-membership'}); 
 });
 
 // 자정마다 어제의 체크리스트를 오늘로 복사하는 작업 스케줄링
