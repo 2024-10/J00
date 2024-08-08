@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const client = require('../db'); // MySQL 클라이언트 사용
+const { client } = require('../db'); // MySQL 클라이언트 사용
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // 업로드된 파일을 저장할 디렉토리
 
