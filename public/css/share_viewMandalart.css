@@ -579,7 +579,7 @@ input:focus {outline:none;}
         margin: 0 auto;
     }
     #new-comment {
-        width: 50%;
+        width: 99%;
         height: 30px;
         border-radius: 4px;
         margin-bottom: 10px;
@@ -592,15 +592,21 @@ input:focus {outline:none;}
 
         
     }
+    #new-comment-section{
+        width: 100%;
+    }
 
     /* 체크리스트 */
+    #checklist-container{
+        margin: 0 auto;
+        width: 90%;
+    }
     .editContainer { 
         padding: 20px;
         max-width: 330px;
         width: 90%;
         height: 400px;
         text-align: center;
-        margin: 0 auto;
         margin-top: 50px;
         flex-direction: column;
     }
@@ -611,8 +617,9 @@ input:focus {outline:none;}
         border-radius: 10px;
         width: 100%;
         height: 100px;
-    
     }
+
+    
 
     /* 각 칸 개수에 따른 레이아웃 정의 */
     .grid-2 .cell.left {
@@ -893,10 +900,15 @@ input:focus {outline:none;}
         margin: 0 20px;
         height: 125vh;
     }
-    /* 체크리스트 */
-    .editContainer { 
-        width: 100%;
+    /* 만다라트*/
+    .mandalart {
+        margin-left: -5px;
     }
+    /* 체크리스트 */
+    #checklist-container { 
+        width: 95%;   
+    }
+
 }
 
 
@@ -913,17 +925,9 @@ input:focus {outline:none;}
         max-width: 330px;
         margin: 0 auto;
     }
-    /* 댓글 */
-    #new-comment {
-        width: 47%;
-        height: 30px;
-        border-radius: 4px;
-        margin-bottom: 10px;       
-    }
     /* 체크리스트 */
     .editContainer { 
         width: 100%;
-        margin-left: 8px;
     }
 }
 
@@ -1259,7 +1263,8 @@ input:focus {outline:none;}
     }
 
     /* 체크리스트 */
-    .editContainer { 
-        width: 35%;
+    #checklist-container{
+        margin: 0 auto;
+        width: 40%;
     }
 }
