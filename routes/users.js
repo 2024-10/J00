@@ -6,9 +6,21 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const client = require('../db'); // MySQL 클라이언트 사용
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // 업로드된 파일을 저장할 디렉토리
-
 const USER_COOKIE_KEY = 'USER';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // 파일 이름을 고유하게 생성
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한을 5MB로 설정
+});
 
 async function fetchUser(user_id) {
     return new Promise((resolve, reject) => {
@@ -142,6 +154,7 @@ router.get('/', async (req, res) => {
             res.status(200).send(`
                 <a href="/logout">Log Out</a>
                 <h1>id: ${user.user_id}, email: ${user.user_email}, birth: ${user.user_birthday}, nickname: ${user.user_nickname}</h1>
+                <img src="/uploads/${user.user_image}" alt="Profile Image">
             `);
             return;
         }
