@@ -52,9 +52,17 @@
                 } %>
                 <% tedolists.forEach((tedolist, index) => { %>
                     <div class="cell <%= getCellClass(index, mandalart.tedolist_count) %>" data-tedolist-number="<%= tedolist.tedolist_number %>">
-                        <div class="cell-text">
-                            <%= tedolist.tedolist_detail %>
-                        </div>
+                        <div class="cell-content">
+                            <div class="cell-text">
+                                <%= tedolist.tedolist_detail %>
+                            </div>
+                            <div class="cell-image">
+                                <div class="sticker">
+                                    <!--아래는 확인용 코드입니다!!요기에 cell-text처럼 이미지 불러와주시면 됩니댱!!-->
+                                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                                </div>                        
+                            </div>
+                        </div>                        
                         <input type="text" class="tedolist-detail-input" name="tedolistDetails[<%= index %>][tedolist_detail]" value="<%= tedolist.tedolist_detail %>" />
                         <input type="hidden" name="tedolistDetails[<%= index %>][tedolist_number]" value="<%= tedolist.tedolist_number %>" />
                     </div>

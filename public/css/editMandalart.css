@@ -96,13 +96,27 @@ h3 {
 .cell.active {
     background-color: #F4FFE8 !important;
 }
+
 .center {
     background: #D1E4BE;
+}
+
+.cell-content {
+    pointer-events: none; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .cell-text {
     font-size: 14px;
     padding: 5px;
+}
+
+.cell-image {
+    width: 50px;
+    object-fit: contain;
 }
 
 .tedolist-detail-input {
