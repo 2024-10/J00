@@ -120,41 +120,33 @@
 
                 if (inputDetail && inputNumber) {
                     if (inputDetail && inputNumber) {
-                        // cell-content div 생성
                         const contentDiv = document.createElement('div');
                         contentDiv.classList.add('cell-content');
                     
-                        // cell-text div 생성
                         const textDiv = document.createElement('div');
                         textDiv.classList.add('cell-text');
                         textDiv.innerText = inputDetail.value;
                     
-                        // cell-image div 생성
                         const imageDiv = document.createElement('div');
                         imageDiv.classList.add('cell-image');
                     
-                        // sticker div 생성
                         const stickerDiv = document.createElement('div');
                         stickerDiv.classList.add('sticker');
                     
-                        // 이미지 태그 생성
                         const imgElement = document.createElement('img');
                         //아래 코드는 하드코드입니다!! src에 서버에서 가져온 이미지 넣어주시면 됩니다!                        
                         imgElement.src = '/images/test_sticker.png';
                         imgElement.alt = 'sticker';
                         imgElement.classList.add('sticker');
                     
-                        // 구조 연결
                         stickerDiv.appendChild(imgElement);
                         imageDiv.appendChild(stickerDiv);
                         contentDiv.appendChild(textDiv);
                         contentDiv.appendChild(imageDiv);
                     
-                        // cell에 data 속성 추가
                         cell.dataset.tedolistNumber = inputNumber.value;
                         cell.dataset.hasTedolistDetail = "true";
                     
-                        // 최종 구조를 cell에 추가
                         cell.appendChild(contentDiv);
                     }
                     

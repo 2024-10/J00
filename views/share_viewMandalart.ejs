@@ -172,20 +172,16 @@
                 const inputNumber = tedolists[index]?.tedolist_number;
 
                 if (inputDetail && inputNumber) {
-                    // cell-content div 생성
                     const cellContentDiv = document.createElement('div');
                     cellContentDiv.classList.add('cell-content');
 
-                    // cell-text div 생성 및 텍스트 추가
                     const textDiv = document.createElement('div');
                     textDiv.classList.add('cell-text');
                     textDiv.innerText = inputDetail;
 
-                    // cell-image div 생성
                     const imageDiv = document.createElement('div');
                     imageDiv.classList.add('cell-image');
 
-                    // sticker div 생성 및 이미지 추가
                     const stickerDiv = document.createElement('div');
                     stickerDiv.classList.add('sticker');
 
@@ -195,16 +191,13 @@
                     stickerImg.alt = "sticker";
                     stickerImg.classList.add('sticker');
 
-                    // 구조 조립
                     stickerDiv.appendChild(stickerImg);
                     imageDiv.appendChild(stickerDiv);
                     cellContentDiv.appendChild(textDiv);
                     cellContentDiv.appendChild(imageDiv);
 
-                    // cell에 cell-content 추가
                     cell.appendChild(cellContentDiv);
 
-                    // 데이터 속성 업데이트
                     cell.dataset.tedolistNumber = inputNumber;
                     cell.dataset.hasTedolistDetail = "true";
                 } else {
