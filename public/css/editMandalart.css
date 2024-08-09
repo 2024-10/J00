@@ -25,7 +25,6 @@ header {
     width: 33.3%;
     height: 40px;
     border-radius: 15px;
-    margin-bottom: 30px;
     cursor: pointer;
 }
 
@@ -45,6 +44,27 @@ header {
 
 .cell.center {
     background-color: #D1E4BE;
+}
+
+.sticker-container {
+    margin-top: 10px;
+    display: flex;
+    width: 400px;
+    justify-content: center;
+}
+
+#sticker1 {
+    margin-left: 5px;
+}
+
+.sticker {
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+.sticker img {
+    width: 100%;
+    height: 100%;
 }
 
 #tedolist-form {

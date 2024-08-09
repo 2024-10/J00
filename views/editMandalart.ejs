@@ -72,12 +72,38 @@
         </form>
 
         <div id="checklist-container" class="sortMine">
-            <h4>중심색 변경</h4>
             <div class="color-container">
                 <div class="mandalart-color" id="green"></div>
                 <div class="mandalart-color" id="yellow"></div>
                 <div class="mandalart-color" id="blue"></div>
             </div>
+
+            <div class="sticker-container">
+                <div class="sticker" id="sticker1">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker2">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker3">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker4">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker5">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker6">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker7">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker8">
+                    <img src="/images/test_sticker.png" alt="sticker" class="sticker">
+                </div>
+            </div>            
             
             <h4>체크리스트</h4>
             <ul id="checklist-list"></ul>
@@ -228,17 +254,20 @@
         return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
     }
 
-
-     // 색상 클릭시 중심 색 변경 코드!!
-     const colorElements = document.querySelectorAll('.mandalart-color');
-     const cellCenter = document.querySelector('.cell.center');
- 
-     colorElements.forEach(element => {
-         element.addEventListener('click', function() {
-             const selectedColor = getComputedStyle(element).backgroundColor;
-             cellCenter.style.backgroundColor = selectedColor;
-         });
-     });
+     // 색상 클릭시 중심 색 변경 코드!! 이쪽에 색상 저장하는 코드 넣으시면 됩니다!!
+     function applyColorToCell() {
+        const colorElements = document.querySelectorAll('.mandalart-color');
+        const cellCenter = document.querySelector('.cell.center');
+    
+        colorElements.forEach(element => {
+            element.addEventListener('click', function() {
+                const selectedColor = getComputedStyle(element).backgroundColor;
+                cellCenter.style.backgroundColor = selectedColor;
+            });
+        });
+    }
+    applyColorToCell();
+    
     </script>
 </body>
 </html>
