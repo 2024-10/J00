@@ -30,6 +30,11 @@
         <div id="lottie-animation" style="width: 213px; height: 321px;"></div>
         <div class="title">멤버십 결제가 완료되었습니다</div>
         <div class="subtitle">당신의 목표가 실현될때까지 J00%와 함께해요!</div>
+
+        <!-- paymentKey, orderId, amount를 표시할 요소 추가 -->
+        <div id="paymentKey"></div>
+        <div id="orderId"></div>
+        <div id="amount"></div>
     </div>
 
     <script>
@@ -50,39 +55,46 @@
 
       async function confirm() {
         const requestData = {
-          paymentKey: paymentKey,
-          orderId: orderId,
-          amount: amount,
+            paymentKey: paymentKey,
+            orderId: orderId,
+            amount: amount,
         };
 
-        const response = await fetch("/confirm", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
+      const response = await fetch("/payment/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
 
-        const json = await response.json();
 
-        if (!response.ok) {
-          // 결제 실패 비즈니스 로직을 구현하세요.
+          console.log(response); // 이 부분에서 응답 확인
+
+          const json = await response.json(); // 이 부분에서 에러 발생 가능성
+          if (!response.ok) {
+              console.log(json);
+              window.location.href = `/fail?message=${json.message}&code=${json.code}`;
+              return;
+          }
+
+          const membershipUpdateResponse = await fetch("/success/update-membership", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+          });
+
+          const membershipUpdateJson = await membershipUpdateResponse.json();
+          if (membershipUpdateResponse.ok) {
+              console.log(membershipUpdateJson.message);
+          } else {
+              console.log('Membership update failed:', membershipUpdateJson.message);
+          }
+
           console.log(json);
-          window.location.href = `/fail?message=${json.message}&code=${json.code}`;
-        }
-
-        // 결제 성공 비즈니스 로직을 구현하세요.
-        //작동하지않는다..무엇이 문제일까..
-        //await fetch("/update-membership", {
-        //    method: "POST",
-        //    headers: {
-        //      "Content-Type": "application/json",
-        //    },
-        //    body: JSON.stringify({ membership: 1 }),
-        //  });
-
-        console.log(json);
       }
+
       confirm();
 
       const paymentKeyElement = document.getElementById("paymentKey");

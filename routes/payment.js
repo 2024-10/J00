@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../db'); 
+const { client } = require('../db'); // MySQL 클라이언트 사용
 const USER_COOKIE_KEY = 'USER';
 
 let got;
@@ -8,12 +8,7 @@ let got;
   got = (await import('got')).default;
 })();
 
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.post("/confirm", async function (req, res) {
+router.post("/confirm", async function (req, res) {
   const { paymentKey, orderId, amount } = req.body;
 
   const widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
@@ -40,9 +35,5 @@ app.post("/confirm", async function (req, res) {
     res.status(error.response.statusCode).json(error.response.body);
   }
 });
-
-app.listen(4242, () =>
-  console.log(`http://localhost:${4242} 으로 샘플 앱이 실행되었습니다.`)
-);
 
 module.exports = router;
