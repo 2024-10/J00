@@ -6,10 +6,14 @@ const usersRouter = require('./routes/users');
 const shareRouter = require('./routes/share');
 const addFriendRouter = require('./routes/add_friend');
 const mandalartRouter = require('./routes/mandalart'); // Import mandalart routes
-const client = require('./db'); // MySQL 클라이언트 사용
+const { client, fetchUser, savePaymentInfo} = require('./db'); // MySQL 클라이언트 사용
 const schedule = require('node-schedule');
 const commentRouter = require('./routes/comment');
 const calendarRouter = require('./routes/calendar'); // 추가
+const { timeLog } = require('console');
+const { title } = require('process');
+const paymentRouter = require('./routes/payment'); // 추가
+const successRouter = require('./routes/success'); // 추가
 
 const app = express();
 
@@ -40,6 +44,8 @@ app.use('/api/add_friend', addFriendRouter);
 app.use('/mandalart', mandalartRouter); // Use mandalart routes
 app.use('/comment', commentRouter);
 app.use('/calendar', calendarRouter);
+app.use('/payment', paymentRouter);
+app.use('/success', successRouter);
 
 // 뷰 라우트 설정
 app.get('/signup', (req, res) => {
@@ -70,6 +76,7 @@ app.get('/', (req, res) => {
 
 app.get('/profile', (req, res) => {
     if (res.locals.user) {
+        console.log('client',client);
         client.query('SELECT * FROM user WHERE user_id = ?', [res.locals.user.user_id], (err, results) => {
             if (err) {
                 console.error(err);
@@ -92,6 +99,53 @@ app.get('/share_viewMandalart', (req, res) => {
         return res.redirect('/signin');
     }
     res.render('share_viewMandalart', { title: 'Share' });
+});
+
+//멤버쉽-설명창 라우트
+app.get('/membership', (req, res) => {
+    res.render('membership', {title : 'explain-membership'}); 
+});
+
+//결체창 여기서 해열 (결제창 렌더링. 사용자 로긘 확인 후 정보 넘겨)
+app.get('/payment', async (req, res) => {
+    if (res.locals.user) {
+        try {
+            //user 확인ㄱㄱ
+            const user = await fetchUser(res.locals.user.user_id);
+            console.log('User found:', user);
+            res.render('payment', { title: 'payment', user });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+        }
+    } else {
+        res.redirect('/signin');
+    }
+});
+
+app.post('/payment', async(req, res) => {
+    if(res.locals.users) {
+        const userId = res.locals.users.user_id;
+        const { amount } = res.body; //결제금액.. 가튼 결제 관련 정보
+        try {
+            await savePaymentInfo(userId, amount); //결제 관련 정보를 데베에 저장 근데 토스로직을 잘 몰라서 일단 이렇게 둠
+            res.json({success : true});
+        } catch(err) {
+            console.log(err);
+            res.status(500).json({ success : false, error:'결제 중 오류오류오류'});
+        }
+    } else {
+        res.status(401).json({ success : false, error : '로그인하세영'});
+    }
+
+});
+
+app.get('/success', (req, res) => {
+    res.render('success', {title : 'membership-success'}); 
+});
+
+app.get('/fail', (req, res) => {
+    res.render('fail', {title : 'membership-fail'}); 
 });
 
 // 자정마다 어제의 체크리스트를 오늘로 복사하는 작업 스케줄링
