@@ -48,8 +48,10 @@
 
         // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
         button.addEventListener("click", async function () {
+          const orderId = generateOrderId();
+
           await widgets.requestPayment({
-            orderId: "ggkZ1cBjQK6hZJWMaznSr",
+            orderId: orderId,
             orderName: "J00% 멤버십 평생 구독",
             successUrl: window.location.origin + "/success",
             failUrl: window.location.origin + "/fail",
@@ -58,6 +60,13 @@
             customerMobilePhone: "01012341234",
           });
         });
+
+        // 고유한 16자리 16진수 orderId 생성 함수
+        function generateOrderId() {
+          return [...crypto.getRandomValues(new Uint8Array(8))]
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+        }
       }
     </script>
 </body>

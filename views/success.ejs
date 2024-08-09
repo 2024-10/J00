@@ -19,7 +19,7 @@
         <nav id="main-navigation">
             <ul class="menu">
                 <li class="menu-item"><button onclick="window.location.href='/mandalart'" class="nav-button">My Mandalart</button></li>
-                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button active">Share</button></li>
+                <li class="menu-item"><button onclick="window.location.href='/share'" class="nav-button">Share</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/calendar'" class="nav-button">Calendar</button></li>
                 <li class="menu-item"><button onclick="window.location.href='/profile'" class="nav-button">Profile</button></li>
             </ul>
@@ -98,13 +98,13 @@
 
         confirm();
 
-        const paymentKeyElement = document.getElementById("paymentKey");
+        //const paymentKeyElement = document.getElementById("paymentKey");
         const orderIdElement = document.getElementById("orderId");
         const amountElement = document.getElementById("amount");
 
         orderIdElement.textContent = "주문번호: " + orderId;
         amountElement.textContent = "결제 금액: " + amount;
-        paymentKeyElement.textContent = "paymentKey: " + paymentKey;
+        //paymentKeyElement.textContent = "paymentKey: " + paymentKey;
     </script>
   </body>
 </html>
