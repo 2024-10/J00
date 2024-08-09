@@ -6,9 +6,23 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const client = require('../db'); // MySQL 클라이언트 사용
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // 업로드된 파일을 저장할 디렉토리
-
 const USER_COOKIE_KEY = 'USER';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../uploads')); // 업로드 디렉토리 경로 확인
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname).toLowerCase();
+        const fileName = Date.now() + (ext === '.jpeg' ? '.jpg' : ext); 
+        cb(null, fileName); // 표준화된 파일명 생성
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 } // 파일 크기 제한 (10MB)
+});
 
 async function fetchUser(user_id) {
     return new Promise((resolve, reject) => {
@@ -142,6 +156,7 @@ router.get('/', async (req, res) => {
             res.status(200).send(`
                 <a href="/logout">Log Out</a>
                 <h1>id: ${user.user_id}, email: ${user.user_email}, birth: ${user.user_birthday}, nickname: ${user.user_nickname}</h1>
+                <img src="/uploads/${user.user_image}" alt="Profile Image">
             `);
             return;
         }
@@ -182,6 +197,5 @@ router.post('/updateProfileImage', upload.single('user_image'), async (req, res)
         res.status(500).send('Server error');
     }
 });
-
 
 module.exports = router;
