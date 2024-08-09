@@ -13,13 +13,15 @@ const storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../uploads')); // 업로드 디렉토리 경로 확인
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // 고유 파일명 생성
+        const ext = path.extname(file.originalname).toLowerCase();
+        const fileName = Date.now() + (ext === '.jpeg' ? '.jpg' : ext); 
+        cb(null, fileName); // 표준화된 파일명 생성
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 } // 파일 크기 제한 (5MB)
+    limits: { fileSize: 10 * 1024 * 1024 } // 파일 크기 제한 (10MB)
 });
 
 async function fetchUser(user_id) {
