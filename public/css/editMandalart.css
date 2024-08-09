@@ -16,6 +16,37 @@ header {
     gap: 20px;
 }
 
+.color-container {
+    display: flex;
+    width: 400px;
+}
+
+.mandalart-color {
+    width: 33.3%;
+    height: 40px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+
+#green {
+    background-color: #D1E4BE;
+    margin-right: 10px;
+}
+
+#yellow {
+    background-color: #F3E5BB;
+    margin-right: 10px;
+}
+
+#blue {
+    background-color: #D9E6F5;
+}
+
+.cell.center {
+    background-color: #D1E4BE;
+}
+
 #tedolist-form {
     display: grid;
     justify-content: center;
@@ -28,9 +59,11 @@ header {
     height: 648px;
     background: white;
 }
+
 h3 {
     text-align: center;
 }
+
 .cell {
     position: absolute;
     border: 1px solid black;
@@ -83,6 +116,7 @@ input:focus {
 #checklistDetail:focus {
     border-bottom: 1px solid #007BFF;
 }
+
 #checklist-container {
     background: #fff;
     border: 1px solid black;
@@ -93,6 +127,7 @@ input:focus {
     text-align: center;
     margin-right: 10px;
 }
+
 #checklist-container::-webkit-scrollbar {
     width: 10px;
     background-color: black;

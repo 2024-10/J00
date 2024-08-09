@@ -35,6 +35,7 @@
     <div class="container">
         <form id="mandalart-form" action="/mandalart/update/<%= mandalart.mandalart_id %>" method="POST">
             <h3>나의 만다라트</h3>
+        
             <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %> sortMine">
                 <% function getCellClass(index, count) { 
                     const classes = [
@@ -71,6 +72,13 @@
         </form>
 
         <div id="checklist-container" class="sortMine">
+            <h4>중심색 변경</h4>
+            <div class="color-container">
+                <div class="mandalart-color" id="green"></div>
+                <div class="mandalart-color" id="yellow"></div>
+                <div class="mandalart-color" id="blue"></div>
+            </div>
+            
             <h4>체크리스트</h4>
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
@@ -220,6 +228,17 @@
         return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
     }
 
+
+     // 색상 클릭시 중심 색 변경 코드!!
+     const colorElements = document.querySelectorAll('.mandalart-color');
+     const cellCenter = document.querySelector('.cell.center');
+ 
+     colorElements.forEach(element => {
+         element.addEventListener('click', function() {
+             const selectedColor = getComputedStyle(element).backgroundColor;
+             cellCenter.style.backgroundColor = selectedColor;
+         });
+     });
     </script>
 </body>
 </html>
