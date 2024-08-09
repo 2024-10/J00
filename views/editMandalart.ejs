@@ -72,6 +72,13 @@
 
         <div id="checklist-container" class="sortMine">
             <h4>체크리스트</h4>
+
+            <!--컬러 쳌-->
+            <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
+                <button type="submit" name="color" value="red">빨강</button>
+                <button type="submit" name="color" value="yellow">노란색</button>
+            </form>            
+
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
                 <input type="hidden" name="tedolistNumber" id="tedolistNumber">

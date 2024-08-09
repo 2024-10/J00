@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { client } = require('../db'); // MySQL 클라이언트 사용
+const { client, changeColor } = require('../db'); // MySQL 클라이언트 사용
 const { v4: uuidv4 } = require('uuid'); 
 
 // 메인 만다라트 경로
@@ -385,13 +385,6 @@ router.get('/change/:mandalartId', (req, res) => {
 });
 
 
-
-
-
-
-
-
-
 // 만다라트 수정 처리 (post)
 router.post('/update/:mandalartId', (req, res) => {
     const userCookie = req.cookies['USER'];
@@ -421,6 +414,28 @@ router.post('/update/:mandalartId', (req, res) => {
         res.status(401).json({ error: 'Unauthorized' });
     }
 });
+
+//change center color 
+router.post('/update/center_color/:mandalartId', async (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const mandalartId = req.params.mandalartId;
+    const center_color = req.body.color;
+    if (user) {
+        await changeColor(mandalartId, center_color);
+        client.query("SELECT center_color FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'no db' });
+            }
+        res.json(results);
+    }); }
+    else {
+        res.status(401).json({ error: 'Login plz,,' });
+    }
+});
+
+
 
 // 만다라트 삭제 처리
 router.post('/delete/:mandalartId', (req, res) => {
@@ -548,5 +563,7 @@ router.get('/userMandalart/:userId', (req, res) => {
         }
     });
 });
+
+
 
 module.exports = router;
