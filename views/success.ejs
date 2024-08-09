@@ -46,64 +46,65 @@
             path: '/images/rocket.json' 
         });
         
-      // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
-      // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentKey = urlParams.get("paymentKey");
-      const orderId = urlParams.get("orderId");
-      const amount = urlParams.get("amount");
+        // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
+        // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentKey = urlParams.get("paymentKey");
+        const orderId = urlParams.get("orderId");
+        const amount = urlParams.get("amount");
 
-      async function confirm() {
-        const requestData = {
-            paymentKey: paymentKey,
-            orderId: orderId,
-            amount: amount,
-        };
+        async function confirm() {
+            const requestData = {
+                paymentKey: paymentKey,
+                orderId: orderId,
+                amount: amount,
+            };
 
-      const response = await fetch("/payment/confirm", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+            const response = await fetch("/payment/confirm", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestData),
+            });
 
 
-          console.log(response); // 이 부분에서 응답 확인
+            console.log(response); // 이 부분에서 응답 확인
 
-          const json = await response.json(); // 이 부분에서 에러 발생 가능성
-          if (!response.ok) {
-              console.log(json);
-              window.location.href = `/fail?message=${json.message}&code=${json.code}`;
-              return;
-          }
+            const json = await response.json(); // 이 부분에서 에러 발생 가능성
 
-          const membershipUpdateResponse = await fetch("/success/update-membership", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-          });
+            if (!response.ok) {
+                console.log(json);
+                window.location.href = `/fail?message=${json.message}&code=${json.code}`;
+                return;
+            }
 
-          const membershipUpdateJson = await membershipUpdateResponse.json();
-          if (membershipUpdateResponse.ok) {
-              console.log(membershipUpdateJson.message);
-          } else {
-              console.log('Membership update failed:', membershipUpdateJson.message);
-          }
+            const membershipUpdateResponse = await fetch("/success/update-membership", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-          console.log(json);
-      }
+            const membershipUpdateJson = await membershipUpdateResponse.json();
+            if (membershipUpdateResponse.ok) {
+                console.log(membershipUpdateJson.message);
+            } else {
+                console.log('Membership update failed:', membershipUpdateJson.message);
+            }
 
-      confirm();
+            console.log(json);
+        }
 
-      const paymentKeyElement = document.getElementById("paymentKey");
-      const orderIdElement = document.getElementById("orderId");
-      const amountElement = document.getElementById("amount");
+        confirm();
 
-      orderIdElement.textContent = "주문번호: " + orderId;
-      amountElement.textContent = "결제 금액: " + amount;
-      paymentKeyElement.textContent = "paymentKey: " + paymentKey;
+        const paymentKeyElement = document.getElementById("paymentKey");
+        const orderIdElement = document.getElementById("orderId");
+        const amountElement = document.getElementById("amount");
+
+        orderIdElement.textContent = "주문번호: " + orderId;
+        amountElement.textContent = "결제 금액: " + amount;
+        paymentKeyElement.textContent = "paymentKey: " + paymentKey;
     </script>
   </body>
 </html>
