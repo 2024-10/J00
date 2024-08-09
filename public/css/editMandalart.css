@@ -517,6 +517,7 @@ input:focus {
     .cell {
         font-size: 12px;
     }
+
     #checklist-container {
         width: 70%;
         margin: 0 auto 20px;
@@ -534,7 +535,10 @@ input:focus {
         bottom: -30px;
     }
     
-
+    .color-container,.sticker-container {
+        width: 100%;
+    }
+    
     /* 각 칸 개수에 따른 레이아웃 정의 */
     .grid-2 .cell.left {
         width: 165px;
