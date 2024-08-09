@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한 (5MB)
+    limits: { fileSize: 10 * 1024 * 1024 } // 파일 크기 제한 (5MB)
 });
 
 async function fetchUser(user_id) {
