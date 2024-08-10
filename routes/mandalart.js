@@ -549,4 +549,29 @@ router.get('/userMandalart/:userId', (req, res) => {
     });
 });
 
+
+// 스티커 업데이트 api 코드입니다요!!
+router.post('/updateSticker', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalart_id, tedolistNumber, stickerSrc } = req.body;
+
+    if (user) {
+        client.query(
+            "UPDATE tedolist SET tedolist_sticker = ? WHERE mandalart_id = ? AND tedolist_number = ?", 
+            [stickerSrc, mandalart_id, tedolistNumber],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ success: false, message: "Database update failed." });
+                } else {
+                    res.status(200).json({ success: true });
+                }
+            }
+        );
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+});
+
 module.exports = router;
