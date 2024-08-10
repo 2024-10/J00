@@ -75,22 +75,22 @@
             </div>
             
             <div class="button-container sortMine">
-                <button class="btn" id="submit-button" type="button">완료</button>
+                <button class="btn" id="submit-button" type="submit">완료</button>
                 <button class="btn delete-btn" type="submit" form="delete-mandalart-form">현재 만다라트 삭제하기</button>
             </div>
             <br>
         </form>
 
         <div id="checklist-container" class="sortMine">
-        <% if (isMember) { %>
-            <div class="color-container">
-                <div class="mandalart-color" id="green"></div>
-                <div class="mandalart-color" id="yellow"></div>
-                <div class="mandalart-color" id="blue"></div>
-            </div>
-            <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
-                <input type="hidden" id="color-input" name="color" value="">
-            </form>
+            <% if (isMember) { %>
+                <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
+                    <div class="color-container">
+                        <div class="mandalart-color" id="green"></div>
+                        <div class="mandalart-color" id="yellow"></div>
+                        <div class="mandalart-color" id="blue"></div>
+                    </div>
+                    <input type="hidden" id="color-input" name="color" value="">
+                </form>
 
         
                 <div class="sticker-container">
@@ -119,8 +119,8 @@
                     <img src="/images/sticker8.png" alt="sticker" class="sticker">
                   </div>
                 </div>            
-        <% } %> 
-                <h4>체크리스트</h4>
+            <% } %> 
+            <h4>체크리스트</h4>
 
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
