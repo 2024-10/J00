@@ -68,7 +68,7 @@
         </div>
         
     </div>
-
+    <!--여기도 없애야 되는데 그러면 스크롤생김+비율이 약간 달라짐 으로 인해 삭제하진 않았습니다..!-->
     <div class="calendar-container">
         <div id="calendar"></div>
         <div id="details">
@@ -290,6 +290,7 @@
         }
         
         $(document).ready(function () {
+            /*
             $('#calendar').fullCalendar({
                 defaultView: 'month',
                 dayClick: function (date, jsEvent, view) {
@@ -362,6 +363,7 @@
                     console.error('Failed to load details');
                 }
             }
+            */
 
             const mandalartId = '<%= mandalart.mandalart_id %>';
 
