@@ -69,7 +69,7 @@
                         <input type="hidden" name="tedolistDetails[<%= index %>][tedolist_number]" value="<%= tedolist.tedolist_number %>" />
                     </div>
                 <% }); %>                   
-                <div class="cell center">
+                <div class="cell center" id="cell center">
                     <div class="center-goal-text"><%= mandalart.centerGoal %></div>
                 </div>
             </div>
@@ -389,6 +389,17 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+        }
+
+        var centerColor = "<%= mandalart.center_color %>";
+        var centerGoalText = document.getElementById('cell center');
+    
+        if (centerColor === 'yellow') {
+            centerGoalText.style.backgroundColor = '#F3E5BB';
+        } else if (centerColor === 'blue') {
+            centerGoalText.style.backgroundColor = '#D9E6F5';
+        } else {
+            centerGoalText.style.backgroundColor = '#D1E4BE'; 
         }
     </script>
 </body>

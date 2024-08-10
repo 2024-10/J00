@@ -150,17 +150,18 @@
             const container = document.querySelector('.mandalart');
             const centerGoal = mandalart.centerGoal;
             const tedolistCount = mandalart.tedolist_count;
+            const centerColor = mandalart.center_color;
 
             if (container) {
                 if (tedolistCount > 0) {
                     container.classList.add(`grid-${tedolistCount}`);
-                    generateMandalart(container, centerGoal, tedolistCount, tedolists, checklists);
+                    generateMandalart(container, centerGoal, tedolistCount, tedolists, checklists,centerColor);
                     addCellClickHandlers(mandalart.mandalart_id);
                 }
             }
         }
 
-        function generateMandalart(container, centerGoal, numCells, tedolists, checklists) {
+        function generateMandalart(container, centerGoal, numCells, tedolists, checklists,centerColor) {
             const positions = getPositions(numCells);
 
             positions.forEach((pos, index) => {
@@ -219,6 +220,15 @@
             centerCell.classList.add('cell', 'center');
             centerCell.dataset.position = 'center';
             centerCell.innerText = centerGoal;
+
+            if (centerColor === 'yellow') {
+                centerCell.style.backgroundColor = '#F3E5BB';
+            } else if (centerColor === 'blue') {
+                centerCell.style.backgroundColor = '#D9E6F5';
+            } else {
+                centerCell.style.backgroundColor = '#D1E4BE'; 
+            }
+
             container.appendChild(centerCell);
         }
 
