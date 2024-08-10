@@ -520,47 +520,64 @@ router.put('/updateChecklistStatus/:checklistId', (req, res) => {
 router.get('/userMandalart/:userId', (req, res) => {
     const { userId } = req.params;
 
-    client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
+    // 유저의 닉네임을 가져오기 위해 user 테이블과 조인
+    const userQuery = "SELECT user_nickname FROM user WHERE user_id = ?";
+
+    client.query(userQuery, [userId], (err, userResult) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");
         } else {
-            if (mandalartResult.length > 0) {
-                const mandalart = mandalartResult[0];
-                client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
+            if (userResult.length > 0) {
+                const userNickname = userResult[0].user_nickname;
+
+                client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
                     if (err) {
                         console.log(err);
                         res.status(500).send("Server error");
                     } else {
-                        const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
-                        if (tedolistIds.length > 0) {
-                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                        if (mandalartResult.length > 0) {
+                            const mandalart = mandalartResult[0];
+                            client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
                                 if (err) {
                                     console.log(err);
                                     res.status(500).send("Server error");
                                 } else {
-                                    const checklists = checklistResult.reduce((acc, checklist) => {
-                                        if (!acc[checklist.tedolist_number]) {
-                                            acc[checklist.tedolist_number] = [];
-                                        }
-                                        acc[checklist.tedolist_number].push(checklist);
-                                        return acc;
-                                    }, {});
-                                    res.json({ mandalart, tedolists: tedolistResult, checklists });
+                                    const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                                    if (tedolistIds.length > 0) {
+                                        client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                                            if (err) {
+                                                console.log(err);
+                                                res.status(500).send("Server error");
+                                            } else {
+                                                const checklists = checklistResult.reduce((acc, checklist) => {
+                                                    if (!acc[checklist.tedolist_number]) {
+                                                        acc[checklist.tedolist_number] = [];
+                                                    }
+                                                    acc[checklist.tedolist_number].push(checklist);
+                                                    return acc;
+                                                }, {});
+                                                res.json({ mandalart, tedolists: tedolistResult, checklists, userNickname });
+                                            }
+                                        });
+                                    } else {
+                                        const checklists = {};
+                                        res.json({ mandalart, tedolists: tedolistResult, checklists, userNickname });
+                                    }
                                 }
                             });
                         } else {
-                            const checklists = {};
-                            res.json({ mandalart, tedolists: tedolistResult, checklists });
+                            res.status(404).json({ message: "No Mandalart found for this user" });
                         }
                     }
                 });
             } else {
-                res.status(404).json({ message: "No Mandalart found for this user" });
+                res.status(404).json({ message: "No User found with this ID" });
             }
         }
     });
 });
+
 
 // 스티커 업데이트 api 코드입니다요!!
 router.post('/updateSticker', (req, res) => {

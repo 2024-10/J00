@@ -36,7 +36,7 @@ router.get('/:mandalart_id', (req, res) => {
 
     // user 테이블과 comment 테이블을 조인하여 user_image를 가져옴
     const query = `
-        SELECT c.*, u.user_image
+        SELECT c.*, u.user_nickname, u.user_image
         FROM comment c
         LEFT JOIN user u ON c.user_id = u.user_id
         WHERE c.mandalart_id = ?

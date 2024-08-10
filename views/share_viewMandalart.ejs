@@ -98,8 +98,7 @@
                 return;
             }
 
-            // 유저의 만다라트 제목 변경
-            document.getElementById('user-nickname').textContent = `${userId}님의 만다라트`;
+            //document.getElementById('user-nickname').textContent = `${userId}님의 만다라트`;
             try {
                 const response = await fetch(`/mandalart/userMandalart/${userId}`);
                 if (!response.ok) {
@@ -111,6 +110,8 @@
                 } else {
                     const data = await response.json();
                     if (data && data.mandalart && data.tedolists.length > 0) {
+                        document.getElementById('user-nickname').textContent = `${data.userNickname}님의 만다라트`;
+
                         document.getElementById('mandalart-grid').style.display = 'block';
                         document.getElementById('checklist-container').style.display = 'block';
                         document.getElementById('comment-section').style.display = 'block';
@@ -118,7 +119,6 @@
                         displayMandalart(data);
                         loadComments(data.mandalart.mandalart_id);
 
-                        // Add comment button click event
                         document.getElementById('add-comment-button').addEventListener('click', () => {
                             const commentDetail = document.getElementById('new-comment').value.trim();
                             if (commentDetail) {
@@ -126,7 +126,6 @@
                             }
                         });
 
-                        // Submit comment on Enter key press
                         document.getElementById('new-comment').addEventListener('keydown', (event) => {
                             if (event.key === 'Enter') {
                                 event.preventDefault();
@@ -309,10 +308,9 @@
 
                     li.innerHTML = `
                         <div class="comment-header">
-                            <!-- 댓글 작성자의 프로필 이미지 표시 -->
                             <div class="comment-author">
                                 <img src="${userImage}" alt="profile" class="profile-image">
-                                <span class="comment-author-name">${comment.user_id}</span>
+                                <span class="comment-author-name">${comment.user_nickname}</span>
                             </div>
                             <span class="comment-date">${comment.date}</span>
                         </div>
@@ -322,6 +320,7 @@
                         </div>
                         <button class="delete-comment-button" data-comment-id="${comment.comment_id}">삭제</button>
                     `;
+
                     li.querySelectorAll('.comment-reaction').forEach(reaction => {
                         reaction.addEventListener('click', async () => {
                             const emoji = reaction.dataset.emoji;
@@ -330,12 +329,14 @@
                             countSpan.textContent = parseInt(countSpan.textContent) + 1;
                         });
                     });
+
                     li.querySelector('.delete-comment-button').addEventListener('click', async () => {
                         await deleteComment(mandalartId, comment.comment_id);
                     });
+
                     commentList.appendChild(li);
                 });
-                // Update the comment count
+
                 commentCountSpan.textContent = comments.length;
             }
         }
