@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { client, changeColor } = require('../db'); // MySQL 클라이언트 사용
+const { changeColor } = require('../db/db'); // MySQL 클라이언트 사용
+const client = require('../db/db_connect');
 const { v4: uuidv4 } = require('uuid'); 
 
 // 메인 만다라트 경로

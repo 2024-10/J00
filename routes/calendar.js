@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { client } = require('../db'); // MySQL 클라이언트 사용
+const { client } = require('../db/db_connect'); // MySQL 클라이언트 사용
 
 router.get('/', (req, res) => {
     res.render('calendar', { title: 'Calendar' });
