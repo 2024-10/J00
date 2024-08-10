@@ -82,43 +82,45 @@
         </form>
 
         <div id="checklist-container" class="sortMine">
+        <% if (isMember) { %>
             <div class="color-container">
                 <div class="mandalart-color" id="green"></div>
                 <div class="mandalart-color" id="yellow"></div>
                 <div class="mandalart-color" id="blue"></div>
             </div>
-
-            <div class="sticker-container">
-                <div class="sticker" id="sticker1">
-                    <img src="/images/sticker1.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker2">
-                    <img src="/images/sticker2.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker3">
-                    <img src="/images/sticker3.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker4">
-                    <img src="/images/sticker4.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker5">
-                    <img src="/images/sticker5.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker6">
-                    <img src="/images/sticker6.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker7">
-                    <img src="/images/sticker7.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker8">
-                    <img src="/images/sticker8.png" alt="sticker" class="sticker">
-                </div>
-            </div>            
-            
-            <h4>체크리스트</h4>
             <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
                 <input type="hidden" id="color-input" name="color" value="">
             </form>
+
+        
+                <div class="sticker-container">
+                  <div class="sticker" id="sticker1">
+                    <img src="/images/sticker1.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker2">
+                    <img src="/images/sticker2.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker3">
+                    <img src="/images/sticker3.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker4">
+                    <img src="/images/sticker4.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker5">
+                    <img src="/images/sticker5.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker6">
+                    <img src="/images/sticker6.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker7">
+                    <img src="/images/sticker7.png" alt="sticker" class="sticker">
+                  </div>
+                  <div class="sticker" id="sticker8">
+                    <img src="/images/sticker8.png" alt="sticker" class="sticker">
+                  </div>
+                </div>            
+        <% } %> 
+                <h4>체크리스트</h4>
 
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
