@@ -35,6 +35,7 @@
     <div class="container">
         <form id="mandalart-form" action="/mandalart/update/<%= mandalart.mandalart_id %>" method="POST">
             <h3>나의 만다라트</h3>
+        
             <div id="mandalart-grid" class="mandalart grid-<%= mandalart.tedolist_count %> sortMine">
                 <% function getCellClass(index, count) { 
                     const classes = [
@@ -51,13 +52,23 @@
                 } %>
                 <% tedolists.forEach((tedolist, index) => { %>
                     <div class="cell <%= getCellClass(index, mandalart.tedolist_count) %>" data-tedolist-number="<%= tedolist.tedolist_number %>">
-                        <div class="cell-text">
-                            <%= tedolist.tedolist_detail %>
-                        </div>
+                        <div class="cell-content">
+                            <div class="cell-text">
+                                <%= tedolist.tedolist_detail %>
+                            </div>
+                            <div class="cell-image">
+                                <div class="sticker">
+                                    <!-- 기존 코드를 다음과 같이 수정합니다 -->
+                                    <% if (tedolist.tedolist_sticker) { %>
+                                        <img src="<%= tedolist.tedolist_sticker %>" alt="sticker" class="sticker">
+                                    <% } %>
+                                </div>                 
+                            </div>
+                        </div>                        
                         <input type="text" class="tedolist-detail-input" name="tedolistDetails[<%= index %>][tedolist_detail]" value="<%= tedolist.tedolist_detail %>" />
                         <input type="hidden" name="tedolistDetails[<%= index %>][tedolist_number]" value="<%= tedolist.tedolist_number %>" />
                     </div>
-                <% }); %>
+                <% }); %>                   
                 <div class="cell center">
                     <div class="center-goal-text"><%= mandalart.centerGoal %></div>
                 </div>
@@ -71,13 +82,47 @@
         </form>
 
         <div id="checklist-container" class="sortMine">
+            <div class="color-container">
+                <div class="mandalart-color" id="green"></div>
+                <div class="mandalart-color" id="yellow"></div>
+                <div class="mandalart-color" id="blue"></div>
+            </div>
+
+            <div class="sticker-container">
+                <div class="sticker" id="sticker1">
+                    <img src="/images/sticker1.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker2">
+                    <img src="/images/sticker2.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker3">
+                    <img src="/images/sticker3.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker4">
+                    <img src="/images/sticker4.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker5">
+                    <img src="/images/sticker5.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker6">
+                    <img src="/images/sticker6.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker7">
+                    <img src="/images/sticker7.png" alt="sticker" class="sticker">
+                </div>
+                <div class="sticker" id="sticker8">
+                    <img src="/images/sticker8.png" alt="sticker" class="sticker">
+                </div>
+            </div>            
+            
             <h4>체크리스트</h4>
 
             <!--컬러 쳌-->
             <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
-                <button type="submit" name="color" value="red">빨강</button>
+                <button type="submit" name="color" value="green">초록</button>
                 <button type="submit" name="color" value="yellow">노란색</button>
-            </form>            
+                <button type="submit" name="color" value="blue">파란색</button>
+            </form>
 
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
@@ -118,6 +163,9 @@
         }
 
         enableTedolistEditing();
+
+        applyColorToCell();
+
     });
 
     function enableTedolistEditing() {
@@ -225,6 +273,90 @@
 
     function confirmDelete() {
         return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
+    }
+
+    // 색상 클릭시 중심 색 변경 코드!! 이쪽에 색상 저장하는 코드 넣으시면 됩니다!!
+    function applyColorToCell() {
+        const colorElements = document.querySelectorAll('.mandalart-color');
+        const cellCenter = document.querySelector('.cell.center');
+    
+        colorElements.forEach(element => {
+            element.addEventListener('click', function() {
+                const selectedColor = getComputedStyle(element).backgroundColor;
+                cellCenter.style.backgroundColor = selectedColor;
+            });
+        });
+    }
+
+    //스티커 추가 코드!!!
+    document.addEventListener('DOMContentLoaded', () => {
+        const cells = document.querySelectorAll('.mandalart .cell');
+        let selectedCell = null;
+
+        // 셀 클릭 시 선택 상태 표시
+        cells.forEach(cell => {
+            if (!cell.classList.contains('center')) {
+                cell.addEventListener('click', function () {
+                    if (selectedCell) {
+                        selectedCell.classList.remove('selected');
+                    }
+
+                    cell.classList.add('selected');
+                    selectedCell = cell;
+
+                    const tedolistNumber = cell.dataset.tedolistNumber;
+                    document.querySelector('#tedolistNumber').value = tedolistNumber;
+                });
+            }
+        });
+
+        // 스티커 클릭 시 선택된 셀에 추가
+        const stickers = document.querySelectorAll('.sticker-container .sticker');
+        stickers.forEach(sticker => {
+            sticker.addEventListener('click', function () {
+                if (selectedCell) {
+                    const stickerImage = sticker.querySelector('img').cloneNode(true);
+                    const cellImageDiv = selectedCell.querySelector('.cell-image .sticker');
+
+                    cellImageDiv.innerHTML = '';  // 기존 스티커를 지우고
+                    cellImageDiv.appendChild(stickerImage);  // 새로운 스티커를 추가
+
+                    const tedolistNumber = selectedCell.dataset.tedolistNumber;
+                    const stickerSrc = stickerImage.src;
+
+                    // 스티커 변경을 서버에 저장하는 API 호출
+                    saveStickerToServer(tedolistNumber, stickerSrc);
+                } else {
+                    alert('먼저 테두리스트 셀을 선택하세요.');
+                }
+            });
+        });
+    });
+
+    function saveStickerToServer(tedolistNumber, stickerSrc) {
+        const mandalartId = '<%= mandalart.mandalart_id %>';
+        fetch(`/mandalart/updateSticker`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                mandalart_id: mandalartId,
+                tedolistNumber: tedolistNumber,
+                stickerSrc: stickerSrc
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Sticker updated successfully.');
+            } else {
+                console.error('Failed to update sticker.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     </script>

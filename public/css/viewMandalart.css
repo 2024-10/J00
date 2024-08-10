@@ -434,9 +434,32 @@ h4{
 input:focus {outline:none;}
 
 /* 만다라트 셀 */
+.cell-content {
+    pointer-events: none; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .cell-text {
     font-size: 14px;
     padding: 5px;
+}
+
+.cell-image {
+    width: 50px;
+    object-fit: contain;
+}
+
+.sticker {
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+.sticker img {
+    width: 100%;
+    height: 100%;
 }
 
 .grid-2 .cell.left {

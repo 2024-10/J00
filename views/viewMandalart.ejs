@@ -28,6 +28,10 @@
         </nav>
     </header>
     
+    <script>
+        const tedolists = <%- JSON.stringify(tedolists) %>;
+    </script>    
+
     <div class="header-container">
         <h3>나의 만다라트</h3>
         <img src="/images/edit.svg" alt="Edit" class="edit-icon" onclick="window.location.href='/mandalart/change/<%= mandalart.mandalart_id %>'">
@@ -119,12 +123,39 @@
                 const inputNumber = document.querySelectorAll('.tedolist-number')[index];
 
                 if (inputDetail && inputNumber) {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.classList.add('cell-content');
+
                     const textDiv = document.createElement('div');
                     textDiv.classList.add('cell-text');
                     textDiv.innerText = inputDetail.value;
+
+                    const imageDiv = document.createElement('div');
+                    imageDiv.classList.add('cell-image');
+
+                    const stickerDiv = document.createElement('div');
+                    stickerDiv.classList.add('sticker');
+
+                    // 스티커가 존재하면 추가
+                    if (tedolists[index].tedolist_sticker && tedolists[index].tedolist_sticker.length > 0) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = tedolists[index].tedolist_sticker; // URL 설정
+                        imgElement.alt = 'sticker';
+                        imgElement.classList.add('sticker');
+
+                        stickerDiv.appendChild(imgElement);
+                    } else {
+                        console.log("No sticker found for index", index);
+                    }
+
+                    imageDiv.appendChild(stickerDiv);
+                    contentDiv.appendChild(textDiv);
+                    contentDiv.appendChild(imageDiv);
+
                     cell.dataset.tedolistNumber = inputNumber.value;
                     cell.dataset.hasTedolistDetail = "true";
-                    cell.appendChild(textDiv);
+
+                    cell.appendChild(contentDiv);
                 } else {
                     cell.dataset.hasTedolistDetail = "false";
                 }

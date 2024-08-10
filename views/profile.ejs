@@ -51,7 +51,7 @@
     </header>
     <main>
         <section class="profile-section">
-            <h2>프로필</h2>
+            <h2>프로필 <% if (user && user.membership) { %>🌟<% } %></h2>
             <div class="profile-card">
                 <div class="profile-info">
                     <div class="profile-image-container">
@@ -89,17 +89,14 @@
             </div>
         </section>
 
+        <% if (user && !user.membership) { %> <!-- 멤버십이 없을 때만 표시 -->
         <section class="profile-membership">
             <div class="membership">
                 <p>단 돈 2990원에 j00 무한 멤버쉽 즐기기</p>
-                <a href='/membership'>멤버십을 등록하시궛나여.. ?.. ...</a>    
+                <a href='/membership'>멤버십을 등록하시겠습니까?</a>    
             </div>
         </section>
-
-        <section class="achievements-section">
-            <h2>업적</h2>
-            <p style="font-weight: bold; font-size: 1.2em;">현재까지 달성한 업적이 없습니다.</p>
-        </section>
+        <% } %>
     </main>
 
     <script>

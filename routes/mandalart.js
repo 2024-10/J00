@@ -386,6 +386,13 @@ router.get('/change/:mandalartId', (req, res) => {
 });
 
 
+
+
+
+
+
+
+
 // 만다라트 수정 처리 (post)
 router.post('/update/:mandalartId', (req, res) => {
     const userCookie = req.cookies['USER'];
@@ -415,28 +422,6 @@ router.post('/update/:mandalartId', (req, res) => {
         res.status(401).json({ error: 'Unauthorized' });
     }
 });
-
-//change center color 
-router.post('/update/center_color/:mandalartId', async (req, res) => {
-    const userCookie = req.cookies['USER'];
-    const user = userCookie ? JSON.parse(userCookie) : null;
-    const mandalartId = req.params.mandalartId;
-    const center_color = req.body.color;
-    if (user) {
-        await changeColor(mandalartId, center_color);
-        client.query("SELECT center_color FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'no db' });
-            }
-        res.json(results);
-    }); }
-    else {
-        res.status(401).json({ error: 'Login plz,,' });
-    }
-});
-
-
 
 // 만다라트 삭제 처리
 router.post('/delete/:mandalartId', (req, res) => {
@@ -565,6 +550,28 @@ router.get('/userMandalart/:userId', (req, res) => {
     });
 });
 
+// 스티커 업데이트 api 코드입니다요!!
+router.post('/updateSticker', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalart_id, tedolistNumber, stickerSrc } = req.body;
 
+    if (user) {
+        client.query(
+            "UPDATE tedolist SET tedolist_sticker = ? WHERE mandalart_id = ? AND tedolist_number = ?", 
+            [stickerSrc, mandalart_id, tedolistNumber],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ success: false, message: "Database update failed." });
+                } else {
+                    res.status(200).json({ success: true });
+                }
+            }
+        );
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+});
 
 module.exports = router;
