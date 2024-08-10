@@ -58,8 +58,11 @@
                             </div>
                             <div class="cell-image">
                                 <div class="sticker">
-                                    <!-- 스티커 부분을 비워두어 새로 삽입할 수 있게 합니다 -->
-                                </div>                        
+                                    <!-- 기존 코드를 다음과 같이 수정합니다 -->
+                                    <% if (tedolist.tedolist_sticker) { %>
+                                        <img src="<%= tedolist.tedolist_sticker %>" alt="sticker" class="sticker">
+                                    <% } %>
+                                </div>                 
                             </div>
                         </div>                        
                         <input type="text" class="tedolist-detail-input" name="tedolistDetails[<%= index %>][tedolist_detail]" value="<%= tedolist.tedolist_detail %>" />
