@@ -4,6 +4,14 @@ h3 {
     text-align: center;
     
 }
+
+/* 만다라트 생성 안 했을 시*/
+#no-mandalart-message {
+    opacity: 0; /* 초기에 텍스트를 숨김 */
+    animation: fadeIn 2s forwards; /* 텍스트 등장 시간을 2초로 설정 */
+    margin-top: 250px;
+}
+
 /* 만다라트랑 체크리스트+댓글 창 */
 .container {
     font-family: Arial, sans-serif;
@@ -575,6 +583,11 @@ input:focus {outline:none;}
 
 /* 모바일 */
 @media (orientation: portrait) and (max-width: 768px) {
+    /* 만다라트 생성 안 했을 시*/
+    #no-mandalart-message {
+        margin-top: -300px;
+    }
+    
     /* 헤더 아래 */
     .container {
         display: flex;
