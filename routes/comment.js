@@ -34,7 +34,16 @@ router.post('/add', (req, res) => {
 router.get('/:mandalart_id', (req, res) => {
     const { mandalart_id } = req.params;
 
-    client.query("SELECT * FROM comment WHERE mandalart_id = ? ORDER BY date ASC", [mandalart_id], (err, result) => {
+    // user 테이블과 comment 테이블을 조인하여 user_image를 가져옴
+    const query = `
+        SELECT c.*, u.user_image
+        FROM comment c
+        LEFT JOIN user u ON c.user_id = u.user_id
+        WHERE c.mandalart_id = ?
+        ORDER BY c.date ASC
+    `;
+
+    client.query(query, [mandalart_id], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");

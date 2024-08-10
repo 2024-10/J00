@@ -303,10 +303,15 @@
                 comments.forEach(comment => {
                     const li = document.createElement('li');
                     li.className = 'comment-item';
+
+                    // comment.user_image가 undefined 또는 null인 경우 기본 이미지를 사용
+                    const userImage = comment.user_image ? `/uploads/${comment.user_image}` : '/images/default-profile.png';
+
                     li.innerHTML = `
                         <div class="comment-header">
+                            <!-- 댓글 작성자의 프로필 이미지 표시 -->
                             <div class="comment-author">
-                                <img src="/images/comment_user.svg" alt="profile">
+                                <img src="${userImage}" alt="profile" class="profile-image">
                                 <span class="comment-author-name">${comment.user_id}</span>
                             </div>
                             <span class="comment-date">${comment.date}</span>
@@ -334,7 +339,7 @@
                 commentCountSpan.textContent = comments.length;
             }
         }
-
+        
         function generateReactionsHTML(comment) {
             const emojis = ['1', '2', '3', '4', '5'];
             return emojis.map(emoji => `
