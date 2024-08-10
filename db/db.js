@@ -33,4 +33,4 @@ async function changeColor(mandalart_id, center_color) {
     })
 }
 
-module.exports = { client, fetchUser, savePaymentInfo, changeColor };
+module.exports = { fetchUser, savePaymentInfo, changeColor };
