@@ -75,7 +75,7 @@
             </div>
             
             <div class="button-container sortMine">
-                <button class="btn" type="submit">완료</button>
+                <button class="btn" id="submit-button" type="button">완료</button>
                 <button class="btn delete-btn" type="submit" form="delete-mandalart-form">현재 만다라트 삭제하기</button>
             </div>
             <br>
@@ -116,12 +116,8 @@
             </div>            
             
             <h4>체크리스트</h4>
-
-            <!--컬러 쳌-->
             <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
-                <button type="submit" name="color" value="green">초록</button>
-                <button type="submit" name="color" value="yellow">노란색</button>
-                <button type="submit" name="color" value="blue">파란색</button>
+                <input type="hidden" id="color-input" name="color" value="">
             </form>
 
             <ul id="checklist-list"></ul>
@@ -273,17 +269,30 @@
         function confirmDelete() {
             return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
         }
-    
+
         // 색상 클릭시 중심 색 변경 코드
         function applyColorToCell() {
             const colorElements = document.querySelectorAll('.mandalart-color');
+            const colorInput = document.getElementById('color-input');
             const cellCenter = document.querySelector('.cell.center');
-        
+
+            const colorMapping = {
+                'green': '#D1E4BE',
+                'yellow': '#F3E5BB',
+                'blue': '#D9E6F5'
+            };
+
             colorElements.forEach(element => {
                 element.addEventListener('click', function() {
-                    const selectedColor = getComputedStyle(element).backgroundColor;
-                    cellCenter.style.backgroundColor = selectedColor;
+                    const selectedColorId = element.id;
+                    const selectedColor = colorMapping[selectedColorId];
+                    cellCenter.style.backgroundColor = selectedColor;  
+                    colorInput.value = selectedColorId;
                 });
+            });
+    
+            document.getElementById('submit-button').addEventListener('click', () => {
+                document.getElementById('change_color').submit();
             });
         }
     
