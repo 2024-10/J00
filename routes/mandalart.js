@@ -549,7 +549,6 @@ router.get('/userMandalart/:userId', (req, res) => {
     });
 });
 
-
 // 스티커 업데이트 api 코드입니다요!!
 router.post('/updateSticker', (req, res) => {
     const userCookie = req.cookies['USER'];

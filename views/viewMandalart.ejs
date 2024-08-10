@@ -139,10 +139,13 @@
                     // 스티커가 존재하면 추가
                     if (tedolists[index].tedolist_sticker && tedolists[index].tedolist_sticker.length > 0) {
                         const imgElement = document.createElement('img');
-                        imgElement.src = tedolists[index].tedolist_sticker; // 스티커 이미지 URL 설정
+                        imgElement.src = tedolists[index].tedolist_sticker; // URL 설정
                         imgElement.alt = 'sticker';
                         imgElement.classList.add('sticker');
+
                         stickerDiv.appendChild(imgElement);
+                    } else {
+                        console.log("No sticker found for index", index);
                     }
 
                     imageDiv.appendChild(stickerDiv);
