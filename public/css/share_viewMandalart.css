@@ -284,9 +284,33 @@ input:focus {outline:none;}
 .center {
     background: #D1E4BE;
 }
+
+.cell-content {
+    pointer-events: none; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .cell-text {
     font-size: 14px;
     padding: 5px;
+}
+
+.cell-image {
+    width: 50px;
+    object-fit: contain;
+}
+
+.sticker {
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+.sticker img {
+    width: 100%;
+    height: 100%;
 }
 
 .grid-2 .cell.left {
