@@ -186,10 +186,18 @@
                     stickerDiv.classList.add('sticker');
 
                     const stickerImg = document.createElement('img');
-                    //아래 코드는 하드코드입니다!! src에 서버에서 가져온 이미지 넣어주시면 됩니다!
-                    stickerImg.src = "/images/test_sticker.png";
-                    stickerImg.alt = "sticker";
-                    stickerImg.classList.add('sticker');
+
+                    // 스티커가 존재하면 추가
+                    if (tedolists[index].tedolist_sticker && tedolists[index].tedolist_sticker.length > 0) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = tedolists[index].tedolist_sticker; // URL 설정
+                        imgElement.alt = 'sticker';
+                        imgElement.classList.add('sticker');
+
+                        stickerDiv.appendChild(imgElement);
+                    } else {
+                        console.log("No sticker found for index", index);
+                    }
 
                     stickerDiv.appendChild(stickerImg);
                     imageDiv.appendChild(stickerDiv);
