@@ -286,13 +286,35 @@
                 element.addEventListener('click', function() {
                     const selectedColorId = element.id;
                     const selectedColor = colorMapping[selectedColorId];
-                    cellCenter.style.backgroundColor = selectedColor;  
+                    cellCenter.style.backgroundColor = selectedColor;
                     colorInput.value = selectedColorId;
                 });
             });
-    
-            document.getElementById('submit-button').addEventListener('click', () => {
-                document.getElementById('change_color').submit();
+
+            document.getElementById('submit-button').addEventListener('click', async () => {
+                const form = document.getElementById('change_color');
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData.entries())),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
+                        }
+                    } else {
+                        console.error('색상 변경 실패');
+                    }
+                } catch (error) {
+                    console.error('네트워크 오류:', error);
+                }
             });
         }
     

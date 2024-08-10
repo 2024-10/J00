@@ -385,23 +385,23 @@ router.get('/change/:mandalartId', (req, res) => {
     }
 });
 
-//만다라트 중앙 색상 코드
+// 만다라트 중앙 색상 코드
 router.post('/update/center_color/:mandalartId', async (req, res) => {
     const userCookie = req.cookies['USER'];
     const user = userCookie ? JSON.parse(userCookie) : null;
     const mandalartId = req.params.mandalartId;
     const center_color = req.body.color;
+
     if (user) {
-        await changeColor(mandalartId, center_color);
-        client.query("SELECT center_color FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'no db' });
-            }
-        res.json(results);
-    }); }
-    else {
-        res.status(401).json({ error: 'Login plz,,' });
+        try {
+            await changeColor(mandalartId, center_color);
+            res.json({ redirectUrl: `/mandalart/view/${mandalartId}` });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Server error' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
     }
 });
 
