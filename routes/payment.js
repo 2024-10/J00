@@ -27,6 +27,9 @@ router.post("/confirm", async function (req, res) {
         paymentKey: paymentKey,
       },
       responseType: "json",
+      timeout: {
+        request: 5000,
+      },
     });
     console.log(response.body);
     res.status(response.statusCode).json(response.body);
