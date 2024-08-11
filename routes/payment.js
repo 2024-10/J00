@@ -28,7 +28,7 @@ router.post("/confirm", async function (req, res) {
       },
       responseType: "json",
       timeout: {
-        request: 5000,
+        request: 20000,
       },
     });
     console.log(response.body);
