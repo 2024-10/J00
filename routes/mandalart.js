@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../db'); 
+const { changeColor } = require('../db/db'); // MySQL 클라이언트 사용
+const client = require('../db/db_connect');
 const { v4: uuidv4 } = require('uuid'); 
 
 // 메인 만다라트 경로
@@ -330,54 +331,71 @@ router.get('/change/:mandalartId', (req, res) => {
     const { mandalartId } = req.params;
 
     if (user) {
-        client.query("SELECT * FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, mandalartResult) => {
+        client.query("SELECT membership FROM user WHERE user_id = ?", [user.user_id], (err, userResult) => {
             if (err) {
                 console.log(err);
                 res.status(500).send("Server error");
-            } else {
+                return;
+            }
+
+            const isMember = userResult.length > 0 && userResult[0].membership != 0;
+
+            client.query("SELECT * FROM mandalart WHERE mandalart_id = ?", [mandalartId], (err, mandalartResult) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Server error");
+                    return;
+                }
+
                 if (mandalartResult.length > 0) {
                     client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalartId], (err, tedolistResult) => {
                         if (err) {
                             console.log(err);
                             res.status(500).send("Server error");
-                        } else {
-                            const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
-                            if (tedolistIds.length > 0) {
-                                client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
-                                    if (err) {
-                                        console.log(err);
-                                        res.status(500).send("Server error");
-                                    } else {
-                                        const checklists = checklistResult.reduce((acc, checklist) => {
-                                            if (!acc[checklist.tedolist_number]) {
-                                                acc[checklist.tedolist_number] = [];
-                                            }
-                                            acc[checklist.tedolist_number].push(checklist);
-                                            return acc;
-                                        }, {});
-                                        res.render("editMandalart", {
-                                            title: 'Edit Mandalart',
-                                            mandalart: mandalartResult[0],
-                                            tedolists: tedolistResult,
-                                            checklists
-                                        });
+                            return;
+                        }
+
+                        const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+
+                        if (tedolistIds.length > 0) {
+                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalartId, tedolistIds], (err, checklistResult) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).send("Server error");
+                                    return;
+                                }
+
+                                const checklists = checklistResult.reduce((acc, checklist) => {
+                                    if (!acc[checklist.tedolist_number]) {
+                                        acc[checklist.tedolist_number] = [];
                                     }
-                                });
-                            } else {
-                                const checklists = {};
+                                    acc[checklist.tedolist_number].push(checklist);
+                                    return acc;
+                                }, {});
+
                                 res.render("editMandalart", {
                                     title: 'Edit Mandalart',
                                     mandalart: mandalartResult[0],
                                     tedolists: tedolistResult,
-                                    checklists
+                                    checklists,
+                                    isMember
                                 });
-                            }
+                            });
+                        } else {
+                            const checklists = {};
+                            res.render("editMandalart", {
+                                title: 'Edit Mandalart',
+                                mandalart: mandalartResult[0],
+                                tedolists: tedolistResult,
+                                checklists,
+                                isMember 
+                            });
                         }
                     });
                 } else {
                     res.status(404).send("Mandalart not found");
                 }
-            }
+            });
         });
     } else {
         res.redirect('/signin');
@@ -387,10 +405,41 @@ router.get('/change/:mandalartId', (req, res) => {
 
 
 
+// 만다라트 중앙 색상 코드
+router.post('/update/center_color/:mandalartId', async (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const mandalartId = req.params.mandalartId;
+    const center_color = req.body.color;
+    
+    if(!user) {
+        return res.status(401).json({error:"login plz.."});
+    }
+    client.query("SELECT membership FROM user WHERE user_id = ?", [user.user_id], (error, results) => {
+        if(error) {
+            console.log(error);
+            return res.status(500).json({error : 'error'});
+        }
 
+        const userR = results[0];
+        const isMember = userR ? userR.membership : 0;
+        console.log("membership: ", isMember);
 
-
-
+        if(isMember >0 ) {
+            changeColor(mandalartId, center_color).then(() => {
+                return res.redirect(`/mandalart/view/${mandalartId}`);
+            }).catch(err => {
+                console.error(err);
+                return res.status(500).json({error:'server error'});
+            });
+        } else {
+            return res.status(403).json({
+                error: "멤버십에 가입하세여!!!!2",
+                isMember: false
+            });
+        }
+    });
+});
 
 // 만다라트 수정 처리 (post)
 router.post('/update/:mandalartId', (req, res) => {
@@ -507,46 +556,87 @@ router.put('/updateChecklistStatus/:checklistId', (req, res) => {
 router.get('/userMandalart/:userId', (req, res) => {
     const { userId } = req.params;
 
-    client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
+    // 유저의 닉네임을 가져오기 위해 user 테이블과 조인
+    const userQuery = "SELECT user_nickname FROM user WHERE user_id = ?";
+
+    client.query(userQuery, [userId], (err, userResult) => {
         if (err) {
             console.log(err);
             res.status(500).send("Server error");
         } else {
-            if (mandalartResult.length > 0) {
-                const mandalart = mandalartResult[0];
-                client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
+            if (userResult.length > 0) {
+                const userNickname = userResult[0].user_nickname;
+
+                client.query("SELECT * FROM mandalart WHERE user_id = ?", [userId], (err, mandalartResult) => {
                     if (err) {
                         console.log(err);
                         res.status(500).send("Server error");
                     } else {
-                        const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
-                        if (tedolistIds.length > 0) {
-                            client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                        if (mandalartResult.length > 0) {
+                            const mandalart = mandalartResult[0];
+                            client.query("SELECT * FROM tedolist WHERE mandalart_id = ?", [mandalart.mandalart_id], (err, tedolistResult) => {
                                 if (err) {
                                     console.log(err);
                                     res.status(500).send("Server error");
                                 } else {
-                                    const checklists = checklistResult.reduce((acc, checklist) => {
-                                        if (!acc[checklist.tedolist_number]) {
-                                            acc[checklist.tedolist_number] = [];
-                                        }
-                                        acc[checklist.tedolist_number].push(checklist);
-                                        return acc;
-                                    }, {});
-                                    res.json({ mandalart, tedolists: tedolistResult, checklists });
+                                    const tedolistIds = tedolistResult.map(tedolist => tedolist.tedolist_number);
+                                    if (tedolistIds.length > 0) {
+                                        client.query("SELECT * FROM checklist WHERE mandalart_id = ? AND tedolist_number IN (?)", [mandalart.mandalart_id, tedolistIds], (err, checklistResult) => {
+                                            if (err) {
+                                                console.log(err);
+                                                res.status(500).send("Server error");
+                                            } else {
+                                                const checklists = checklistResult.reduce((acc, checklist) => {
+                                                    if (!acc[checklist.tedolist_number]) {
+                                                        acc[checklist.tedolist_number] = [];
+                                                    }
+                                                    acc[checklist.tedolist_number].push(checklist);
+                                                    return acc;
+                                                }, {});
+                                                res.json({ mandalart, tedolists: tedolistResult, checklists, userNickname });
+                                            }
+                                        });
+                                    } else {
+                                        const checklists = {};
+                                        res.json({ mandalart, tedolists: tedolistResult, checklists, userNickname });
+                                    }
                                 }
                             });
                         } else {
-                            const checklists = {};
-                            res.json({ mandalart, tedolists: tedolistResult, checklists });
+                            res.status(404).json({ message: "No Mandalart found for this user" });
                         }
                     }
                 });
             } else {
-                res.status(404).json({ message: "No Mandalart found for this user" });
+                res.status(404).json({ message: "No User found with this ID" });
             }
         }
     });
+});
+
+
+// 스티커 업데이트 api 코드입니다요!!
+router.post('/updateSticker', (req, res) => {
+    const userCookie = req.cookies['USER'];
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const { mandalart_id, tedolistNumber, stickerSrc } = req.body;
+
+    if (user) {
+        client.query(
+            "UPDATE tedolist SET tedolist_sticker = ? WHERE mandalart_id = ? AND tedolist_number = ?", 
+            [stickerSrc, mandalart_id, tedolistNumber],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ success: false, message: "Database update failed." });
+                } else {
+                    res.status(200).json({ success: true });
+                }
+            }
+        );
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
 });
 
 module.exports = router;

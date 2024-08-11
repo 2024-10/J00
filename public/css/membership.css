@@ -1,0 +1,11 @@
+a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.banner {
+    margin-top: 1rem;
+    width: 70%;
+    object-fit: contain;
+}

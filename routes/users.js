@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const client = require('../db'); // MySQL 클라이언트 사용
+const client  = require('../db/db_connect'); // MySQL 클라이언트 사용
 const multer = require('multer');
 const USER_COOKIE_KEY = 'USER';
 
@@ -196,6 +196,26 @@ router.post('/updateProfileImage', upload.single('user_image'), async (req, res)
         console.error(err.message);
         res.status(500).send('Server error');
     }
+});
+
+// 댓글을 가져오는 API 추가
+router.get('/comments/:mandalartId', (req, res) => {
+    const mandalartId = req.params.mandalartId;
+
+    // 댓글과 사용자 정보를 함께 가져오는 쿼리
+    const commentQuery = `
+        SELECT c.*, u.user_image
+        FROM comments c
+        LEFT JOIN user u ON c.user_id = u.user_id
+        WHERE mandalart_id = ?`;
+
+    client.query(commentQuery, [mandalartId], (err, results) => {
+        if (err) {
+            console.error('Error fetching comments:', err);
+            return res.status(500).json({ msg: 'Server error' });
+        }
+        res.json(results);
+    });
 });
 
 module.exports = router;

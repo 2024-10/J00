@@ -16,6 +16,57 @@ header {
     gap: 20px;
 }
 
+.color-container {
+    display: flex;
+    width: 400px;
+}
+
+.mandalart-color {
+    width: 33.3%;
+    height: 40px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#green {
+    background-color: #D1E4BE !important;
+    margin-right: 10px;
+}
+
+#yellow {
+    background-color: #F3E5BB !important;
+    margin-right: 10px;
+}
+
+#blue {
+    background-color: #D9E6F5 !important;
+}
+
+.cell.center {
+    background-color: #D1E4BE;
+}
+
+.sticker-container {
+    margin-top: 10px;
+    display: flex;
+    width: 400px;
+    justify-content: center;
+}
+
+#sticker1 {
+    margin-left: 5px;
+}
+
+.sticker {
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+.sticker img {
+    width: 100%;
+    height: 100%;
+}
+
 #tedolist-form {
     display: grid;
     justify-content: center;
@@ -28,9 +79,11 @@ header {
     height: 648px;
     background: white;
 }
+
 h3 {
     text-align: center;
 }
+
 .cell {
     position: absolute;
     border: 1px solid black;
@@ -43,13 +96,27 @@ h3 {
 .cell.active {
     background-color: #F4FFE8 !important;
 }
+
 .center {
     background: #D1E4BE;
+}
+
+.cell-content {
+    pointer-events: none; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .cell-text {
     font-size: 14px;
     padding: 5px;
+}
+
+.cell-image {
+    width: 50px;
+    object-fit: contain;
 }
 
 .tedolist-detail-input {
@@ -83,6 +150,7 @@ input:focus {
 #checklistDetail:focus {
     border-bottom: 1px solid #007BFF;
 }
+
 #checklist-container {
     background: #fff;
     border: 1px solid black;
@@ -93,6 +161,7 @@ input:focus {
     text-align: center;
     margin-right: 10px;
 }
+
 #checklist-container::-webkit-scrollbar {
     width: 10px;
     background-color: black;
@@ -462,6 +531,7 @@ input:focus {
     .cell {
         font-size: 12px;
     }
+
     #checklist-container {
         width: 70%;
         margin: 0 auto 20px;
@@ -479,7 +549,10 @@ input:focus {
         bottom: -30px;
     }
     
-
+    .color-container,.sticker-container {
+        width: 100%;
+    }
+    
     /* 각 칸 개수에 따른 레이아웃 정의 */
     .grid-2 .cell.left {
         width: 165px;

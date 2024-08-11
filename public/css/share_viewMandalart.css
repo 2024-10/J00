@@ -4,6 +4,14 @@ h3 {
     text-align: center;
     
 }
+
+/* 만다라트 생성 안 했을 시*/
+#no-mandalart-message {
+    opacity: 0; /* 초기에 텍스트를 숨김 */
+    animation: fadeIn 2s forwards; /* 텍스트 등장 시간을 2초로 설정 */
+    margin-top: 250px;
+}
+
 /* 만다라트랑 체크리스트+댓글 창 */
 .container {
     font-family: Arial, sans-serif;
@@ -284,9 +292,33 @@ input:focus {outline:none;}
 .center {
     background: #D1E4BE;
 }
+
+.cell-content {
+    pointer-events: none; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .cell-text {
     font-size: 14px;
     padding: 5px;
+}
+
+.cell-image {
+    width: 50px;
+    object-fit: contain;
+}
+
+.sticker {
+    object-fit: contain;
+    margin-right: 5px;
+}
+
+.sticker img {
+    width: 100%;
+    height: 100%;
 }
 
 .grid-2 .cell.left {
@@ -551,6 +583,11 @@ input:focus {outline:none;}
 
 /* 모바일 */
 @media (orientation: portrait) and (max-width: 768px) {
+    /* 만다라트 생성 안 했을 시*/
+    #no-mandalart-message {
+        margin-top: -300px;
+    }
+    
     /* 헤더 아래 */
     .container {
         display: flex;
