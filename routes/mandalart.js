@@ -415,28 +415,30 @@ router.post('/update/center_color/:mandalartId', async (req, res) => {
     if(!user) {
         return res.status(401).json({error:"login plz.."});
     }
-
-    try {
-        const userResult = await client.query("SELECT membership FROM user WHERE user_id = ?", [user.user_id]);
-        const isMember = userResult.length > 0 && userResult[0].membership != 0;
-
-        if (isMember) {
-            await changeColor(mandalartId, center_color);
-            res.json({ 
-                redirectUrl: `/mandalart/view/${mandalartId}`, 
-                isMember: true 
-            });
-        } else {
-            return res.status(403).json({ 
-                error: "멤버십에 가입하세요..!!!!!",
-                isMember: false 
-            });
+    client.query("SELECT membership FROM user WHERE user_id = ?", [user.user_id], (error, results) => {
+        if(error) {
+            console.log(error);
+            return res.status(500).json({error : 'error'});
         }
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Server error' });
-    }
+        const userR = results[0];
+        const isMember = userR ? userR.membership : 0;
+        console.log("membership: ", isMember);
+
+        if(isMember >0 ) {
+            changeColor(mandalartId, center_color).then(() => {
+                return res.redirect(`/mandalart/view/${mandalartId}`);
+            }).catch(err => {
+                console.error(err);
+                return res.status(500).json({error:'server error'});
+            });
+        } else {
+            return res.status(403).json({
+                error: "멤버십에 가입하세여!!!!2",
+                isMember: false
+            });
+        }
+    });
 });
 
 // 만다라트 수정 처리 (post)
