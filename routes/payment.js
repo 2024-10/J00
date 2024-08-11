@@ -15,25 +15,32 @@ router.post("/confirm", async function (req, res) {
   const encryptedSecretKey =
     "Basic " + Buffer.from(widgetSecretKey + ":").toString("base64");
 
-  try {
-    const response = await got.post("https://api.tosspayments.com/v1/payments/confirm", {
-      headers: {
-        Authorization: encryptedSecretKey,
-        "Content-Type": "application/json",
-      },
-      json: {
-        orderId: orderId,
-        amount: amount,
-        paymentKey: paymentKey,
-      },
-      responseType: "json",
-    });
-    console.log(response.body);
-    res.status(response.statusCode).json(response.body);
+    try {
+      const response = await got.post("https://api.tosspayments.com/v1/payments/confirm", {
+          headers: {
+              Authorization: encryptedSecretKey,
+              "Content-Type": "application/json",
+          },
+          json: {
+              orderId: orderId,
+              amount: amount,
+              paymentKey: paymentKey,
+          },
+          responseType: "json",
+      });
+      console.log(response.body);
+      res.status(response.statusCode).json(response.body);
   } catch (error) {
-    console.log(error.response.body);
-    res.status(error.response.statusCode).json(error.response.body);
+      if (error.response && error.response.body) {
+          // HTML을 포함한 에러 응답 처리
+          console.log("Error response body:", error.response.body);
+          res.status(error.response.statusCode || 500).send(error.response.body);
+      } else {
+          console.log("Unknown error:", error);
+          res.status(500).json({ message: "서버 오류" });
+      }
   }
+  
 });
 
 module.exports = router;
