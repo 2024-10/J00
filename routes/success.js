@@ -3,6 +3,8 @@ const router = express.Router();
 const client = require('../db/db_connect'); // MySQL 클라이언트 사용
 const USER_COOKIE_KEY = 'USER';
 
+router.use(express.json());
+
 async function queryAsync(query, params) {
     return new Promise((resolve, reject) => {
         client.query(query, params, (err, results) => {
@@ -38,9 +40,6 @@ router.post('/update-membership', async (req, res) => {
         }
     } catch (error) {
         console.error('Error updating membership:', error.message);
-        console.error('Error code:', error.code); // SQL 오류 코드
-        console.error('SQL Message:', error.sqlMessage); // SQL 오류 메시지
-        console.error('SQL:', error.sql); // 실행된 SQL 쿼리
         
         res.status(500).json({ 
             success: false, 

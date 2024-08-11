@@ -8,6 +8,8 @@ let got;
   got = (await import('got')).default;
 })();
 
+router.use(express.json());
+
 router.post("/confirm", async function (req, res) {
   const { paymentKey, orderId, amount } = req.body;
 
@@ -31,8 +33,8 @@ router.post("/confirm", async function (req, res) {
     console.log(response.body);
     res.status(response.statusCode).json(response.body);
   } catch (error) {
-    console.log(error.response.body);
-    res.status(error.response.statusCode).json(error.response.body);
+    console.log(error.response?.body || error.message);
+    res.status(error.response?.statusCode || 500).json(error.response?.body || { message: error.message });
   }
 });
 
