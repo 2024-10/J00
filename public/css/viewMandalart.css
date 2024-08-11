@@ -415,7 +415,7 @@ h4{
 }
 
 .cell.active {
-    background-color: #F4FFE8 !important;
+    background: #F4FFE8;
 }
 
 #checklist-list {

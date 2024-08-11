@@ -182,28 +182,7 @@
             });
         }
     
-        function addCellClickHandlers(mandalartId) {
-            const cells = document.querySelectorAll('.mandalart .cell');
-            cells.forEach(cell => {
-                if (!cell.classList.contains('center')) {
-                    cell.addEventListener('click', async (event) => {
-                        cells.forEach(c => c.classList.remove('active'));
-                        cell.classList.add('active');
-    
-                        const tedolistNumber = cell.dataset.tedolistNumber;
-                        const input = document.querySelector('#tedolistNumber');
-                        input.value = tedolistNumber;
-    
-                        if (tedolistNumber) {
-                            document.querySelector('#checklist-container').style.display = 'block';
-                            await loadChecklists(mandalartId, tedolistNumber);
-                        } else {
-                            document.querySelector('#checklist-container').style.display = 'none';
-                        }
-                    });
-                }
-            });
-        }
+        
     
         function addChecklistFormHandler(mandalartId) {
             const form = document.querySelector('#checklist-form');
@@ -270,7 +249,9 @@
             return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
         }
 
+
         // 색상 클릭시 중심 색 변경 코드
+        let tmpCenterColor = '';
         function applyColorToCell() {
             const colorElements = document.querySelectorAll('.mandalart-color');
             const colorInput = document.getElementById('color-input');
@@ -288,8 +269,19 @@
                     const selectedColor = colorMapping[selectedColorId];
                     cellCenter.style.backgroundColor = selectedColor;
                     colorInput.value = selectedColorId;
+
+                    if (selectedColorId === 'yellow') {
+                        tmpCenterColor = 'yellow';
+                    } else if (selectedColorId === 'blue') {
+                        tmpCenterColor = 'blue';
+                    } else {
+                        tmpCenterColor = 'green';
+                    }
+
                 });
             });
+
+            const cells = document.querySelectorAll('.mandalart .cell');
 
             document.getElementById('submit-button').addEventListener('click', async () => {
                 const form = document.getElementById('change_color');
@@ -316,6 +308,63 @@
                     console.error('네트워크 오류:', error);
                 }
             });
+        }
+
+        function addCellClickHandlers(mandalartId) {
+            const cells = document.querySelectorAll('.mandalart .cell');
+            const cellCenter = document.querySelector('.cell.center');
+
+            cells.forEach(cell => {
+                if (!cell.classList.contains('center')) {
+                    cell.addEventListener('click', async (event) => {
+                        // centerCell의 색상을 유지한 상태에서 나머지 셀의 배경색 초기화
+                        cells.forEach(c => {
+                            if (!c.classList.contains('center')) {
+                                c.classList.remove('active');
+                                c.style.backgroundColor = ''; // 배경색 초기화
+                            }
+                        });
+
+                        // 현재 선택된 셀에 active 클래스 추가 및 색상 적용
+                        cell.classList.add('active');
+                        
+                        // tmpCenterColor에 따라 선택된 셀의 색상 적용
+                        let activeColor;
+                        if (tmpCenterColor === 'yellow') {
+                            activeColor = '#FFF8E3';
+                        } else if (tmpCenterColor === 'blue') {
+                            activeColor = '#EAF4FF';
+                        } else {
+                            activeColor = '#F4FFE8';
+                        }
+
+                        cell.style.backgroundColor = activeColor;
+                        console.log("Clicked Cell Background Color:", cell.style.backgroundColor);  // 디버깅용 로그
+
+                        const tedolistNumber = event.target.dataset.tedolistNumber;
+                        if (tedolistNumber) {
+                            await loadChecklists(mandalartId, tedolistNumber);
+                        } else {
+                            document.querySelector('#checklist-container').style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        // 초기화 시 centerColor 설정
+        var centerColor = "<%= mandalart.center_color %>";
+        var centerGoalText = document.getElementById('cell center');
+
+        if (centerColor === 'yellow') {
+            centerGoalText.style.backgroundColor = '#F3E5BB';
+            tmpCenterColor = 'yellow';  // 추가
+        } else if (centerColor === 'blue') {
+            centerGoalText.style.backgroundColor = '#D9E6F5';
+            tmpCenterColor = 'blue';  // 추가
+        } else {
+            centerGoalText.style.backgroundColor = '#D1E4BE';
+            tmpCenterColor = 'green';  // 추가
         }
     
         // 스티커 추가 코드
@@ -389,17 +438,6 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
-
-        var centerColor = "<%= mandalart.center_color %>";
-        var centerGoalText = document.getElementById('cell center');
-    
-        if (centerColor === 'yellow') {
-            centerGoalText.style.backgroundColor = '#F3E5BB';
-        } else if (centerColor === 'blue') {
-            centerGoalText.style.backgroundColor = '#D9E6F5';
-        } else {
-            centerGoalText.style.backgroundColor = '#D1E4BE'; 
         }
     </script>
 </body>
