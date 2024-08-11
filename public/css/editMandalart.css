@@ -29,17 +29,17 @@ header {
 }
 
 #green {
-    background-color: #D1E4BE;
+    background-color: #D1E4BE !important;
     margin-right: 10px;
 }
 
 #yellow {
-    background-color: #F3E5BB;
+    background-color: #F3E5BB !important;
     margin-right: 10px;
 }
 
 #blue {
-    background-color: #D9E6F5;
+    background-color: #D9E6F5 !important;
 }
 
 .cell.center {
