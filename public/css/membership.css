@@ -5,7 +5,16 @@ a {
 }
 
 .banner {
-    margin-top: 1rem;
+    margin-top: 3rem;
     width: 70%;
     object-fit: contain;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .banner {
+        margin-top: 5rem;
+        width: 100%;
+        object-fit: contain;
+    }
 }
