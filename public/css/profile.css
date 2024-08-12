@@ -7,8 +7,20 @@ main {
 }
 
 .profile-section h2 {
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 2rem;
+}
+
+.profile-section h2,.membership-icon {
+    height: 2rem;
+    object-fit: contain;
     font-size: 2rem;
     color: #006735;
+}
+
+.membership-icon {
+    margin-left: 8px;
 }
 
 .profile-card {
@@ -83,4 +95,14 @@ main {
     cursor: pointer;
     width: 25px;
     height: 25px;
+}
+
+.membership {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #006735;
+}
+
+a {
+    color: #006735;
 }

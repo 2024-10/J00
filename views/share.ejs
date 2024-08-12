@@ -194,7 +194,7 @@
 
                 const userPlan = document.createElement('span');
                 userPlan.className = 'user-plan';
-                userPlan.textContent = `${user}님의 계획`;
+                userPlan.textContent = user;
 
                 userPlan.addEventListener('click', async () => {
                     console.log(user); // 사용자 아이디를 콘솔에 출력
@@ -271,7 +271,7 @@
 
                 const userPlan = document.createElement('span');
                 userPlan.className = 'user-plan';
-                userPlan.textContent = `${user}님의 계획`;
+                userPlan.textContent = user;
                 userItem.appendChild(userPlan);
 
                 const cancelButton = document.createElement('button');

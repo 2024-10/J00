@@ -75,50 +75,51 @@
             </div>
             
             <div class="button-container sortMine">
-                <button class="btn" id="submit-button" type="button">완료</button>
+                <button class="btn" id="submit-button" type="submit">완료</button>
                 <button class="btn delete-btn" type="submit" form="delete-mandalart-form">현재 만다라트 삭제하기</button>
             </div>
             <br>
         </form>
 
         <div id="checklist-container" class="sortMine">
-            <div class="color-container">
-                <div class="mandalart-color" id="green"></div>
-                <div class="mandalart-color" id="yellow"></div>
-                <div class="mandalart-color" id="blue"></div>
-            </div>
+            <% if (isMember) { %>
+                <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
+                    <div class="color-container">
+                        <button type="submit" name="color" value="green" class="mandalart-color" id="green"></button>
+                        <button type="submit" name="color" value="yellow" class="mandalart-color" id="yellow"></button>
+                        <button type="submit" name="color" value="blue" class="mandalart-color" id="blue"></button>
+                    </div>
+                </form>
 
-            <div class="sticker-container">
-                <div class="sticker" id="sticker1">
+        
+                <div class="sticker-container">
+                  <div class="sticker" id="sticker1">
                     <img src="/images/sticker1.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker2">
+                  </div>
+                  <div class="sticker" id="sticker2">
                     <img src="/images/sticker2.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker3">
+                  </div>
+                  <div class="sticker" id="sticker3">
                     <img src="/images/sticker3.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker4">
+                  </div>
+                  <div class="sticker" id="sticker4">
                     <img src="/images/sticker4.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker5">
+                  </div>
+                  <div class="sticker" id="sticker5">
                     <img src="/images/sticker5.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker6">
+                  </div>
+                  <div class="sticker" id="sticker6">
                     <img src="/images/sticker6.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker7">
+                  </div>
+                  <div class="sticker" id="sticker7">
                     <img src="/images/sticker7.png" alt="sticker" class="sticker">
-                </div>
-                <div class="sticker" id="sticker8">
+                  </div>
+                  <div class="sticker" id="sticker8">
                     <img src="/images/sticker8.png" alt="sticker" class="sticker">
-                </div>
-            </div>            
-            
+                  </div>
+                </div>            
+            <% } %> 
             <h4>체크리스트</h4>
-            <form id="change_color" action="/mandalart/update/center_color/<%= mandalart.mandalart_id %>" method="POST">
-                <input type="hidden" id="color-input" name="color" value="">
-            </form>
 
             <ul id="checklist-list"></ul>
             <form id="checklist-form">
@@ -181,8 +182,6 @@
                 });
             });
         }
-    
-        
     
         function addChecklistFormHandler(mandalartId) {
             const form = document.querySelector('#checklist-form');
@@ -280,34 +279,7 @@
 
                 });
             });
-
             const cells = document.querySelectorAll('.mandalart .cell');
-
-            document.getElementById('submit-button').addEventListener('click', async () => {
-                const form = document.getElementById('change_color');
-                const formData = new FormData(form);
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(Object.fromEntries(formData.entries())),
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.redirectUrl) {
-                            window.location.href = data.redirectUrl;
-                        }
-                    } else {
-                        console.error('색상 변경 실패');
-                    }
-                } catch (error) {
-                    console.error('네트워크 오류:', error);
-                }
-            });
         }
 
         function addCellClickHandlers(mandalartId) {
@@ -351,7 +323,7 @@
                 }
             });
         }
-
+    
         // 초기화 시 centerColor 설정
         var centerColor = "<%= mandalart.center_color %>";
         var centerGoalText = document.getElementById('cell center');
@@ -366,7 +338,7 @@
             centerGoalText.style.backgroundColor = '#D1E4BE';
             tmpCenterColor = 'green';  // 추가
         }
-    
+
         // 스티커 추가 코드
         function setupStickerHandlers() {
             const cells = document.querySelectorAll('.mandalart .cell');

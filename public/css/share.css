@@ -113,6 +113,14 @@ h1 a:hover {
     margin-right: 10px;
 }
 
+.user-plan {
+    display: inline-block;
+}
+
+.user-plan::after {
+    content: "의 만다라트";
+}
+
 .cancel-button,.click-button {
     background-color: #e0e0e0;
     border: none;
@@ -158,6 +166,10 @@ h1 a:hover {
     
     .cancel-button {
         margin-left: 10px;
+    }
+
+    .user-plan::after {
+        content: "";
     }
 }
 

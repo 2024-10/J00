@@ -73,12 +73,6 @@
 
             const json = await response.json(); // 이 부분에서 에러 발생 가능성
 
-            if (!response.ok) {
-                console.log(json);
-                window.location.href = `/fail?message=${json.message}&code=${json.code}`;
-                return;
-            }
-
             const membershipUpdateResponse = await fetch("/success/update-membership", {
                 method: "POST",
                 headers: {
@@ -91,6 +85,12 @@
                 console.log(membershipUpdateJson.message);
             } else {
                 console.log('Membership update failed:', membershipUpdateJson.message);
+            }
+
+            if (!response.ok) {
+                console.log(json);
+                window.location.href = `/fail?message=${json.message}&code=${json.code}`;
+                return;
             }
 
             console.log(json);
