@@ -63,7 +63,7 @@
             const response = await fetch("/payment/confirm", {
                 method: "POST",
                 headers: {
-                "Content-Type": "application/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(requestData),
             });
@@ -71,13 +71,14 @@
             const json = await response.json();
 
             if (!response.ok) {
-                console.log(json);
-                window.location.href = `/fail?message=${json.message}&code=${json.code}`;
+                console.log("Error details:", json);
+                const errorMessage = encodeURIComponent(json.message || 'Unknown error');
+                const errorCode = encodeURIComponent(json.code || '500');
+                window.location.href = `/fail?message=${errorMessage}&code=${errorCode}`;
                 return;
             }
 
             console.log(json);
-        }
 
         confirm();
 
