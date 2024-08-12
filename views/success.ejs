@@ -46,6 +46,8 @@
             path: '/images/rocket.json' 
         });
         
+        // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
+        // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
         const urlParams = new URLSearchParams(window.location.search);
         const paymentKey = urlParams.get("paymentKey");
         const orderId = urlParams.get("orderId");
@@ -58,38 +60,32 @@
                 amount: amount,
             };
 
-            try {
-                const response = await fetch("/payment/confirm", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(requestData),
-                });
+            const response = await fetch("/payment/confirm", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestData),
+            });
 
-                const json = await response.json();
-                
-                if (!response.ok) {
-                    console.log("Error details:", json);
-                    const errorMessage = encodeURIComponent(json.message || 'Unknown error');
-                    const errorCode = encodeURIComponent(json.code || '500');
-                    window.location.href = `/fail?message=${errorMessage}&code=${errorCode}`;
-                    return;
-                }
+            const json = await response.json();
 
+            if (!response.ok) {
                 console.log(json);
-                // 성공적인 응답 후 페이지 업데이트
-                document.getElementById("paymentKey").textContent = "결제 키: " + paymentKey;
-                document.getElementById("orderId").textContent = "주문번호: " + orderId;
-                document.getElementById("amount").textContent = "결제 금액: " + amount;
-
-            } catch (error) {
-                console.error("Failed to parse JSON:", error);
-                window.location.href = `/fail?message=Failed%20to%20parse%20response&code=500`;
+                window.location.href = `/fail?message=${json.message}&code=${json.code}`;
+                return;
             }
+
+            console.log(json);
         }
 
         confirm();
+
+        const orderIdElement = document.getElementById("orderId");
+        const amountElement = document.getElementById("amount");
+
+        orderIdElement.textContent = "주문번호: " + orderId;
+        amountElement.textContent = "결제 금액: " + amount;
     </script>
   </body>
 </html>
