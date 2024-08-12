@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/share_viewMandalart.css">
     <style>
         .cell.active {
-            background-color: #F4FFE8 !important;
+            background-color: #F4FFE8;
         }
         #checklist-list {
             margin-top: 10px;
@@ -81,13 +81,13 @@
                 mainHeader.classList.toggle('active-header');
             });
         });
+
         // Function to get URL parameter
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
-        // JavaScript 수정
         document.addEventListener('DOMContentLoaded', async () => {
             const userId = getQueryParam('userId');
             if (!userId) {
@@ -95,7 +95,7 @@
                 return;
             }
 
-            //document.getElementById('user-nickname').textContent = `${userId}님의 만다라트`;
+            // 기존 코드들...
             try {
                 const response = await fetch(`/mandalart/userMandalart/${userId}`);
                 if (!response.ok) {
@@ -151,14 +151,57 @@
             if (container) {
                 if (tedolistCount > 0) {
                     container.classList.add(`grid-${tedolistCount}`);
-                    generateMandalart(container, centerGoal, tedolistCount, tedolists, checklists,centerColor);
+                    generateMandalart(container, centerGoal, tedolistCount, tedolists, checklists, centerColor);
                     addCellClickHandlers(mandalart.mandalart_id);
                 }
             }
         }
 
-        function generateMandalart(container, centerGoal, numCells, tedolists, checklists,centerColor) {
+        let tmpCenterColor = '';
+        function generateMandalart(container, centerGoal, numCells, tedolists, checklists, centerColor) {
             const positions = getPositions(numCells);
+
+            // 선택된 색상에 따라 스타일을 적용하는 부분
+            const colorMapping = {
+                'yellow': '#F3E5BB',
+                'blue': '#D9E6F5',
+                'green': '#D1E4BE'
+            };
+            const selectedColor = colorMapping[centerColor] || '#D1E4BE';
+
+            // 체크리스트 배경색 변경
+            document.querySelector('.editContainerColor').style.backgroundColor = selectedColor;
+
+            // 스크롤바 색상 변경
+            const style = document.createElement('style');
+            style.innerHTML = `
+                #comment-list::-webkit-scrollbar-thumb {
+                    background-color: ${selectedColor};
+                }
+            `;
+            document.head.appendChild(style);
+
+            // 댓글 작성 버튼 색상 변경
+            const addButton = document.getElementById('add-comment-button');
+            addButton.style.backgroundColor = selectedColor;
+            addButton.addEventListener('mouseenter', () => {
+                addButton.style.backgroundColor = lightenColor(selectedColor, 20);
+            });
+            addButton.addEventListener('mouseleave', () => {
+                addButton.style.backgroundColor = selectedColor;
+            });
+
+            // 댓글 삭제 버튼 색상 변경
+            const deleteButtons = document.querySelectorAll('.delete-comment-button');
+            deleteButtons.forEach(button => {
+                button.style.color = selectedColor;
+                button.addEventListener('mouseenter', () => {
+                    button.style.fontWeight = 'bold';
+                });
+                button.addEventListener('mouseleave', () => {
+                    button.style.fontWeight = 'normal';
+                });
+            });
 
             positions.forEach((pos, index) => {
                 const cell = document.createElement('div');
@@ -217,15 +260,27 @@
             centerCell.dataset.position = 'center';
             centerCell.innerText = centerGoal;
 
-//            if (centerColor === 'yellow') {
-//                centerCell.style.backgroundColor = '#F3E5BB';
-//            } else if (centerColor === 'blue') {
-//                centerCell.style.backgroundColor = '#D9E6F5';
-//            } else {
-//                centerCell.style.backgroundColor = '#D1E4BE'; 
-//            }
+            if (centerColor === 'yellow') {
+                centerCell.style.backgroundColor = '#F3E5BB';
+                tmpCenterColor = 'yellow';
+            } else if (centerColor === 'blue') {
+                centerCell.style.backgroundColor = '#D9E6F5';
+                tmpCenterColor = 'blue';
+            } else {
+                centerCell.style.backgroundColor = '#D1E4BE'; 
+                tmpCenterColor = 'green';
+            }
 
             container.appendChild(centerCell);
+        }
+
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace("#", ""), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1).toUpperCase();
         }
 
         function getPositions(numCells) {
@@ -251,14 +306,33 @@
 
         function addCellClickHandlers(mandalartId) {
             const cells = document.querySelectorAll('.mandalart .cell');
+
+            let activeColor;
+            if (tmpCenterColor === 'yellow') {
+                activeColor = '#FFF8E3';
+            } else if (tmpCenterColor === 'blue') {
+                activeColor = '#EAF4FF';
+            } else {
+                activeColor = '#F4FFE8';
+            }
+
             cells.forEach(cell => {
                 if (!cell.classList.contains('center')) {
                     cell.addEventListener('click', async (event) => {
-                        if (cell.dataset.hasTedolistDetail === "true") {
-                            cells.forEach(c => c.classList.remove('active'));
-                            event.target.classList.add('active');
-                            const tedolistNumber = event.target.dataset.tedolistNumber;
-                            console.log(`Tedolist Number: ${tedolistNumber}`);
+                        // 모든 셀의 배경색 초기화
+                        cells.forEach(c => {
+                            if (!c.classList.contains('center')) {
+                                c.classList.remove('active');
+                                c.style.backgroundColor = ''; // 배경색 초기화
+                            }
+                        });
+
+                        // 현재 선택된 셀에 active 클래스 추가 및 색상 적용
+                        cell.classList.add('active');
+                        cell.style.backgroundColor = activeColor;
+
+                        const tedolistNumber = event.target.dataset.tedolistNumber;
+                        if (tedolistNumber) {
                             await loadChecklists(mandalartId, tedolistNumber);
                         } else {
                             document.querySelector('#checklist-container').style.display = 'none';

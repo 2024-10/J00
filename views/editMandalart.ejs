@@ -248,6 +248,7 @@
             return confirm('정말로 현재 만다라트를 삭제하시겠습니까?');
         }
 
+
         // 색상 클릭시 중심 색 변경 코드
         let tmpCenterColor = '';
         function applyColorToCell() {
@@ -409,17 +410,6 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
-
-        var centerColor = "<%= mandalart.center_color %>";
-        var centerGoalText = document.getElementById('cell center');
-    
-        if (centerColor === 'yellow') {
-            centerGoalText.style.backgroundColor = '#F3E5BB';
-        } else if (centerColor === 'blue') {
-            centerGoalText.style.backgroundColor = '#D9E6F5';
-        } else {
-            centerGoalText.style.backgroundColor = '#D1E4BE'; 
         }
     </script>
 </body>

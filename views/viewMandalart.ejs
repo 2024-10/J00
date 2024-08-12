@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>View Mandalart</title>
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/viewMandalart.css">
@@ -68,7 +67,6 @@
         </div>
         
     </div>
-    <!--여기도 없애야 되는데 그러면 스크롤생김+비율이 약간 달라짐 으로 인해 삭제하진 않았습니다..!-->
     <div class="calendar-container">
         <div id="calendar"></div>
         <div id="details">
@@ -159,17 +157,78 @@
 
         // 모바일 네비바
         document.addEventListener('DOMContentLoaded', () => {
-            const navToggle = document.getElementById('nav-toggle');
-            const mainNav = document.getElementById('main-navigation');
-            const mainHeader = document.getElementById('main-header');
+            let selectedColor = ''; // 사용자가 선택한 색상 ID를 저장하는 변수
+            const colorMapping = {
+                'green': '#D1E4BE',
+                'yellow': '#F3E5BB',
+                'blue': '#D9E6F5'
+            };
 
-            navToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-                mainHeader.classList.toggle('active-header');
+            function updateStyles(selectedColorId) {
+                selectedColor = colorMapping[selectedColorId]; // 선택된 색상을 설정
+
+                // editContainerColor 배경색 변경
+                document.querySelector('.editContainerColor').style.backgroundColor = selectedColor;
+
+                // comment-list 스크롤바 색상 변경
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    #comment-list::-webkit-scrollbar-thumb {
+                        background-color: ${selectedColor};
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // add-comment-button 색상 변경
+                const addButton = document.getElementById('add-comment-button');
+                addButton.style.backgroundColor = selectedColor;
+
+                // add-comment-button hover 색상 변경
+                addButton.addEventListener('mouseenter', () => {
+                    addButton.style.backgroundColor = lightenColor(selectedColor, 20);
+                });
+                addButton.addEventListener('mouseleave', () => {
+                    addButton.style.backgroundColor = selectedColor;
+                });
+
+                // delete-comment-button 색상 변경
+                const deleteButtons = document.querySelectorAll('.delete-comment-button');
+                deleteButtons.forEach(button => {
+                    button.style.color = selectedColor;
+                    button.addEventListener('mouseenter', () => {
+                        button.style.fontWeight = 'bold';
+                    });
+                    button.addEventListener('mouseleave', () => {
+                        button.style.fontWeight = 'normal';
+                    });
+                });
+            }
+
+            // 사용자가 색상을 선택했을 때 updateStyles 함수 호출
+            const colorElements = document.querySelectorAll('.mandalart-color');
+            colorElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const selectedColorId = element.id;
+                    updateStyles(selectedColorId);
+                });
             });
+
+            function lightenColor(color, percent) {
+                const num = parseInt(color.replace("#",""), 16),
+                    amt = Math.round(2.55 * percent),
+                    R = (num >> 16) + amt,
+                    G = (num >> 8 & 0x00FF) + amt,
+                    B = (num & 0x0000FF) + amt;
+                return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1).toUpperCase();
+            }
+
+            // 페이지 로드 시 초기 색상 설정
+            const initialColor = "<%= mandalart.center_color %>";
+            if (initialColor) {
+                updateStyles(initialColor);
+            }
         });
 
-        // 만다라트
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.mandalart');
             const centerGoal = '<%= mandalart.centerGoal %>';
@@ -320,9 +379,6 @@
                         const checklistId = event.target.dataset.checklistId;
                         const isChecked = event.target.checked;
                         await updateChecklistStatus(checklistId, isChecked);
-                        //if (isChecked) {
-                            //event.target.closest('li').style.display = 'none';
-                        //}
                     });
                 });
 
@@ -343,7 +399,6 @@
             }
         }
 
-        
         async function incrementReaction(commentId, emoji) {
             const response = await fetch('/comment/reaction/increment', {
                 method: 'POST',
@@ -550,9 +605,6 @@
                         const checklistId = event.target.dataset.checklistId;
                         const isChecked = event.target.checked;
                         await updateChecklistStatus(checklistId, isChecked);
-                        //if (isChecked) {
-                            //event.target.closest('li').style.display = 'none';
-                        //}
                     });
                 });
 
