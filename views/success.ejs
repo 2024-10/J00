@@ -29,7 +29,7 @@
     <div class="main">
         <div id="lottie-animation" style="width: 213px; height: 321px;"></div>
         <div class="title">멤버십 결제가 완료되었습니다</div>
-        <div class="subtitle">당신의 목표가 실현될때까지 J00%와 함께해요!</div>
+        <div class="subtitle">당신의 목표가 실현될 때까지 J00%와 함께해요!</div>
 
         <!-- paymentKey, orderId, amount를 표시할 요소 추가 -->
         <div id="paymentKey"></div>
@@ -68,10 +68,7 @@
                 body: JSON.stringify(requestData),
             });
 
-
-            console.log(response); // 이 부분에서 응답 확인
-
-            const json = await response.json(); // 이 부분에서 에러 발생 가능성
+            const json = await response.json();
 
             if (!response.ok) {
                 console.log(json);
@@ -79,32 +76,16 @@
                 return;
             }
 
-            const membershipUpdateResponse = await fetch("/success/update-membership", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            const membershipUpdateJson = await membershipUpdateResponse.json();
-            if (membershipUpdateResponse.ok) {
-                console.log(membershipUpdateJson.message);
-            } else {
-                console.log('Membership update failed:', membershipUpdateJson.message);
-            }
-
             console.log(json);
         }
 
         confirm();
 
-        //const paymentKeyElement = document.getElementById("paymentKey");
         const orderIdElement = document.getElementById("orderId");
         const amountElement = document.getElementById("amount");
 
         orderIdElement.textContent = "주문번호: " + orderId;
         amountElement.textContent = "결제 금액: " + amount;
-        //paymentKeyElement.textContent = "paymentKey: " + paymentKey;
     </script>
   </body>
 </html>
