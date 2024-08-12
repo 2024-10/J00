@@ -3,10 +3,7 @@ const router = express.Router();
 const client = require('../db/db_connect'); // MySQL 클라이언트 사용
 const USER_COOKIE_KEY = 'USER';
 
-let got;
-(async () => {
-  got = (await import('got')).default;
-})();
+import got from 'got';
 
 router.post("/confirm", async function (req, res) {
   const { paymentKey, orderId, amount } = req.body;
