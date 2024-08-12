@@ -1,10 +1,8 @@
 <div align="center">
   <h1> 🌟 J00% 🌟 </h1>
-  <img src="https://github.com/user-attachments/assets/835487c2-a362-420d-90ed-8ae0baaec330" width="500px" height="auto">
+  <img src="https://github.com/user-attachments/assets/7e7058cd-35f8-49b8-97f2-cfd962aa4a7f">
 </div>
 
-### # 우리들을 위한
-### # 목표 관리 서비스
 <br>
 <br>
 
