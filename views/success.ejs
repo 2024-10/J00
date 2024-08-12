@@ -2,9 +2,10 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/payment_result.css">
   </head>
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/payment_result.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
   <body>
     <header id="main-header">
@@ -38,7 +39,18 @@
     </div>
 
     <script>
-        var animation = lottie.loadAnimation({
+        // 모바일 네비바
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.getElementById('nav-toggle');
+            const mainNav = document.getElementById('main-navigation');
+            const mainHeader = document.getElementById('main-header');
+
+            navToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                mainHeader.classList.toggle('active-header');
+            });
+            
+        });var animation = lottie.loadAnimation({
             container: document.getElementById('lottie-animation'),
             renderer: 'svg',
             loop: true, 

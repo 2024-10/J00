@@ -2,9 +2,10 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/payment_result.css">
   </head>
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/payment_result.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
   <body>
     <header id="main-header">
@@ -37,18 +38,30 @@
 </html>
 
 <script>
-  var animation = lottie.loadAnimation({
-    container: document.getElementById('lottie-animation'),
-    renderer: 'svg',
-    loop: true, 
-    autoplay: true, 
-    path: '/images/fail.json' 
+    // 모바일 네비바
+    document.addEventListener('DOMContentLoaded', () => {
+        const navToggle = document.getElementById('nav-toggle');
+        const mainNav = document.getElementById('main-navigation');
+        const mainHeader = document.getElementById('main-header');
+          
+        navToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            mainHeader.classList.toggle('active-header');
+         });
     });
-    const urlParams = new URLSearchParams(window.location.search);
+  
+    var animation = lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true, 
+      autoplay: true, 
+      path: '/images/fail.json' 
+      });
+      const urlParams = new URLSearchParams(window.location.search);
 
-  const codeElement = document.getElementById("code");
-  const messageElement = document.getElementById("message");
+    const codeElement = document.getElementById("code");
+    const messageElement = document.getElementById("message");
 
-  //codeElement.textContent = "에러코드: " + urlParams.get("code");
-  messageElement.textContent = "실패 사유: " + urlParams.get("message");
+    //codeElement.textContent = "에러코드: " + urlParams.get("code");
+    messageElement.textContent = "실패 사유: " + urlParams.get("message");
 </script>
