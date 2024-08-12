@@ -51,7 +51,9 @@
     </header>
     <main>
         <section class="profile-section">
-            <h2>프로필 <% if (user && user.membership) { %>🌟<% } %></h2>
+            <h2 title="<% if (user && user.membership) { %>멤버십을 등록했습니다.<% } %>">
+                프로필 <% if (user && user.membership) { %>🌟<% } %>
+            </h2>
             <div class="profile-card">
                 <div class="profile-info">
                     <div class="profile-image-container">
