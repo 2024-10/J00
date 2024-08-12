@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../db/db_connect'); // MySQL 클라이언트 사용
+const  client  = require('../db/db_connect'); // MySQL 클라이언트 사용
 const USER_COOKIE_KEY = 'USER';
 
 let got;
@@ -31,21 +31,8 @@ router.post("/confirm", async function (req, res) {
     console.log(response.body);
     res.status(response.statusCode).json(response.body);
   } catch (error) {
-    if (error.response) {
-      // HTML 포함
-      console.log("Error response body:", error.response.body);
-      res.status(error.response.statusCode || 500).send(error.response.body);
-    } else {
-      // response 포함 x
-      console.log("Error without response:", error);
-      res.status(500).json({
-        message: "서버 오류",
-        error: {
-          message: error.message,
-          stack: error.stack,
-        }
-      });
-    }
+    console.log(error.response.body);
+    res.status(error.response.statusCode).json(error.response.body);
   }
 });
 
