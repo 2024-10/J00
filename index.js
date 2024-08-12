@@ -131,8 +131,8 @@ app.get('/payment', async (req, res) => {
 });
 
 app.post('/payment', async(req, res) => {
-    if(res.locals.users) {
-        const userId = res.locals.users.user_id;
+    if(res.locals.user) {
+        const userId = res.locals.user.user_id;
         const { amount } = req.body; //결제금액.. 가튼 결제 관련 정보
         try {
             await savePaymentInfo(userId, amount); //결제 관련 정보를 데베에 저장 근데 토스로직을 잘 몰라서 일단 이렇게 둠
