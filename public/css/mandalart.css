@@ -97,6 +97,13 @@ h2 {
 
 #checklist-list {
     margin-top: 10px;
+    margin-left: 10px;
+    text-align: left;
+    white-space: normal; /* Ensure content wraps to the next line */
+    word-wrap: break-word; /* Break long words onto the next line if needed */
+    width: 100%; /* Ensure full width usage */
+    padding: 0;
+    text-align: left;
 }
 
 .center {
@@ -117,6 +124,18 @@ input:focus {
     padding: 5px;
 }
 
+#checklist{
+    border-width: 0 0 1px;
+}
+#addBtn{
+    border-radius: 10px;
+    border: none;
+}
+#save-mandalart{
+    border-radius: 10px;
+    border: none;
+    height: 25px;
+}
 /* 각 칸 개수에 따른 레이아웃 정의 */
 .grid-2 .cell.left {
     width: 324px;
