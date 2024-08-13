@@ -179,11 +179,16 @@ input:focus {
     padding: 0;
 }
 .checklist-item {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 5px;
     border-bottom: 1px solid #ccc;
+    text-align: left;
+
+    display: block;
+    margin-bottom: 10px; /* Space between checklist items */
+    word-wrap: break-word; /* Ensure long text wraps within the item */
+    white-space: normal; /* Allow text to wrap */
 }
 
 /* 각종 버튼 관련 */
