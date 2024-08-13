@@ -29,8 +29,10 @@ https://j00.shop/
 ### 성신여자대학교 컴퓨터공학과 22학번
 #### :bulb: 단쏘맹령혬센
 
-|<img src="https://avatars.githubusercontent.com/u/118244436?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109409651?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89590797?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/110778273?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/118244028?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109464155?v=4" width="150" height="150"/>|
+|<img src="https://avatars.githubusercontent.com/u/118244436?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109409651?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89590797?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |dain<br/>[@kang-dain](https://github.com/kang-dain)|sso<br/>[@ssohy](https://github.com/ssohy)|maeng<br/>[@maeng-kim](https://github.com/maeng-kim)|
+|<img src="https://avatars.githubusercontent.com/u/110778273?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/118244028?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109464155?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|:-:|:-:|:-:|
 |ryxxng<br/>[@LeeYeRyeong](https://github.com/LeeYeRyeong)|송혜음<br/>[@hyeeum](https://github.com/hyeeum)|sen<br/>[@Sena-Han](https://github.com/Sena-Han)|
 
