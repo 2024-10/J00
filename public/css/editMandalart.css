@@ -827,10 +827,15 @@ input:focus {
         margin: 0 auto;
         height: auto;
         margin-top: 0px;
+
     }
     /* 체크리스트 */
     .editContainer { 
         width: 95%;
+    }
+
+    .button-container{
+        bottom: 30px;
     }
 }
 
@@ -840,6 +845,10 @@ input:focus {
         margin: 0 20px;
         height: auto;
         margin-top: 0px;
+        margin-bottom: 30px;
+    }
+    .button-container{
+        bottom: 10px;
     }
     
 }
