@@ -526,6 +526,7 @@ input:focus {
         height: auto;
         width: 90%;
         margin-top: 0px;
+        margin-bottom: 50px;
 
     }
     .mandalart {
@@ -552,7 +553,7 @@ input:focus {
     }
 
     .button-container{
-        bottom: 80px;
+        bottom: 30px;
     }
     
     .color-container,.sticker-container {
@@ -827,7 +828,7 @@ input:focus {
         margin: 0 auto;
         height: auto;
         margin-top: 0px;
-
+        margin-bottom: 50px;
     }
     /* 체크리스트 */
     .editContainer { 
@@ -860,6 +861,7 @@ input:focus {
         margin-top: -50px;
         margin-left: 17px;
         height: auto;
+        margin-bottom: 30px;
     }
     /* 만다라트*/
     .mandalart {
