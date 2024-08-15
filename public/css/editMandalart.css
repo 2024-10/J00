@@ -552,13 +552,12 @@ input:focus {
     }
 
     .button-container{
-        bottom: -30px;
+        bottom: 80px;
     }
     
     .color-container,.sticker-container {
         width: 100%;
     }
-    
     /* 각 칸 개수에 따른 레이아웃 정의 */
     .grid-2 .cell.left {
         width: 165px;
