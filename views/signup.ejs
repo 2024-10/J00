@@ -13,16 +13,16 @@
             <h2>Sign Up</h2>
             <form id="signupForm" action="/api/users/signup" method="POST" enctype="multipart/form-data">
                 <div class="input-group">
-                    <input type="text" name="user_id" placeholder="Name" required>
-                </div>
-                <div class="input-group">
-                    <input type="email" name="user_email" placeholder="Email" required>
+                    <input type="text" name="user_id" placeholder="ID" required>
                 </div>
                 <div class="input-group">
                     <input type="password" name="user_pw" placeholder="Password" required>
                 </div>
                 <div class="input-group">
-                    <input type="date" name="user_birthday" placeholder="Birth" required>
+                    <input type="email" name="user_email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="birthday" name="user_birthday" placeholder="Birthday" required onfocus="(this.type='date')" onblur="if(this.value==''){this.type='text'}">
                 </div>
                 <div class="input-group">
                     <input type="text" name="user_nickname" placeholder="Nickname" required>
