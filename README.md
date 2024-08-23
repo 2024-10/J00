@@ -39,7 +39,7 @@ https://j00.shop
 <br/>
 <br/>
 
-# 🌈 STACKS
+## 🌈 STACKS
 ### Environment
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
@@ -65,9 +65,11 @@ https://j00.shop
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white)
 
 
+<br/>
+
 
 ---
-## 화면 구성 
+## 🖥️ 화면 구성 
 | 메인 페이지  |  만다라트 페이지   |
 | :-------------------------------------------: | :------------: |
 |  <img width="329" src="이미지"/> |  <img width="329" src="이미지"/>|  
@@ -75,9 +77,10 @@ https://j00.shop
 | <img width="329" src="이미지"/>   |  <img width="329" src="이미지"/>     |
 
 
+<br/>
 
 ---
-## 주요 기능 📦
+## 📦 주요 기능 
 
 ### ✨ 만다라트 생성 기능
 - 사용자는 본인의 중심 목표를 메인으로 하고 해당 목표를 이루기 위한 테두리스트를 최대 8개까지 포함하는 만다라트 생성
@@ -95,8 +98,11 @@ https://j00.shop
 - 멤버십을 구매한 사용자는 만다라트를 스티커를 통해 꾸밀 수 있으며 만다라트 색상 변경 또한 가능
 - 추후 멤버십 기능 추가 예정
 
+<br/>
+
+
 ---
-## 아키텍쳐
+## ⛓️ 아키텍쳐
 
 ### 디렉토리 구조
 ```bash
@@ -160,3 +166,17 @@ https://j00.shop
  ┗ 📜uploads
 
 ```
+
+<br/>
+
+---
+## 📊 Database 
+
+### 테이블 명세서 ⚡️
+<img src="https://github.com/user-attachments/assets/ba5c1ac7-74d9-4ab2-b5ee-80a6e0ce1a95" width="1000">
+
+### ERD ⚡️
+<img src="https://github.com/user-attachments/assets/94922f54-aa4d-409f-ba35-c0ce60b48071" width="1000">
+
+### MySQL diagram ⚡️
+<img src="https://github.com/user-attachments/assets/a108c685-3d41-41cb-804f-b2db106be422" width="1000">
