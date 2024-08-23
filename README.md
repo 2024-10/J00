@@ -30,6 +30,133 @@ https://j00.shop/
 #### :bulb: 단쏘맹령혬센
 
 |<img src="https://avatars.githubusercontent.com/u/118244436?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109409651?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89590797?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/110778273?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/118244028?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109464155?v=4" width="150" height="150"/>|
+
+
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |dain<br/>[@kang-dain](https://github.com/kang-dain)|sso<br/>[@ssohy](https://github.com/ssohy)|maeng<br/>[@maeng-kim](https://github.com/maeng-kim)|ryxxng<br/>[@LeeYeRyeong](https://github.com/LeeYeRyeong)|송혜음<br/>[@hyeeum](https://github.com/hyeeum)|sen<br/>[@Sena-Han](https://github.com/Sena-Han)|
 
+
+<br/>
+<br/>
+
+# 🌈 STACKS
+### Environment
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
+![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)   
+
+
+### Config
+![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white) 
+
+### Development & Hosting
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+[CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+
+
+### Communication
+![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)
+![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white)
+
+
+
+---
+## 화면 구성 
+| 메인 페이지  |  만다라트 페이지   |
+| :-------------------------------------------: | :------------: |
+|  <img width="329" src="이미지"/> |  <img width="329" src="이미지"/>|  
+| 친구목록 페이지   |  캘린더 페이지   |  
+| <img width="329" src="이미지"/>   |  <img width="329" src="이미지"/>     |
+
+
+
+---
+## 주요 기능 📦
+
+### ✨ 만다라트 생성 기능
+- 사용자는 본인의 중심 목표를 메인으로 하고 해당 목표를 이루기 위한 테두리스트를 최대 8개까지 포함하는 만다라트 생성
+- 한 개의 테두리스트에는 해당 테두리스트를 이루기 위해 매일 이뤄야하는 체크리스트를 설정 가능함
+
+### ✨ 친구와의 공유 기능
+- id를 통해 팔로우가 가능하며 서로 맞팔로우를 한 상태라면 친구의 만다라트 열람 가능
+
+### ✨ 댓글 기능
+- 본인의 만다라트를 포함한 열람 가능한 만다라트에 댓글 작성 가능
+- 다른 댓글과 자신의 댓글에 이모지로 감정 표현 가능
+
+### ✨ 멤버십 기능
+- 사용자는 프로필에서 멤버십 결제를 통하여 평생 구독 멤버십 가입 가능
+- 멤버십을 구매한 사용자는 만다라트를 스티커를 통해 꾸밀 수 있으며 만다라트 색상 변경 또한 가능
+- 추후 멤버십 기능 추가 예정
+
+---
+## 아키텍쳐
+
+### 디렉토리 구조
+```bash
+📦J00_BE
+ ┣ 📂.github
+ ┣ 📂db
+ ┃ ┣ 📜db.js
+ ┃ ┣ 📜db_connect.js
+ ┣ 📂node_modules
+ ┣ 📂public
+ ┃ ┣ 📂css
+ ┃ ┃ ┣ 📜add_friend.css
+ ┃ ┃ ┣ 📜base.css
+ ┃ ┃ ┣ 📜calendar.css
+ ┃ ┃ ┣ 📜createMandalart.css
+ ┃ ┃ ┣ 📜editMandalart.css
+ ┃ ┃ ┣ 📜home.css
+ ┃ ┃ ┣ 📜mandalart.css
+ ┃ ┃ ┣ 📜membership.css
+ ┃ ┃ ┣ 📜payment_result.css
+ ┃ ┃ ┣ 📜profile.css
+ ┃ ┃ ┣ 📜share.css
+ ┃ ┃ ┣ 📜share_viewMandalart.css
+ ┃ ┃ ┣ 📜signin.css
+ ┃ ┃ ┣ 📜signup.css
+ ┃ ┃ ┗ 📜viewMandalart.css
+ ┃ ┗ 📂images
+ ┣ 📂routes
+ ┃ ┣ 📜add_friend.js
+ ┃ ┣ 📜calendar.js
+ ┃ ┣ 📜calender.js
+ ┃ ┣ 📜comment.js
+ ┃ ┣ 📜mandalart.js
+ ┃ ┣ 📜payment.js
+ ┃ ┣ 📜share.js
+ ┃ ┣ 📜success.js
+ ┃ ┗ 📜users.js
+ ┣ 📂views
+ ┃ ┣ 📜add_friend.ejs
+ ┃ ┣ 📜calendar.ejs
+ ┃ ┣ 📜createMandalart.ejs
+ ┃ ┣ 📜editMandalart.ejs
+ ┃ ┣ 📜fail.ejs
+ ┃ ┣ 📜home.ejs
+ ┃ ┣ 📜mandalart.ejs
+ ┃ ┣ 📜membership.ejs
+ ┃ ┣ 📜payment.ejs
+ ┃ ┣ 📜profile.ejs
+ ┃ ┣ 📜share.ejs
+ ┃ ┣ 📜share_viewMandalart.ejs
+ ┃ ┣ 📜signin.ejs
+ ┃ ┣ 📜signup.ejs
+ ┃ ┣ 📜success.ejs
+ ┃ ┗ 📜viewMandalart.ejs
+ ┣ 📜.gitignore
+ ┣ 📜README.md : 리드미 파일
+ ┣ 📜index.js
+ ┣ 📜package-lock.json
+ ┣ 📜package.json
+ ┣ 📜requirements.txt
+ ┗ 📜uploads
+
+```
