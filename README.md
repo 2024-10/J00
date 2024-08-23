@@ -102,8 +102,8 @@ https://j00.shop/
 ```bash
 📦J00_BE
  ┣ 📂.github
- ┣ 📂db
- ┃ ┣ 📜db.js
+ ┣ 📂db : 데이터베이스 관련 파일
+ ┃ ┣ 📜db.js 
  ┃ ┣ 📜db_connect.js
  ┣ 📂node_modules
  ┣ 📂public
