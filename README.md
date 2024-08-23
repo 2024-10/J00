@@ -20,7 +20,7 @@
 
 # 🫧 배포 주소
 ### J00%를 경험해보세요! :wave:
-https://j00.shop/
+https://j00.shop
 
 <br>
 <br>
@@ -29,11 +29,11 @@ https://j00.shop/
 ### 성신여자대학교 컴퓨터공학과 22학번
 #### :bulb: 단쏘맹령혬센
 
+
 |<img src="https://avatars.githubusercontent.com/u/118244436?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109409651?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89590797?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/110778273?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/118244028?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/109464155?v=4" width="150" height="150"/>|
-
-
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |dain<br/>[@kang-dain](https://github.com/kang-dain)|sso<br/>[@ssohy](https://github.com/ssohy)|maeng<br/>[@maeng-kim](https://github.com/maeng-kim)|ryxxng<br/>[@LeeYeRyeong](https://github.com/LeeYeRyeong)|송혜음<br/>[@hyeeum](https://github.com/hyeeum)|sen<br/>[@Sena-Han](https://github.com/Sena-Han)|
+
 
 
 <br/>
@@ -52,7 +52,7 @@ https://j00.shop/
 ### Development & Hosting
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-[CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
