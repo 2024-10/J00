@@ -72,9 +72,9 @@ https://j00.shop
 ## 🖥️ 화면 구성 
 | 메인 페이지  |  만다라트 페이지   |
 | :-------------------------------------------: | :------------: |
-|  <img width="329" src="이미지"/> |  <img width="329" src="이미지"/>|  
+|  <img width="329" src="https://github.com/user-attachments/assets/8904b607-73a0-403e-af00-a6c4ad430ece"/> |  <img width="329" src="https://github.com/user-attachments/assets/76f7be82-e4e0-4a26-a584-316f43bb64b0"/>|  
 | 친구목록 페이지   |  캘린더 페이지   |  
-| <img width="329" src="이미지"/>   |  <img width="329" src="이미지"/>     |
+| <img width="329" src="https://github.com/user-attachments/assets/3c273c0b-f028-47bb-b92e-28aa27955a12"/>   |  <img width="329" src="https://github.com/user-attachments/assets/c6e68404-97d9-4096-821e-3cb4299471d1"/>     |
 
 
 <br/>
